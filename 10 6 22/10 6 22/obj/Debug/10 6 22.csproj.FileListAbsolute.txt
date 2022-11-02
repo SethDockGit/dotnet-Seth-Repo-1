@@ -1,0 +1,8 @@
+C:\repos\10 6 22\10 6 22\obj\Debug\10 6 22.csproj.AssemblyReference.cache
+C:\repos\10 6 22\10 6 22\obj\Debug\10 6 22.csproj.SuggestedBindingRedirects.cache
+C:\repos\10 6 22\10 6 22\obj\Debug\10 6 22.csproj.CoreCompileInputs.cache
+C:\repos\10 6 22\10 6 22\bin\Debug\10 6 22.exe.config
+C:\repos\10 6 22\10 6 22\bin\Debug\10 6 22.exe
+C:\repos\10 6 22\10 6 22\bin\Debug\10 6 22.pdb
+C:\repos\10 6 22\10 6 22\obj\Debug\10 6 22.exe
+C:\repos\10 6 22\10 6 22\obj\Debug\10 6 22.pdb
