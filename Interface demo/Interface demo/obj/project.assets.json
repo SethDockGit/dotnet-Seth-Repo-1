@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\InheritanceDemo\\InheritanceDemo\\InheritanceDemo.csproj",
-      "projectName": "InheritanceDemo",
-      "projectPath": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\InheritanceDemo\\InheritanceDemo\\InheritanceDemo.csproj",
+      "projectUniqueName": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\Interface demo\\Interface demo\\Interface demo.csproj",
+      "projectName": "Interface demo",
+      "projectPath": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\Interface demo\\Interface demo\\Interface demo.csproj",
       "packagesPath": "C:\\Users\\Seth\\.nuget\\packages\\",
-      "outputPath": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\InheritanceDemo\\InheritanceDemo\\obj\\",
+      "outputPath": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\Interface demo\\Interface demo\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Seth\\AppData\\Roaming\\NuGet\\NuGet.Config",

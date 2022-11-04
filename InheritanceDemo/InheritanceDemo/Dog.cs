@@ -8,6 +8,7 @@ namespace InheritanceDemo
     {
         public bool IsAGoodBoy { get; set; }
         public string Name { get; set; }
+        public string SignatureMove { get; set; }
 
         public Dog(bool isGood, string name)
         {

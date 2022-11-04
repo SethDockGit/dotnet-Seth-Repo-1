@@ -4,18 +4,17 @@ using System.Text;
 
 namespace InheritanceDemo
 {
-    class GermanShepherd : Dog
+    class Terrier : Dog
     {
-
-        public GermanShepherd(bool isAGoodBoy, string name) : base(isAGoodBoy, name) 
+        public Terrier(bool isGood, string name) : base(isGood, name)
         {
-            SignatureMove = "goes completely nuts";
+            SignatureMove = "humps a stuffed animal";
         }
         public void DoSignatureMove()
         {
             Console.Write(Name);
             Console.Write(SignatureMove);
-            Console.ReadKey();  
+            Console.ReadKey();
         }
     }
 }

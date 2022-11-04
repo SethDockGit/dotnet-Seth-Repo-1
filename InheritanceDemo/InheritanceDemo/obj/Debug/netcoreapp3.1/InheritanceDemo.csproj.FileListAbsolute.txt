@@ -12,3 +12,17 @@ C:\repos\InheritanceDemo\InheritanceDemo\obj\Debug\netcoreapp3.1\InheritanceDemo
 C:\repos\InheritanceDemo\InheritanceDemo\obj\Debug\netcoreapp3.1\InheritanceDemo.dll
 C:\repos\InheritanceDemo\InheritanceDemo\obj\Debug\netcoreapp3.1\InheritanceDemo.pdb
 C:\repos\InheritanceDemo\InheritanceDemo\obj\Debug\netcoreapp3.1\InheritanceDemo.genruntimeconfig.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\bin\Debug\netcoreapp3.1\InheritanceDemo.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\bin\Debug\netcoreapp3.1\InheritanceDemo.deps.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\bin\Debug\netcoreapp3.1\InheritanceDemo.runtimeconfig.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\bin\Debug\netcoreapp3.1\InheritanceDemo.runtimeconfig.dev.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\bin\Debug\netcoreapp3.1\InheritanceDemo.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\bin\Debug\netcoreapp3.1\InheritanceDemo.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\obj\Debug\netcoreapp3.1\InheritanceDemo.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\obj\Debug\netcoreapp3.1\InheritanceDemo.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\obj\Debug\netcoreapp3.1\InheritanceDemo.AssemblyInfoInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\obj\Debug\netcoreapp3.1\InheritanceDemo.AssemblyInfo.cs
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\obj\Debug\netcoreapp3.1\InheritanceDemo.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\obj\Debug\netcoreapp3.1\InheritanceDemo.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\obj\Debug\netcoreapp3.1\InheritanceDemo.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\InheritanceDemo\InheritanceDemo\obj\Debug\netcoreapp3.1\InheritanceDemo.genruntimeconfig.cache

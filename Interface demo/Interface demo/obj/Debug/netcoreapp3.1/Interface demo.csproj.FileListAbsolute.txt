@@ -1,0 +1,14 @@
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\bin\Debug\netcoreapp3.1\Interface demo.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\bin\Debug\netcoreapp3.1\Interface demo.deps.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\bin\Debug\netcoreapp3.1\Interface demo.runtimeconfig.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\bin\Debug\netcoreapp3.1\Interface demo.runtimeconfig.dev.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\bin\Debug\netcoreapp3.1\Interface demo.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\bin\Debug\netcoreapp3.1\Interface demo.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\obj\Debug\netcoreapp3.1\Interface demo.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\obj\Debug\netcoreapp3.1\Interface demo.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\obj\Debug\netcoreapp3.1\Interface demo.AssemblyInfoInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\obj\Debug\netcoreapp3.1\Interface demo.AssemblyInfo.cs
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\obj\Debug\netcoreapp3.1\Interface demo.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\obj\Debug\netcoreapp3.1\Interface demo.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\obj\Debug\netcoreapp3.1\Interface demo.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Interface demo\Interface demo\obj\Debug\netcoreapp3.1\Interface demo.genruntimeconfig.cache

@@ -7,10 +7,15 @@ namespace InheritanceDemo
     {
         static void Main(string[] args)
         {
-            GermanShepherd germanShepherd = new GermanShepherd(false, "Rufus");
+            //GermanShepherd germanShepherd = new GermanShepherd(true, "Rufus");
 
-            Console.WriteLine($"I love my dog {germanShepherd.Name}");
-            Console.ReadKey();
+            Terrier terrier = new Terrier(true, "dorkus");
+
+            Console.WriteLine($"I love my dog {terrier.Name}");
+            Console.WriteLine();
+            
+            germanShepherd.DoSignatureMove();
+
             Console.WriteLine($"OK {germanShepherd.Name}, I am going to leave this tasty ham on the table");
 
             while(germanShepherd.IsAGoodBoy)
