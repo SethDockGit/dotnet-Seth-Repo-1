@@ -6,3 +6,11 @@ C:\repos\practice\practice\obj\Debug\practice.csproj.SuggestedBindingRedirects.c
 C:\repos\practice\practice\obj\Debug\practice.csproj.CoreCompileInputs.cache
 C:\repos\practice\practice\obj\Debug\practice.exe
 C:\repos\practice\practice\obj\Debug\practice.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\practice\practice\bin\Debug\practice.exe.config
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\practice\practice\bin\Debug\practice.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\practice\practice\bin\Debug\practice.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\practice\practice\obj\Debug\practice.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\practice\practice\obj\Debug\practice.csproj.SuggestedBindingRedirects.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\practice\practice\obj\Debug\practice.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\practice\practice\obj\Debug\practice.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\practice\practice\obj\Debug\practice.pdb

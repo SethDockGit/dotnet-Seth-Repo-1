@@ -41,6 +41,8 @@ namespace To_do_list.UI
                         break;
                     case ConsoleKey.E:
 
+                        //this next chunk could be it's own method in workflow called GetIdAndText
+
                         Console.WriteLine("\nEnter the ID of an item to edit");
                         string edit = Console.ReadLine();
                         int editId;
