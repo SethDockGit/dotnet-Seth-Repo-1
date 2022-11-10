@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 
 namespace MaterialsApp.Data
@@ -37,73 +38,74 @@ namespace MaterialsApp.Data
         {
             return user;
         }
-        public int DepositResource(User user, int resourceKey, int deposit)
+        public int DepositWood(User user, int amount)
         {
-
-            int newCount;
-
-            switch (resourceKey)
-            {
-                case 1:
-                    user.WoodCount = user.WoodCount + deposit;
-                    newCount = user.WoodCount;
-                    break;
-
-                case 2:
-                    user.StoneCount = user.StoneCount + deposit;
-                    newCount = user.StoneCount;
-                    break;
-
-                case 3:
-                    user.IronCount = user.IronCount + deposit;
-                    newCount = user.IronCount;
-                    break;
-
-                case 4:
-                    user.GoldCount = user.GoldCount + deposit;
-                    newCount = user.GoldCount;
-                    break;
-
-                default:
-                    throw new Exception("An incorrect case was entered into the DepositResource method");
-            }
-
-            return newCount;
-
+            user.WoodCount += amount;
+            return user.WoodCount;
         }
-        public int WithdrawResource(User user, int resourceKey, int withdrawal)
+        public int DepositStone(User user, int amount)
         {
-            int newCount;
-
-            switch (resourceKey)
+            user.StoneCount += amount;
+            return user.StoneCount;
+        }
+        public int DepositIron(User user, int amount)
+        {
+            user.IronCount += amount;
+            return user.IronCount;
+        }
+        public int DepositGold(User user, int amount)
+        {
+            user.GoldCount += amount;
+            return user.GoldCount;
+        }
+        public int WithdrawWood(User user, int amount)
+        {
+            if (user.WoodCount >= amount)
             {
-                case 1:
-                    user.WoodCount = user.WoodCount - withdrawal;
-                    newCount = user.WoodCount;
-                    break;
-
-                case 2:
-                    user.StoneCount = user.StoneCount - withdrawal;
-                    newCount = user.StoneCount;
-                    break;
-
-                case 3:
-                    user.IronCount = user.IronCount - withdrawal;
-                    newCount = user.IronCount;
-                    break;
-
-                case 4:
-                    user.GoldCount = user.GoldCount - withdrawal;
-                    newCount = user.GoldCount;
-                    break;
-
-                default:
-                    throw new Exception("An incorrect case was entered into the DepositResource method");
+                user.WoodCount -= amount;
             }
-
-            //if newCount is >= 0, return newcount, otherwise return zero and error message."
-            return newCount;
-
+            else
+            {
+                return -1;
+            }
+            return user.WoodCount;
+            
+        }
+        public int WithdrawStone(User user, int amount)
+        {
+            if (user.StoneCount >= amount)
+            {
+                user.StoneCount -= amount;
+            }
+            else
+            {
+                return -1;
+            }
+            return user.StoneCount;
+        }
+        public int WithdrawIron(User user, int amount)
+        {
+            if (user.IronCount >= amount)
+            {
+                user.IronCount -= amount;
+            }
+            else
+            {
+                return -1;
+            }
+            return user.IronCount;
+        }
+        public int WithdrawGold(User user, int amount)
+        {
+            if (user.GoldCount >= amount)
+            {
+                user.GoldCount -= amount;
+                    return user.GoldCount;
+            }
+            else
+            {
+                return -1;
+            }
         }
         public User Authenticate(string username)
         {

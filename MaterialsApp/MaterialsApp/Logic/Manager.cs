@@ -31,79 +31,191 @@ namespace MaterialsApp.Logic
                 Console.ReadKey();
             }
         }
-
-        //if I were to do it differently next time I would pass the user's resource info back to the manager and have the manager
-        //do the math. Oh well. It works this way but it's not exemplary. The methods probably shouldn't need 3 parameters
-        //But also, I figured maybe the math should be done at the datasource level since it is changing the data?
         public void DepositResource()
         {
             string username = GetUsername();
             User user = IDataSource.Authenticate(username);
-           
 
-            if (user != null)
-            {
-                int key = GetKey();
 
-                if(key < 5 && key > 0)
-                {
-                    int deposit = GetDeposit();
-                    if(deposit > 0)
-                    {
-                        int newCount = IDataSource.DepositResource(user, key, deposit);
-                        Console.Clear();
-                        Console.WriteLine($"\nDeposited {deposit}. New count is {newCount}.");
-                        Console.WriteLine("\nPress any key to return to the main menu");
-                        Console.ReadKey();
-                    }
-                }
-            }
-            else
+            if (user == null)
             {
                 Console.WriteLine($"Error: user {username} not found. Press any key to return to the main menu... ");
                 Console.ReadKey();
             }
-        }
+            else
+            {
+                ResourceType resource = GetResourceType(user);
 
-        private int GetKey()
+                if(resource == ResourceType.Invalid)
+                {
+                    Console.WriteLine($"Error: Invalid input entered for resource type. Press any key to return to the main menu... ");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    int amount = GetIntFromUser($"How much {resource} would you like to deposit?\n");
+
+                    if (amount <= 0)
+                    {
+                        Console.WriteLine($"Error: Resource amount must be an integer greater than 0. Press any key to return to the main menu... ");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        int newAmount = RouteDeposit(user, resource, amount);
+                        Console.Clear();
+                        Console.WriteLine($"Deposit successful. {amount} added to {resource}.\n\nNew balance: {newAmount}");
+                        Console.WriteLine("\nPress any key to return to the main menu");
+                        Console.ReadKey();
+
+                    }
+                }
+            }
+        }
+        public void WithdrawResource()
+        {
+            string username = GetUsername();
+            User user = IDataSource.Authenticate(username);
+
+
+            if (user == null)
+            {
+                Console.WriteLine($"Error: user {username} not found. Press any key to return to the main menu... ");
+                Console.ReadKey();
+            }
+            else
+            {
+                ResourceType resource = GetResourceType(user);
+
+                if (resource == ResourceType.Invalid)
+                {
+                    Console.WriteLine($"Error: Invalid input entered for resource type. Press any key to return to the main menu... ");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    int amount = GetIntFromUser($"How much {resource} would you like to withdraw?\n");
+
+                    if (amount <= 0)
+                    {
+                        Console.WriteLine($"Error: Resource amount must be an integer greater than 0. Press any key to return to the main menu... ");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        int newAmount = RouteWithdrawal(user, resource, amount);
+
+                        if (newAmount < 0)
+                        {
+                            Console.WriteLine("Error: amount withdrawn larger than balance. Withdrawal failed.");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.WriteLine($"Withdrawal successful. {amount} withdrawn from {resource}.\n\nNew balance: {newAmount}");
+                            Console.WriteLine("\nPress any key to return to the main menu");
+                            Console.ReadKey();
+                        }
+                    }
+                }
+            }
+        }
+        private int RouteWithdrawal(User user, ResourceType resource, int amount)
+        {
+            int newAmount;
+            switch (resource)
+            {
+                case ResourceType.Wood:
+                    newAmount = IDataSource.WithdrawWood(user, amount);
+                    break;
+
+                case ResourceType.Stone:
+                    newAmount = IDataSource.WithdrawStone(user, amount);
+                    break;
+
+                case ResourceType.Iron:
+                    newAmount = IDataSource.WithdrawIron(user, amount);
+                    break;
+
+                case ResourceType.Gold:
+                    newAmount = IDataSource.WithdrawGold(user, amount);
+                    break;
+
+                default:
+                    throw new Exception("ResourceType parameter not matched to a method");
+            }
+            return newAmount;
+        }
+        private int RouteDeposit(User user, ResourceType resource, int amount)
+        {
+            int newAmount;
+            switch(resource)
+            {
+                case ResourceType.Wood:
+                    newAmount = IDataSource.DepositWood(user, amount);
+                    break;
+
+                case ResourceType.Stone:
+                    newAmount = IDataSource.DepositStone(user, amount);
+                    break;
+
+                case ResourceType.Iron:
+                    newAmount = IDataSource.DepositIron(user, amount);
+                    break;
+
+                case ResourceType.Gold:
+                    newAmount = IDataSource.DepositGold(user, amount);
+                    break;
+
+                default:
+                    throw new Exception("ResourceType parameter not matched to a method");
+            }
+            return newAmount;
+        }
+        private ResourceType GetResourceType(User user)
         {
             Console.Clear();
             Console.WriteLine("***Select a resource, then press enter***\n");
             Console.WriteLine("1. Wood\n2. Stone\n3. Iron\n4. Gold\n");
-            string toParse = Console.ReadLine();
+            string userInput = Console.ReadLine();
 
-            int key;
-            bool success = int.TryParse(toParse, out key);
-            if(success && key < 5 && key >0)
+            ResourceType resource;
+        
+
+            switch (userInput)
             {
-                return key;
+                case "1":
+                    resource = ResourceType.Wood;
+                    break;
+
+                case "2":
+                    resource = ResourceType.Stone;
+                    break;
+
+                case "3":
+                    resource = ResourceType.Iron;
+                    break;
+
+                case "4":
+                    resource = ResourceType.Gold;
+                    break;
+
+                default:
+                    resource = ResourceType.Invalid;
+                    break;
             }
-            else
-            {
-                Console.WriteLine("Error: Invalid input. Press any key to return to the main menu");
-                Console.ReadKey();
-                return key;
-            }
+            return resource;  
         }
-
-        private int GetDeposit()
+        private int GetIntFromUser(string prompt)
         {
             Console.Clear();
-            Console.WriteLine("Enter the number you will deposit.\n");
+            Console.WriteLine($"{prompt}");
             string toParse = Console.ReadLine();
 
-            int deposit;
-            bool success = int.TryParse(toParse, out deposit);
-            if(success && deposit>0)
-            {
-                return deposit;
-            }
-            else
-            {
-                Console.WriteLine("Error: Invalid input. Press any key to return to the main menu");
-                Console.ReadKey();
-                return deposit;
-            }
+            int amount = -1;
+            int.TryParse(toParse, out amount);
+            return amount;
 
         }
         private int GetWithdrawal()
@@ -125,34 +237,6 @@ namespace MaterialsApp.Logic
                 return withdrawal;
             }
 
-        }
-        public void WithdrawResource()
-        {
-            string username = GetUsername();
-            User user = IDataSource.Authenticate(username);
-
-            if (user != null)
-            {
-                int key = GetKey();
-
-                if(key < 5 && key > 0)
-                {
-                    int withdrawal = GetWithdrawal();
-                    if(withdrawal > 0)
-                    {
-                        int newCount = IDataSource.WithdrawResource(user, key, withdrawal);
-                        Console.Clear();
-                        Console.WriteLine($"\nWithdrew {withdrawal}. New count is {newCount}.");
-                        Console.WriteLine("\nPress any key to return to the main menu.");
-                        Console.ReadKey();
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine($"Error: user {username} not found. Press any key to return to the main menu... ");
-                Console.ReadKey();
-            }
         }
 
         private string GetUsername()
@@ -178,7 +262,5 @@ namespace MaterialsApp.Logic
 
             Console.ReadKey();
         }
-
-
     }
 }

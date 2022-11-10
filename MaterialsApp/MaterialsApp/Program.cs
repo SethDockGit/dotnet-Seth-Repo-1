@@ -10,7 +10,7 @@ namespace MaterialsApp
     {
         static void Main(string[] args)
         {
-            Application application = new Application(new InMemoryDataSource());
+            Application application = new Application(new TxtDataSource());
 
             application.Run();
         }
