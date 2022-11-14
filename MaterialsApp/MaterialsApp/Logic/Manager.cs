@@ -22,7 +22,7 @@ namespace MaterialsApp.Logic
 
             if (user != null)
             {
-                User userToCheck = IDataSource.CheckResources(user);
+                User userToCheck = IDataSource.GetUser(user);
                 PrintUserResources(userToCheck);
             }
             else
@@ -71,6 +71,33 @@ namespace MaterialsApp.Logic
                     }
                 }
             }
+        }
+        private bool CheckForSufficientBalance(User user, ResourceType resource, int amount)
+        {
+            bool insufficient = false;
+            switch (resource)
+            {
+                case ResourceType.Wood:
+                    insufficient = user.WoodCount >= amount;
+                    break;
+
+                case ResourceType.Stone:
+                    insufficient = user.StoneCount >= amount;
+                    break;
+
+                case ResourceType.Iron:
+                    insufficient = user.IronCount >= amount;
+                    break;
+
+                case ResourceType.Gold:
+                    insufficient = user.GoldCount >= amount;
+                    break;
+
+                default:
+                    throw new Exception("Resource Type not matched");
+                    break;
+            }
+            return insufficient;
         }
         public void WithdrawResource()
         {
@@ -238,7 +265,6 @@ namespace MaterialsApp.Logic
             }
 
         }
-
         private string GetUsername()
         {
             Console.Clear();
@@ -248,7 +274,6 @@ namespace MaterialsApp.Logic
             
             return input;
         }
-
         private void PrintUserResources(User user)
         {
             Console.Clear();

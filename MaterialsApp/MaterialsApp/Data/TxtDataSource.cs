@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using MaterialsApp.Models;
 
@@ -32,7 +33,6 @@ namespace MaterialsApp.Data
                 throw new Exception("Data source nonexistent.");
             }
         }
-
         private void PopulateItems()
         {
             using(StreamReader sr = File.OpenText(SaveFile))
@@ -43,33 +43,30 @@ namespace MaterialsApp.Data
                 {
                     string[] splitline = line.Split(',');
 
-                    User user = new User();
+                    User user = new User()
                     {
-                        user.Username = splitline[0];
-                        user.WoodCount = int.Parse(splitline[1]);
-                        user.StoneCount = int.Parse(splitline[2]);
-                        user.IronCount = int.Parse(splitline[3]);
-                        user.GoldCount = int.Parse(splitline[4]);
-                    //why does this look different?
+                        Username = splitline[0],
+                        WoodCount = int.Parse(splitline[1]),
+                        StoneCount = int.Parse(splitline[2]),
+                        IronCount = int.Parse(splitline[3]),
+                        GoldCount = int.Parse(splitline[4])
+
+                        //use tryparse instead of parse
                     };
 
                     Users.Add(user);
                 }
             }
         }
-
         public User Authenticate(string username)
         {
             User user = Users.SingleOrDefault(user => user.Username == username);
             return user;
         }
-
-
-        public User CheckResources(User user)
+        public User GetUser(User user)
         {
             return user;
         }
-
         public void ReWriteFile()
         {
             File.Delete(SaveFile);
@@ -97,82 +94,49 @@ namespace MaterialsApp.Data
             ReWriteFile();
             return user.GoldCount;
         }
-
         public int DepositIron(User user, int amount)
         {
             user.IronCount += amount;
             ReWriteFile();
             return user.IronCount;
         }
-
         public int DepositStone(User user, int amount)
         {
             user.StoneCount += amount;
             ReWriteFile();
             return user.StoneCount;
         }
-
         public int DepositWood(User user, int amount)
         {
             user.WoodCount += amount;
             ReWriteFile();
             return user.WoodCount;
         }
-
         public int WithdrawGold(User user, int amount)
         {
-
-            if (user.GoldCount >= amount)
-            {
                 user.GoldCount -= amount;
                 ReWriteFile();
                 return user.GoldCount;
-            }
-            else
-            {
-                return -1;
-            }           
         }
         public int WithdrawIron(User user, int amount)
         {
-            if (user.IronCount >= amount)
-            {
                 user.IronCount -= amount;
                 ReWriteFile();
                 return user.IronCount;
-            }
-            else
-            {
-                return -1;
-            }
         }
-
         public int WithdrawStone(User user, int amount)
         {
-            if (user.StoneCount >= amount)
-            {
+
                 user.StoneCount -= amount;
                 ReWriteFile();
                 return user.StoneCount;
-            }
-            else
-            {
-                return -1;
-            }
         }
-
         public int WithdrawWood(User user, int amount)
         {
-            if (user.WoodCount >= amount)
-            {
+
                 user.WoodCount -= amount;
                 ReWriteFile();
                 return user.WoodCount;
-            }
-            else
-            {
-                return -1;
-            }
         }
     }
 }

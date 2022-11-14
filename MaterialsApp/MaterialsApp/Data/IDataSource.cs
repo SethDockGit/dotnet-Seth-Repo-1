@@ -7,7 +7,7 @@ namespace MaterialsApp.Data
 {
     interface IDataSource
     {
-        public User CheckResources(User user);
+        public User GetUser(User user);
         public User Authenticate(string username);
         public int DepositWood(User user, int amount);
         public int DepositStone(User user, int amount);

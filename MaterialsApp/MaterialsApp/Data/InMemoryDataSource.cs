@@ -7,9 +7,11 @@ using System.Text;
 
 namespace MaterialsApp.Data
 {
-    class InMemoryDataSource : IDataSource
+    public class InMemoryDataSource : IDataSource
     {
         private List<User> Users { get; set; }
+
+   
         
         public InMemoryDataSource()
         {
@@ -34,7 +36,7 @@ namespace MaterialsApp.Data
             };
         }
 
-        public User CheckResources(User user)
+        public User GetUser(User user)
         {
             return user;
         }
@@ -60,52 +62,24 @@ namespace MaterialsApp.Data
         }
         public int WithdrawWood(User user, int amount)
         {
-            if (user.WoodCount >= amount)
-            {
-                user.WoodCount -= amount;
-            }
-            else
-            {
-                return -1;
-            }
-            return user.WoodCount;
-            
+            user.WoodCount -= amount;
+            return user.WoodCount;            
         }
         public int WithdrawStone(User user, int amount)
         {
-            if (user.StoneCount >= amount)
-            {
-                user.StoneCount -= amount;
-            }
-            else
-            {
-                return -1;
-            }
+            user.StoneCount -= amount;
             return user.StoneCount;
         }
         public int WithdrawIron(User user, int amount)
         {
-            if (user.IronCount >= amount)
-            {
-                user.IronCount -= amount;
-            }
-            else
-            {
-                return -1;
-            }
+
+            user.IronCount -= amount;
             return user.IronCount;
         }
         public int WithdrawGold(User user, int amount)
         {
-            if (user.GoldCount >= amount)
-            {
-                user.GoldCount -= amount;
-                    return user.GoldCount;
-            }
-            else
-            {
-                return -1;
-            }
+            user.GoldCount -= amount;
+            return user.GoldCount;
         }
         public User Authenticate(string username)
         {
