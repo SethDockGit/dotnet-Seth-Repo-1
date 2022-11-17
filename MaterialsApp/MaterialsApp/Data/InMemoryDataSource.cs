@@ -9,10 +9,7 @@ namespace MaterialsApp.Data
 {
     public class InMemoryDataSource : IDataSource
     {
-        private List<User> Users { get; set; }
-
-   
-        
+        private List<User> Users { get; set; }     
         public InMemoryDataSource()
         {
             Users = new List<User>()
@@ -35,7 +32,6 @@ namespace MaterialsApp.Data
                 }
             };
         }
-
         public User GetUser(User user)
         {
             return user;

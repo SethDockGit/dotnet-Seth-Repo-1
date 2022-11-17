@@ -21,10 +21,9 @@ namespace MaterialsApp
 
             IDataSource dataSource = ConfigureDataMode(dataMode);
 
-            Application application = new Application(dataSource);
-            application.Run();
+            IO io = new IO(dataSource);
+            io.Run();
         }
-
         static IDataSource ConfigureDataMode(string mode)
         {
             switch(mode)
@@ -36,6 +35,11 @@ namespace MaterialsApp
                 default:
                     throw new Exception("Data mode could not be configured");
             }
+        }
+        public static IConfiguration GetConfig()
+        {
+            return new ConfigurationBuilder().AddJsonFile
+            ("appsettings.json", true, true).Build();
         }
     }
 }
