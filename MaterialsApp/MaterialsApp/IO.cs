@@ -88,22 +88,27 @@ namespace MaterialsApp
             {
                 ResourceType resource = GetResourceType();
 
-                //at this point it still asks how much invalid you want to deposit.
-                int depositAmount = GetIntFromUser($"How much {resource} would you like to deposit?\n");
-
-                WorkflowResponse response = Manager.DepositResource(user, resource, depositAmount);
-
-                //even though this if/else statement is technically unnecessary, I am leaving it because
-                //it is intuitive/user friendly and can be amended with other code.
-                if (!response.Success)
+                if (resource == ResourceType.Invalid)
                 {
-                    Console.WriteLine(response.Message);
+                    Console.WriteLine("Error: resource type selection was not valid. Press any key to return to the main menu... ");
                     Console.ReadKey();
                 }
                 else
                 {
-                    Console.WriteLine(response.Message);
-                    Console.ReadKey();
+                    int depositAmount = GetIntFromUser($"How much {resource} would you like to deposit?\n");
+
+                    WorkflowResponse response = Manager.DepositResource(user, resource, depositAmount);
+
+                    if (!response.Success)
+                    {
+                        Console.WriteLine(response.Message);
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        Console.WriteLine(response.Message);
+                        Console.ReadKey();
+                    }
                 }
             }
         }
@@ -119,19 +124,28 @@ namespace MaterialsApp
             else
             {
                 ResourceType resource = GetResourceType();
-                int withdrawAmount = GetIntFromUser($"How much {resource} would you like to withdraw?\n");
 
-                WorkflowResponse response = Manager.WithdrawResource(user, resource, withdrawAmount);
-
-                if (!response.Success)
+                if (resource == ResourceType.Invalid)
                 {
-                    Console.WriteLine(response.Message);
+                    Console.WriteLine("Error: resource type selection was not valid. Press any key to return to the main menu... ");
                     Console.ReadKey();
                 }
                 else
                 {
-                    Console.WriteLine(response.Message);
-                    Console.ReadKey();
+                    int withdrawAmount = GetIntFromUser($"How much {resource} would you like to withdraw?\n");
+
+                    WorkflowResponse response = Manager.WithdrawResource(user, resource, withdrawAmount);
+
+                    if (!response.Success)
+                    {
+                        Console.WriteLine(response.Message);
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        Console.WriteLine(response.Message);
+                        Console.ReadKey();
+                    }
                 }
             }
         }

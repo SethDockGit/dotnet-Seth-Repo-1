@@ -115,4 +115,4 @@ C:\repos\Seth repo share\dotnet-Seth-Repo-1\MaterialsApp\Tests\bin\Debug\netcore
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\MaterialsApp\Tests\bin\Debug\netcoreapp3.1\System.Runtime.CompilerServices.Unsafe.dll
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\MaterialsApp\Tests\bin\Debug\netcoreapp3.1\System.Text.Encodings.Web.dll
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\MaterialsApp\Tests\bin\Debug\netcoreapp3.1\System.Text.Json.dll
-C:\repos\Seth repo share\dotnet-Seth-Repo-1\MaterialsApp\Tests\bin\Debug\netcoreapp3.1\appsetttings.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\MaterialsApp\Tests\bin\Debug\netcoreapp3.1\appsettings.json

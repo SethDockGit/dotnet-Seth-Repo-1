@@ -9,7 +9,7 @@ namespace MaterialsApp.Data
 {
     public class InMemoryDataSource : IDataSource
     {
-        private List<User> Users { get; set; }     
+        public List<User> Users { get; set; }     
         public InMemoryDataSource()
         {
             Users = new List<User>()
@@ -17,10 +17,10 @@ namespace MaterialsApp.Data
                 new User()
                 {
                     Username = "Timmy",
-                    WoodCount = 0,
-                    StoneCount = 0,
-                    IronCount = 0,
-                    GoldCount = 0
+                    WoodCount = 1000,
+                    StoneCount = 1000,
+                    IronCount = 1000,
+                    GoldCount = 1000
                 },
                 new User()
                 {

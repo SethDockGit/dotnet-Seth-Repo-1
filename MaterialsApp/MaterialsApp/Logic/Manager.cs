@@ -7,7 +7,7 @@ using System.Text;
 
 namespace MaterialsApp.Logic
 {
-    class Manager
+    public class Manager
     {
         private IDataSource IDataSource { get; set; }
         public Manager(IDataSource dataSource)
@@ -36,13 +36,9 @@ namespace MaterialsApp.Logic
         public WorkflowResponse DepositResource(User user, ResourceType resource, int depositAmount)
         {
             WorkflowResponse response = new WorkflowResponse();
+            response.User = user;
 
-            if (resource == ResourceType.Invalid)
-            {
-                response.Success = false;
-                response.Message = $"Error: resource type selection was not valid. Press any key to return to the main menu... ";
-            }
-            else if (depositAmount <= 0)
+            if (depositAmount <= 0)
             {
                 response.Success = false;
                 response.Message = "Error: Deposit amount must be an integer greater than 0. Press any key to return to the main menu.";
@@ -58,13 +54,9 @@ namespace MaterialsApp.Logic
         public WorkflowResponse WithdrawResource(User user, ResourceType resource, int withdrawAmount)
         {
             WorkflowResponse response = new WorkflowResponse();
+            response.User = user;
 
-            if (resource == ResourceType.Invalid)
-            {
-                response.Success = false;
-                response.Message = $"Error: resource type selection was not valid. Press any key to return to the main menu... ";
-            }
-            else if (withdrawAmount <= 0)
+            if (withdrawAmount <= 0)
             {
                 response.Success = false;
                 response.Message = "Error: Withdrawal amount must be an integer greater than 0. Press any key to return to the main menu.";
@@ -78,7 +70,7 @@ namespace MaterialsApp.Logic
             {
                 int newAmount = RouteWithdrawal(user, resource, withdrawAmount);
                 response.Success = true;
-                response.Message = $"Withdrawal successful.{withdrawAmount} added to {resource}.\\n\\nNew balance: {newAmount}\n\n. Press any key to return to the main menu.";
+                response.Message = $"\nWithdrawal successful. {withdrawAmount} added to {resource}.\n\nNew balance: {newAmount}\n\n. Press any key to return to the main menu.";
             }
             return response;
         }
@@ -108,7 +100,7 @@ namespace MaterialsApp.Logic
             }
             return newAmount;
         }
-        private int RouteDeposit(User user, ResourceType resource, int amount)
+        public int RouteDeposit(User user, ResourceType resource, int amount)
         {
             int newAmount;
             switch (resource)

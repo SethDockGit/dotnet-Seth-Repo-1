@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MaterialsApp.Data
 {
-    interface IDataSource
+    public interface IDataSource
     {
         public User GetUser(User user);
         public User Authenticate(string username);
