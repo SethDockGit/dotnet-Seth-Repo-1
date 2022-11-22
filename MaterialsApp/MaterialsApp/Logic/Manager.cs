@@ -16,39 +16,58 @@ namespace MaterialsApp.Logic
         }
         public WorkflowResponse CheckResources(string username)
         {
-            User user = IDataSource.Authenticate(username);
             WorkflowResponse response = new WorkflowResponse();
-
-            if (user != null)
+            try
             {
-                User userToCheck = IDataSource.GetUser(user);
+                User user = IDataSource.Authenticate(username);
 
-                response.Success = true;
-                response.User = userToCheck;
+                if (user != null)
+                {
+                    User userToCheck = IDataSource.GetUser(user);
+
+                    response.Success = true;
+                    response.User = userToCheck;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = $"Error: User {username} was not found. Press any key to return to the main menu.";
+                }
             }
-            else
+            catch(Exception ex)
             {
                 response.Success = false;
-                response.Message = $"Error: User {username} was not found. Press any key to return to the main menu.";
+                response.Message = ex.Message;
             }
+            
             return response;
+
         }
         public WorkflowResponse DepositResource(User user, ResourceType resource, int depositAmount)
         {
             WorkflowResponse response = new WorkflowResponse();
             response.User = user;
 
-            if (depositAmount <= 0)
+            try
+            {
+                if (depositAmount <= 0)
+                {
+                    response.Success = false;
+                    response.Message = "Error: Deposit amount must be an integer greater than 0. Press any key to return to the main menu.";
+                }
+                else
+                {
+                    int newAmount = RouteDeposit(user, resource, depositAmount);
+                    response.Success = true;
+                    response.Message = $"\nDeposit successful. {depositAmount} added to {resource}.\n\nNew balance: {newAmount}\n\nPress any key to return to the main menu.";
+                }
+            }
+            catch(Exception ex)
             {
                 response.Success = false;
-                response.Message = "Error: Deposit amount must be an integer greater than 0. Press any key to return to the main menu.";
+                response.Message = ex.Message;
             }
-            else
-            {
-                int newAmount = RouteDeposit(user, resource, depositAmount);
-                response.Success = true;
-                response.Message = $"\nDeposit successful. {depositAmount} added to {resource}.\n\nNew balance: {newAmount}\n\nPress any key to return to the main menu.";
-            }
+
             return response;
         }
         public WorkflowResponse WithdrawResource(User user, ResourceType resource, int withdrawAmount)
@@ -56,22 +75,31 @@ namespace MaterialsApp.Logic
             WorkflowResponse response = new WorkflowResponse();
             response.User = user;
 
-            if (withdrawAmount <= 0)
+            try
+            {
+                if (withdrawAmount <= 0)
+                {
+                    response.Success = false;
+                    response.Message = "Error: Withdrawal amount must be an integer greater than 0. Press any key to return to the main menu.";
+                }
+                else if (GetCurrentUserResourceAmount(resource, user) < withdrawAmount)
+                {
+                    response.Success = false;
+                    response.Message = $"Error: insufficient balance of {resource}. Press any key to return to the main menu.";
+                }
+                else
+                {
+                    int newAmount = RouteWithdrawal(user, resource, withdrawAmount);
+                    response.Success = true;
+                    response.Message = $"\nWithdrawal successful. {withdrawAmount} added to {resource}.\n\nNew balance: {newAmount}\n\n. Press any key to return to the main menu.";
+                }
+            }
+            catch(Exception ex)
             {
                 response.Success = false;
-                response.Message = "Error: Withdrawal amount must be an integer greater than 0. Press any key to return to the main menu.";
+                response.Message = ex.Message;
             }
-            else if (GetCurrentUserResourceAmount(resource, user) < withdrawAmount)
-            {
-                response.Success = false;
-                response.Message = $"Error: insufficient balance of {resource}. Press any key to return to the main menu.";
-            }
-            else
-            {
-                int newAmount = RouteWithdrawal(user, resource, withdrawAmount);
-                response.Success = true;
-                response.Message = $"\nWithdrawal successful. {withdrawAmount} added to {resource}.\n\nNew balance: {newAmount}\n\n. Press any key to return to the main menu.";
-            }
+
             return response;
         }
         private int RouteWithdrawal(User user, ResourceType resource, int amount)

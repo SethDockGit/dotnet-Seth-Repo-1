@@ -1,0 +1,14 @@
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\bin\Debug\netcoreapp3.1\Game_of_Life.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\bin\Debug\netcoreapp3.1\Game_of_Life.deps.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\bin\Debug\netcoreapp3.1\Game_of_Life.runtimeconfig.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\bin\Debug\netcoreapp3.1\Game_of_Life.runtimeconfig.dev.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\bin\Debug\netcoreapp3.1\Game_of_Life.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\bin\Debug\netcoreapp3.1\Game_of_Life.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\obj\Debug\netcoreapp3.1\Game_of_Life.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\obj\Debug\netcoreapp3.1\Game_of_Life.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\obj\Debug\netcoreapp3.1\Game_of_Life.AssemblyInfoInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\obj\Debug\netcoreapp3.1\Game_of_Life.AssemblyInfo.cs
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\obj\Debug\netcoreapp3.1\Game_of_Life.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\obj\Debug\netcoreapp3.1\Game_of_Life.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\obj\Debug\netcoreapp3.1\Game_of_Life.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Game_of_Life\Game_of_Life\obj\Debug\netcoreapp3.1\Game_of_Life.genruntimeconfig.cache
