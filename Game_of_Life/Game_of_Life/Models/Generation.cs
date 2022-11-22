@@ -22,7 +22,7 @@ namespace Game_of_Life.Models
         }
 
 
-        //I BELIEVE ALL THAT'S MISSING HERE IS THE LOGIC FOR CREATING A NEW CELL, WHICH IS NOT GOING TO BE EASY I DONT THINK
+        //I BELIEVE ALL THAT'S MISSING HERE IS THE LOGIC FOR CREATING A NEW CELL BASED ON 3 LIVE NEIGHBORS, WHICH IS NOT GOING TO BE EASY I DONT THINK
 
         //Based on my logic, I don't see why the cells with 1 or less neighbor are not dying out.
 

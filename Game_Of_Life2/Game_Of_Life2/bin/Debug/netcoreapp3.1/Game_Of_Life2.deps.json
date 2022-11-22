@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "Game_Of_Life2/1.0.0": {
+        "runtime": {
+          "Game_Of_Life2.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Game_Of_Life2/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
