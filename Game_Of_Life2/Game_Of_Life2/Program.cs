@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 using System.Threading;
 
 namespace Game_Of_Life2
@@ -7,13 +8,8 @@ namespace Game_Of_Life2
     {
         static void Main(string[] args)
         {
-            bool[,] cells = new bool[10, 10];
 
-
-            cells[3, 7] = true;
-            cells[3, 8] = true;
-            cells[3, 9] = true;
-
+            bool[,] cells = Random();
 
             while (true)
             {
@@ -22,7 +18,6 @@ namespace Game_Of_Life2
                 cells = GetNextState(cells);
             }
         }
-
         private static void PrintGrid(bool[,] cells)
         {
             Console.Clear();
@@ -36,7 +31,7 @@ namespace Game_Of_Life2
                     }
                     else
                     {
-                        Console.Write("  ");
+                        Console.Write(". ");
                     }
                 }
                 Console.WriteLine();
@@ -79,14 +74,14 @@ namespace Game_Of_Life2
                                 neighbors++;
                             }
                         }
-                        if (x > previousState.GetLength(0) && y > previousState.GetLength(1) -1)
+                        if (x < previousState.GetLength(0) -1 && y < previousState.GetLength(1) -1)
                         {
                             if (previousState[x + 1, y + 1])
                             {
                                 neighbors++;
                             }
                         }
-                        if (y > previousState.GetLength(1) -1)
+                        if (y < previousState.GetLength(1) -1)
                         {
                             if (previousState[x, y + 1])
                             {
@@ -144,14 +139,14 @@ namespace Game_Of_Life2
                                 neighbors++;
                             }
                         }
-                        if (x > previousState.GetLength(0) -1 && y > previousState.GetLength(1) -1)
+                        if (x < previousState.GetLength(0) -1 && y < previousState.GetLength(1) -1)
                         {
                             if (previousState[x + 1, y + 1])
                             {
                                 neighbors++;
                             }
                         }
-                        if (y > previousState.GetLength(1) -1)
+                        if (y < previousState.GetLength(1) -1)
                         {
                             if (previousState[x, y + 1])
                             {
@@ -187,6 +182,45 @@ namespace Game_Of_Life2
                 }
             }
             return currentState;
+        }
+        private static bool[,] StillLife()
+        {
+            bool[,] cells = new bool[10, 10];
+
+
+            cells[3, 7] = true;
+            cells[3, 8] = true;
+            cells[3, 9] = true;
+            cells[6, 7] = true;
+            cells[6, 8] = true;
+            cells[6, 9] = true;
+
+            return cells;
+
+        }
+        private static bool[,] Random()
+        {
+            Random rng = new Random();
+
+            bool[,] cells = new bool[30, 30];
+
+            for (int y = 0; y < cells.GetLength(1); y++)
+            {
+                for (int x = 0; x < cells.GetLength(0); x++)
+                {
+                    int randomInt = rng.Next(0, 2);
+
+                    if(randomInt == 0)
+                    {
+                        cells[x, y] = true;
+                    }
+                    else
+                    {
+                        cells[x, y] = false;
+                    }
+                }
+            }
+            return cells;
         }
     }
 }
