@@ -15,6 +15,8 @@ namespace Game_Of_Life2
 
             Run(stillLife);
         }
+
+        //re-write... set cursor position at the point of change and have it draw the new data?
         private static void Run(bool[,] cells)
         {
             while (true)
@@ -27,21 +29,57 @@ namespace Game_Of_Life2
         private static void PrintGrid(bool[,] cells)
         {
             Console.Clear();
+
+            for(int y = 0; y <= cells.GetLength(1) +1; y++)
+            {
+                Console.Write("--");
+            }
+            Console.WriteLine();
+
             for(int y = 0; y < cells.GetLength(1); y++)
             {
                 for(int x = 0; x < cells.GetLength(0); x++)
                 {
-                    if (cells[x,y] == true)
+                    if (cells[x, y] == true)
                     {
-                        Console.Write("* ");
+                        if (x == 0)
+                        {
+                            Console.Write($"| {Settings.LiveCellCharacter}");
+                        }
+                        else if (x == cells.GetLength(0) -1)
+                        {
+                            Console.Write($"{Settings.LiveCellCharacter} |");
+                        }
+                        else
+                        {
+                            Console.Write($"{Settings.LiveCellCharacter}");
+                        }
                     }
                     else
                     {
-                        Console.Write(". ");
+                        if (x == 0)
+                        {
+                            Console.Write($"| {Settings.DeadCellCharacter}");
+                        }
+                        else if (x == cells.GetLength(0) -1)
+                        {
+                            Console.Write($"{Settings.DeadCellCharacter} |");
+                        }
+                        else
+                        {
+                            Console.Write($"{Settings.DeadCellCharacter}");
+                        }
                     }
                 }
                 Console.WriteLine();
             }
+
+            for (int y = 0; y <= cells.GetLength(1) +1; y++)
+            {
+                Console.Write("--");
+            }
+            Console.WriteLine();
+
             Console.ReadKey();
         }
         private static bool[,] GetNextState(bool[,] previousState)
