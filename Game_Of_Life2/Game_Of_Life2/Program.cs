@@ -8,9 +8,15 @@ namespace Game_Of_Life2
     {
         static void Main(string[] args)
         {
+            var map1 = Random(30, 50, 20);
+            var map2 = Random(15, 20, 30);
+            var map3 = Random(20, 30, 50);
+            var stillLife = StillLife();
 
-            bool[,] cells = Random();
-
+            Run(stillLife);
+        }
+        private static void Run(bool[,] cells)
+        {
             while (true)
             {
                 PrintGrid(cells);
@@ -196,27 +202,26 @@ namespace Game_Of_Life2
             cells[6, 9] = true;
 
             return cells;
-
         }
-        private static bool[,] Random()
+        private static bool[,] Random(int length, int height, int percentChanceToLive)
         {
             Random rng = new Random();
 
-            bool[,] cells = new bool[30, 30];
+            bool[,] cells = new bool[length, height];
 
             for (int y = 0; y < cells.GetLength(1); y++)
             {
                 for (int x = 0; x < cells.GetLength(0); x++)
                 {
-                    int randomInt = rng.Next(0, 2);
+                    int randomInt = rng.Next(0, 100);
 
-                    if(randomInt == 0)
+                    if(randomInt > percentChanceToLive - 1)
                     {
-                        cells[x, y] = true;
+                        cells[x, y] = false;
                     }
                     else
                     {
-                        cells[x, y] = false;
+                        cells[x, y] = true;
                     }
                 }
             }
