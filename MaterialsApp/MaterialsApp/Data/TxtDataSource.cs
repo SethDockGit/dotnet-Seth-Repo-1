@@ -15,10 +15,6 @@ namespace MaterialsApp.Data
 
         private string SaveFile { get; set; }
 
-//here I think I will have a constructor that
-//checks for the txt file, creates it, and populates
-//the user list
-        
         public TxtDataSource()
         {
             SaveFile = @"C:\Data\MaterialsApp\data.txt";

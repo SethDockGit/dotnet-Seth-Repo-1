@@ -1,0 +1,14 @@
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\obj\Debug\netcoreapp3.1\PartOrderingApp.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\obj\Debug\netcoreapp3.1\PartOrderingApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\obj\Debug\netcoreapp3.1\PartOrderingApp.AssemblyInfoInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\obj\Debug\netcoreapp3.1\PartOrderingApp.AssemblyInfo.cs
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\obj\Debug\netcoreapp3.1\PartOrderingApp.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\bin\Debug\netcoreapp3.1\PartOrderingApp.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\bin\Debug\netcoreapp3.1\PartOrderingApp.deps.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\bin\Debug\netcoreapp3.1\PartOrderingApp.runtimeconfig.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\bin\Debug\netcoreapp3.1\PartOrderingApp.runtimeconfig.dev.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\bin\Debug\netcoreapp3.1\PartOrderingApp.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\bin\Debug\netcoreapp3.1\PartOrderingApp.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\obj\Debug\netcoreapp3.1\PartOrderingApp.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\obj\Debug\netcoreapp3.1\PartOrderingApp.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PartOrderingApp\PartOrderingApp\obj\Debug\netcoreapp3.1\PartOrderingApp.genruntimeconfig.cache
