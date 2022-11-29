@@ -5,9 +5,8 @@ using PartOrderingApp.Models;
 
 namespace PartOrderingApp.Data
 {
-    public class UserData
+    public class TestUserData : IUserData
     {
-        public User User { get; set; }
-        public List<Order> Orders { get; set; }
+        public List<User> User { get; set; }
     }
 }

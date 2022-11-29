@@ -8,7 +8,10 @@ namespace PartOrderingApp.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public Category Category { get; set; }
-        public decimal Price { get; set; }
+        public PartCategory Category { get; set; }
+        public decimal Cost { get; set; }
+        public bool IsAvailable { get; set; }
+
+        public int PlaceInOrder { get; set; }
     }
 }

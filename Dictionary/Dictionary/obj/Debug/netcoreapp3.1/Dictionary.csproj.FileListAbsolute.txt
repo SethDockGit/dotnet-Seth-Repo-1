@@ -1,0 +1,14 @@
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\bin\Debug\netcoreapp3.1\Dictionary.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\bin\Debug\netcoreapp3.1\Dictionary.deps.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\bin\Debug\netcoreapp3.1\Dictionary.runtimeconfig.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\bin\Debug\netcoreapp3.1\Dictionary.runtimeconfig.dev.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\bin\Debug\netcoreapp3.1\Dictionary.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\bin\Debug\netcoreapp3.1\Dictionary.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\obj\Debug\netcoreapp3.1\Dictionary.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\obj\Debug\netcoreapp3.1\Dictionary.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\obj\Debug\netcoreapp3.1\Dictionary.AssemblyInfoInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\obj\Debug\netcoreapp3.1\Dictionary.AssemblyInfo.cs
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\obj\Debug\netcoreapp3.1\Dictionary.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\obj\Debug\netcoreapp3.1\Dictionary.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\obj\Debug\netcoreapp3.1\Dictionary.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Dictionary\Dictionary\obj\Debug\netcoreapp3.1\Dictionary.genruntimeconfig.cache

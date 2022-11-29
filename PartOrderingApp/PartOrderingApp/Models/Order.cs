@@ -4,15 +4,14 @@ using System.Text;
 
 namespace PartOrderingApp.Models
 {
-    public interface Order
+    public class Order
     {
-        public Cart Cart { get; set; }
 
-        public string Date { get; set; }
+        public DateTime DateTime { get; set; } //date time should be set with the aDate.Now function or whatever it is. To be stored as a datetime and displayed as a string (tostring) when accessed.
 
-        public int ID { get; set; }
+        public List<Part> Parts { get; set; } //what if the order has more than one of same part?
 
-        public User User { get; set; }
+        public User User { get; set; } //is this an error?
     }
 
     

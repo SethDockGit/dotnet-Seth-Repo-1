@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PartOrderingApp.Models
 {
-    public enum Category
+    public enum PartCategory
     {
         GPU,
         CPU,

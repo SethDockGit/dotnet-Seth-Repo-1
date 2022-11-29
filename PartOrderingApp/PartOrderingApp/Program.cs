@@ -1,4 +1,5 @@
 ﻿using System;
+using PartOrderingApp.Data;
 using PartOrderingApp.UI;
 
 
@@ -8,7 +9,11 @@ namespace PartOrderingApp
     {
         static void Main(string[] args)
         {
-            IO io = new IO();
+            TestInventory inventory = new TestInventory();
+
+            TestUserData userData = new TestUserData();
+
+            IO io = new IO(inventory, userData);
 
             io.MainMenu();
         }
