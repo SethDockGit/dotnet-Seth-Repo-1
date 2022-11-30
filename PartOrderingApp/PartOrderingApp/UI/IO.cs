@@ -21,7 +21,6 @@ namespace PartOrderingApp.UI
         {
             Manager = new Manager(inventory, userData);
         }
-
         public void MainMenu()
         {
             while (!ExitMain)
@@ -54,7 +53,7 @@ namespace PartOrderingApp.UI
             Console.Clear();
 
             Console.WriteLine($"\n\n Hello {user.UserName}. Welcome to your account. What would you like to do?\n\n");
-            Console.WriteLine("1. Browse the store inventory.\n\n2. See my pending orders.\n\nOr Press esc to return to the main menu.");  //there will be an option to edit or delete upon viewing pending orders.
+            Console.WriteLine("1. Browse the store inventory.\n\n2. See my past orders.\n\nOr Press esc to return to the main menu.");  //there will be an option to edit or delete upon viewing pending orders.
 
             var cki = Console.ReadKey();
 
@@ -65,7 +64,7 @@ namespace PartOrderingApp.UI
                     break;
 
                 case ConsoleKey.D2:
-                    ViewPendingOrdersWorkFlow();
+                    ViewPendingOrdersWorkFlow(user);
                     break;
 
                 case ConsoleKey.Escape:
@@ -80,9 +79,9 @@ namespace PartOrderingApp.UI
         }
         private void BrowseInventoryWorkFlow(User user)
         {
-            IInventory inventory = Manager.GetInventory();
+            IInventory inventory = Manager.GetInventory(user);
 
-            DisplayInventory(inventory, user);
+            DisplayInventory(inventory);
 
             Console.WriteLine("Would you like to make an order? (y or n)");
 
@@ -103,16 +102,14 @@ namespace PartOrderingApp.UI
                     break;
             }
         }
-        private void DisplayInventory(IInventory inventory, User user)
+        private void DisplayInventory(IInventory inventory)
         {
             Console.Clear();
 
+            List<Part> sorted = inventory.Parts.OrderBy(p => p.Category).ThenBy(p => p.Name).ToList();
+
             foreach (Part part in inventory.Parts)
             {
-                if (user.Category == UserCategory.Premium)
-                {
-                    part.Cost = part.Cost * .9m;
-                }
                 Console.WriteLine($"{part.Id}. {part.Name}\nCost: {part.Cost}");
                 Console.WriteLine($"Number in stock: {inventory.Inventory[part.Id]}\n\n");
 
@@ -128,70 +125,171 @@ namespace PartOrderingApp.UI
         }
         private void CreateNewOrderWorkFlow(IInventory inventory, User user)
         {
-
-            //at this point the inventory is displayed. I want to give them the option to add an item. 
-            //Once they add an item, display the cart, and give them the chance to add another or delete, or check out
-            //once the checkout, run check out method to confirm total price.
+            CheckOutOrCancel = false;
 
             Order order = new Order();
 
             order.Parts = new List<Part>();
 
-            WorkflowResponse response = AddPartToOrderWorkflow(inventory, user, order);
+            AddPartToOrderWorkflow(inventory, order);
 
             while (!CheckOutOrCancel)
             {
                 Console.WriteLine("\n\nOptions: \n\n1. Add another item to cart.\n\n2. Delete an item from cart.\n\n3. Check out.\n\n4. Cancel order and return to the menu.");
-
-                //both checkout and cancel should ask if they are sure.
 
                 var cki = Console.ReadKey();
 
                 switch (cki.Key)
                 {
                     case ConsoleKey.D1:
-                        WorkflowResponse workflowResponse = AddPartToOrderWorkflow(inventory, user, order);
+                        AddPartToOrderWorkflow(inventory, order);
                         break;
 
                     case ConsoleKey.D2:
-                        workflowResponse = DeletePartFromOrderWorkflow(inventory, user, order);
+                        bool success = CheckCartForZero(order);
+                        if (success)
+                        {
+                            DeletePartFromOrderWorkflow(inventory, order);
+                        }
                         break;
 
                     case ConsoleKey.D3:
-                        CheckOutWorflow();
-                        CheckOutOrCancel = true;
+                        success = CheckCartForZero(order);
+                        if (success)
+                        {
+                            success = CheckOutWorkflow(inventory, user, order);
+                            if(success)
+                            {
+                                CheckOutOrCancel = true;
+                            }
+                        }                                              
                         break;
 
                     case ConsoleKey.D4:
-                        CancelOrderWorkflow();
+                        success = CheckCartForZero(order);
+                        if (success)
+                        {
+                            success = CancelOrderWorkflow(inventory, order);
+                            if(success)
+                            {
+                                CheckOutOrCancel = true;
+                            }
+                        }
                         break;
 
                     default:
-                        Console.WriteLine("Didn't wanna end up here did ya?");
+                        Console.WriteLine("\n\nInvalid input. Press any key to try again.");
                         Console.ReadKey();
+                        Console.Clear();
+                        DisplayInventory(inventory);
+                        DisplayCart(order);
                         break;
                 }
             }
         }
-        private void CancelOrderWorkflow()
+        private bool CheckCartForZero(Order order)
         {
-            //Ask if they are sure they'd like to cancel, then do your thing.
+            bool success = true;
+
+            if (order.Parts.Count == 0)
+            {
+                success = false;
+            }
+
+            if (success == false)
+            {
+                Console.WriteLine("Sorry, your cart is empty. Press any key to try again.");
+                Console.ReadKey();
+            }
+            return success;
         }
-        private void CheckOutWorflow()
+        private bool CancelOrderWorkflow(IInventory inventory, Order order)
         {
-            //show the total of their cart. Ask if they are sure they'd like to check out. Then do your thing
+            Console.WriteLine("\n\nAre you sure you'd like to cancel your order? (y or n)");
+
+            var cki = Console.ReadKey();
+
+            bool success = false;
+
+            switch (cki.Key)
+            {
+                case ConsoleKey.Y:
+                    Manager.CancelOrder(order);
+                    Console.WriteLine("\n\nOrder canceled. Press any key to return to the menu.");
+                    Console.ReadKey();
+                    success = true;
+                    break;
+
+                case ConsoleKey.N:
+                    break;
+
+                default:
+                    Console.WriteLine("\n\nSorry, that was not a valid input. Press any key to return to your cart.");
+                    Console.ReadKey();
+                    break;
+            }
+
+            DisplayInventory(inventory);
+
+            DisplayCart(order);
+
+            return success;
         }
-        private WorkflowResponse DeletePartFromOrderWorkflow(IInventory inventory, User user, Order order)
+        private bool CheckOutWorkflow(IInventory inventory, User user, Order order)
         {
-            Console.WriteLine("\n\nEnter the number of the item to delete from your order, then press enter.");
+            WorkflowResponse response = Manager.GetOrderTotal(user, order);
+
+            Console.WriteLine($"\n\n\n{response.Message}\n\nOrder total: {response.OrderTotal}");
+            Console.WriteLine("\n\nAre you sure you'd like to confirm your order (y or n)");
+
+            bool success = false;   
+
+            var cki = Console.ReadKey();
+
+            switch (cki.Key)
+            {
+                case ConsoleKey.Y:
+                    response = Manager.ExecuteOrder(user, order);
+
+                    Console.WriteLine($"{response.Message}");
+                    Console.ReadKey();
+                    success = true;
+                    break;
+
+                case ConsoleKey.N:
+                    Console.WriteLine("\n\nCheckout not completed. Press any key to return to your cart.");
+                    Console.ReadKey();
+                    Console.Clear();
+                    DisplayInventory(inventory);
+                    DisplayCart(order);
+                    break;
+
+                default:
+                    Console.WriteLine("\n\nSorry, that was not a valid input. Press any key to return to your cart.");
+                    Console.ReadKey();
+                    Console.Clear();
+                    DisplayInventory(inventory);
+                    DisplayCart(order);
+                    break;
+            }
+            return success;
+        }
+        private void DeletePartFromOrderWorkflow(IInventory inventory, Order order)
+        {
+            Console.WriteLine("\n\nEnter the number of the item to delete from the cart, then press enter.");
 
             string input = Console.ReadLine();
 
-            WorkflowResponse response = new WorkflowResponse();
+            WorkflowResponse response = Manager.DeletePartFromOrder(input, order);
 
-            return response;
+            Console.WriteLine($"\n{response.Message}. Press any key to continue.");
+            Console.ReadKey();
+
+            DisplayInventory(inventory);
+
+            DisplayCart(response.Order);
         }
-        private WorkflowResponse AddPartToOrderWorkflow(IInventory inventory, User user, Order order)
+        private void AddPartToOrderWorkflow(IInventory inventory, Order order)
         {
             Console.WriteLine("\n\nEnter the number of the item to add to your order, then press enter.");
 
@@ -202,11 +300,9 @@ namespace PartOrderingApp.UI
             Console.WriteLine($"\n{response.Message}. Press any key to continue.");
             Console.ReadKey();
 
-            DisplayInventory(inventory, user); //refreshes inventory with updated numbers
+            DisplayInventory(inventory); 
 
             DisplayCart(response.Order);
-
-            return response;
         }
         private void DisplayCart(Order order)
         {
@@ -214,18 +310,65 @@ namespace PartOrderingApp.UI
 
             if(order.Parts.Count == 0)
             {
-                Console.WriteLine("Your cart is currently empty");
+                Console.WriteLine("Your cart is currently empty"); //will this ever happen?
             }
+
+            int scale = 0;
 
             foreach(Part part in order.Parts)
             {
-                Console.WriteLine($"{part.PlaceInOrder}. {part.Name} -- Cost: {part.Cost}"); //how do I shave number to hundredths place?
+                scale++;
+                part.CartID = scale;
+                Console.WriteLine($"{part.CartID}. {part.Name} -- Cost: {part.Cost}"); //how do I shave number to hundredths place?
             }
         }
-        private void ViewPendingOrdersWorkFlow()
+        private void ViewPendingOrdersWorkFlow(User user)
         {
-            //this will get a list of orders by date and orderID
-        }
+            //datetime will be printed here as well...
 
+            //orders will have to show whether they are pending or not.
+
+            Console.Clear();
+
+            Console.WriteLine("        ---- Your orders ----\n\n");
+
+            if (user.Orders.Count == 0)
+            {
+                Console.WriteLine("Looks like you don't have any orders yet. Press any key to return to the menu.");
+                Console.ReadKey();
+            }
+            else
+            {
+                foreach (Order order in user.Orders)
+                {
+                    Console.WriteLine($"Bogus datetime.\nOrder total: {order.Total}\n\nParts:\n");
+
+                    foreach (Part part in order.Parts)
+                    {
+                        Console.WriteLine($"Category: {part.Category}\n{part.Name} Cost: {part.Cost}");
+                    }
+                }
+
+                Console.WriteLine("\n\nOptions:\n\n1. Edit a pending order\n\n2. Cancel a pending order\n\n3. Esc: Return to menu.");
+
+                var cki = Console.ReadKey();
+
+                switch (cki.Key)
+                {
+                    case ConsoleKey.Y:
+                        EditOrderWorkFlow();
+                        break;
+
+                    //cancel should be easy enough
+
+                    case ConsoleKey.Escape:
+                        break;
+                }
+            }
+        }
+        private void EditOrderWorkFlow()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

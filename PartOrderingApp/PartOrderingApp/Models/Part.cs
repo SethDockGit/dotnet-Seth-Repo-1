@@ -11,7 +11,7 @@ namespace PartOrderingApp.Models
         public PartCategory Category { get; set; }
         public decimal Cost { get; set; }
         public bool IsAvailable { get; set; }
+        public int CartID { get; set; }
 
-        public int PlaceInOrder { get; set; }
     }
 }
