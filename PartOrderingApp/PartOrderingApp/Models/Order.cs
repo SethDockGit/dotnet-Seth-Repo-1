@@ -11,12 +11,12 @@ namespace PartOrderingApp.Models
 
         public List<Part> Parts { get; set; } 
 
-        public int NumOfParts { get; set; }
         public decimal Total { get; set; }  
 
-        public Dictionary<Part, int> Dictionary = new Dictionary<Part, int>();
+        public bool PendingStatus { get; set; } = true; //FIX THIS ONCE DATA HAS BEEN SETUP!!!
+        public int OrderID { get; set; }
 
-        public bool PendingStatus { get; set; }
+        public bool ObsoleteID { get; set; }
     }
 
     

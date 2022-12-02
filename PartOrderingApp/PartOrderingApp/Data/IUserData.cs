@@ -7,6 +7,10 @@ namespace PartOrderingApp.Data
 {
     public interface IUserData
     {
-        public List<User> User { get; set; }
+        public List<User> Users { get; set; }
+
+
+        public User GetUser(string username);
     }
+
 }

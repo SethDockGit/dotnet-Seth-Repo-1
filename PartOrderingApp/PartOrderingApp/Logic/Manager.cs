@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using PartOrderingApp.Data;
 using PartOrderingApp.Models;
 
@@ -10,20 +11,30 @@ namespace PartOrderingApp.Logic
     public class Manager
     {
         private IInventory Inventory;
-        private IUserData IUserData;
+        private IUserData IUserData; //does this belong here? Address once userdata live is configured.
+        //I could use the main menu to find a user in program, then pass it in and set the user as a property here.
+
         public Manager(IInventory inventory, IUserData userData)
         {
             IUserData = userData;
-            Inventory = inventory; 
+            Inventory = inventory;
+
+            foreach (Part part in inventory.Parts)
+            {
+                if (inventory.Inventory[part.Id] < 1)
+                {
+                    part.IsAvailable = false;
+                }
+                else
+                {
+                    part.IsAvailable = true;
+                }
+            }
         }
         public User Authenticate(string username)
         {
-            //this method will acess userdata to return a user, and you can delete this temporary user
-            return new User()
-            {
-                UserName = username,
-                Category = UserCategory.Regular,
-            };
+            User user = IUserData.GetUser(username);
+            return user;
         }
         public WorkflowResponse AddPartToOrder(string input, Order order)
         {
@@ -48,13 +59,23 @@ namespace PartOrderingApp.Logic
                 response.Success = false;
                 response.Message = "Sorry, that part is out of stock. Part not added to order";
             }
-            else //do I need a "if success" clause here?
+            else 
             {
-                order.Parts.Add(Inventory.Parts.Single(p => p.Id == choice && p.IsAvailable == true));
-                //should I add "if order.Parts != null just in case?)
+
+                Part newPart = new Part();
+
+                newPart.Cost = Inventory.Parts.Single(p => p.Id == choice).Cost;
+                newPart.Category = Inventory.Parts.Single(p => p.Id == choice).Category;
+                newPart.Name = Inventory.Parts.Single(p => p.Id == choice).Name;
+                newPart.Id = Inventory.Parts.Single(p => p.Id == choice).Id;
+
+                order.Parts.Add(newPart);
+
+                newPart.SerialNumber = order.Parts.Count;
+
                 response.Success = true;
                 response.Message = "Part added successfully.";
-                //Inventory.Inventory[choice]--; 
+
             }
             response.Order = order;
 
@@ -68,21 +89,20 @@ namespace PartOrderingApp.Logic
 
             bool success = int.TryParse(input, out choice);
 
-            var a = 1;
 
             if (!success)
             {
                 response.Success = false;
                 response.Message = "Sorry, that was an invalid input. Part not deleted from order.";
             }
-            else if (choice > order.Parts.Count || choice < 0)
+            else if (!order.Parts.Any(p => choice == p.SerialNumber))
             {
                 response.Success = false;
                 response.Message = "Sorry, input not matched to a part in your order. Part not deleted from order.";
             }
-            else //do all the parts in the order have a place in order still?
+            else 
             {
-                order.Parts.Remove(order.Parts.Single(p => p.CartID == choice));
+                order.Parts.Remove(order.Parts.Single(p => p.SerialNumber == choice));
                 response.Success = true;
                 response.Message = "Part deleted successfully.";
             }
@@ -90,22 +110,32 @@ namespace PartOrderingApp.Logic
 
             return response;
         }
-        public IInventory GetInventory(User user)
+        public IInventory GetInventory()
         {
             return Inventory; 
         }
-        public void CancelOrder(Order order)
+        public void CancelOrder(User user, Order order)
         {
-            order.Parts.Clear();
+
+            if(order.OrderID == 0) //checks for if this is a new or pending order and acts accordingly.
+            {
+                order.Parts.Clear(); 
+            }
+
+            foreach (Order o in user.Orders)
+            {
+                o.ObsoleteID = false; //if they were working on a pending order, this resets
+                                      //the status of the original
+            }
+
         }
         public WorkflowResponse GetOrderTotal(User user, Order order)
         {
             WorkflowResponse response = new WorkflowResponse();
 
-            //the adding logic here is bogus
             foreach (Part part in order.Parts)
             {
-                order.Total = +part.Cost;
+                order.Total += part.Cost;
             }
 
             if(user.Category == UserCategory.Premium)
@@ -120,28 +150,152 @@ namespace PartOrderingApp.Logic
         }
         public WorkflowResponse ExecuteOrder(User user, Order order)
         {
+
             WorkflowResponse response = new WorkflowResponse();
 
-            order.Parts.GroupBy(p => p.Id);
+            bool success = CheckInventory(order, response); //there's a small bug here, where this method is checking
+                                                            //inv before the old order is deleted and new one is made.      
+                                                            //so there's a possibility that a part is declared out of
+                                                            //stock when it actually could be available...
 
-            //am I going to need to make a list of lists here?
+            if (success)
+            {
+                response.Success = true;
+                response.Message = "\n\nOrder confirmation successful. Thank you for your purchase!";
 
+                foreach (Part part in order.Parts)
+                {
+                    Inventory.Inventory[part.Id]--;
+                }
+
+                if (user.Orders.Count == 0)
+                {
+                    user.Orders.Add(order);
+                    order.OrderID = 1;
+                    order.DateTime = DateTime.Now;
+                }
+                else
+                {
+                    DeleteObsoleteOrder(user);
+
+                    user.Orders.Add(order);
+                    Order highestID = user.Orders.OrderByDescending(o => o.OrderID).First();
+                    order.OrderID = highestID.OrderID + 1; 
+                    order.DateTime = DateTime.Now;
+                }
+            }
+            else
+            {
+                response.Success = false;
+                response.Message = "\n\nSorry, one of the items in your cart exceeds our number in stock. Please edit your cart and try again.";
+            }
+
+            return response;
+        }
+        private void DeleteObsoleteOrder(User user)
+        {
+            if(user.Orders.Any(o => o.ObsoleteID == true))
+            {
+                Order toDelete = user.Orders.Single(o => o.ObsoleteID == true);
+
+                foreach (Part part in toDelete.Parts)
+                {
+                    Inventory.Inventory[part.Id]++;
+                }
+
+                user.Orders.Remove(toDelete);
+            }
+        }
+        private bool CheckInventory(Order order, WorkflowResponse response)
+        {
+
+            var groupedBy = order.Parts.GroupBy(p => p.Id).ToList();
+
+            bool success = false;
+
+            for(int i = 0; i < groupedBy.Count; i++)
+            {
+                if (groupedBy[i].ToList().Count > Inventory.Inventory[groupedBy[i].First().Id])
+                {
+                    success = false;
+                }
+                else
+                {
+                    success = true;
+                }
+            
+            }
+            return success;
+        }
+        public WorkflowResponse SelectOrder(User user, string input)
+        {
+            int result;
+
+            WorkflowResponse response = new WorkflowResponse();
+
+            Order order = new Order();
+
+            bool success = int.TryParse(input, out result);
+
+            if (!success)
+            {
+                response.Success = false;
+                response.Message = "\nSorry, that was an invalid input. No order selected.";
+            }
+            else if (!user.Orders.Any(o => result == o.OrderID)) 
+            {
+                response.Success = false;
+                response.Message = "\nSorry, input not matched to order ID. No order selected.";
+            }
+            else
+            {
+                response.Success = true;
+                response.Message = "\nOrder selected. Press any key to continue.";
+                order = user.Orders.Single(o => o.OrderID == result);
+            }
+            response.Order = order;
+
+            return response;
+        }
+        public List<Order> GetPendingStatus(User user)
+        {
+            TimeSpan thirtyDays = new TimeSpan(30, 0, 0, 0);
+
+            foreach(Order order in user.Orders)
+            {
+                if(DateTime.Now > order.DateTime.Add(thirtyDays))
+                {
+                    order.PendingStatus = false;
+                }
+                else if(DateTime.Now < order.DateTime.Add(thirtyDays))
+                {
+                    order.PendingStatus = true;
+                }
+                else
+                {
+                    throw new Exception("Error: Order DateTime not set");
+                }
+            }
+            return user.Orders;
+        }
+        public void DeleteOrder(User user, Order order)
+        {
+            user.Orders.Remove(order);
 
             foreach (Part part in order.Parts)
             {
-                Inventory.Inventory[part.Id]--;
+                Inventory.Inventory[part.Id]++;
             }
+        }
+        public Order DuplicateOrderForEditing(Order order) 
+        {
+            Order newOrder = new Order();
 
-            user.Orders.Add(order);
+            order.ObsoleteID = true;
+            newOrder.Parts = order.Parts;
+            newOrder.OrderID = order.OrderID; //this may need to change. Risky having duplicate orders with same ID
 
-            response.Success = true;
-            response.Message = "\n\nOrder confirmation successful. Thank you for your purchase!";
-
-            //response.Success = false;
-            //response.Message = "\n\nSorry, one of the items in your cart exceeds our number in stock. Please edit your cart and try again.";
-            
-            //DATETIME NEEDS TO BE SET HERE AS WELL!!!
-            return response;
+            return newOrder;
         }
     }
 }

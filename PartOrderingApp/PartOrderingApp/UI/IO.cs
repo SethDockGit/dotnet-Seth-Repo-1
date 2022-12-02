@@ -21,6 +21,7 @@ namespace PartOrderingApp.UI
         {
             Manager = new Manager(inventory, userData);
         }
+        //I could use the main menu to find a user in program, then pass it in and set the user as a property here.
         public void MainMenu()
         {
             while (!ExitMain)
@@ -43,8 +44,9 @@ namespace PartOrderingApp.UI
                 }
                 else
                 {
-                    Console.WriteLine("Sorry, user not found. Please press any key to try again.");
+                    Console.WriteLine("\nSorry, user not found. Please press any key to try again.");
                     Console.ReadKey();
+                    Console.Clear();
                 }
             }
         }
@@ -52,7 +54,7 @@ namespace PartOrderingApp.UI
         {
             Console.Clear();
 
-            Console.WriteLine($"\n\n Hello {user.UserName}. Welcome to your account. What would you like to do?\n\n");
+            Console.WriteLine($"\n\n Hello {user.Username}. Welcome to your account. What would you like to do?\n\n");
             Console.WriteLine("1. Browse the store inventory.\n\n2. See my past orders.\n\nOr Press esc to return to the main menu.");  //there will be an option to edit or delete upon viewing pending orders.
 
             var cki = Console.ReadKey();
@@ -79,7 +81,7 @@ namespace PartOrderingApp.UI
         }
         private void BrowseInventoryWorkFlow(User user)
         {
-            IInventory inventory = Manager.GetInventory(user);
+            IInventory inventory = Manager.GetInventory();
 
             DisplayInventory(inventory);
 
@@ -90,7 +92,9 @@ namespace PartOrderingApp.UI
             switch (cki.Key)
             {
                 case ConsoleKey.Y:
-                    CreateNewOrderWorkFlow(inventory, user);
+                    Order order = new Order();
+                    order.Parts = new List<Part>();
+                    EditOrderWorkFlow(inventory, user, order);
                     break;
 
                 case ConsoleKey.N:
@@ -113,7 +117,7 @@ namespace PartOrderingApp.UI
                 Console.WriteLine($"{part.Id}. {part.Name}\nCost: {part.Cost}");
                 Console.WriteLine($"Number in stock: {inventory.Inventory[part.Id]}\n\n");
 
-                if (inventory.Inventory[part.Id] < 1)
+                if (inventory.Inventory[part.Id] < 1) 
                 {
                     part.IsAvailable = false;
                 }
@@ -123,19 +127,13 @@ namespace PartOrderingApp.UI
                 }
             }
         }
-        private void CreateNewOrderWorkFlow(IInventory inventory, User user)
+        private void EditOrderWorkFlow(IInventory inventory, User user, Order order)
         {
             CheckOutOrCancel = false;
 
-            Order order = new Order();
-
-            order.Parts = new List<Part>();
-
-            AddPartToOrderWorkflow(inventory, order);
-
             while (!CheckOutOrCancel)
             {
-                Console.WriteLine("\n\nOptions: \n\n1. Add another item to cart.\n\n2. Delete an item from cart.\n\n3. Check out.\n\n4. Cancel order and return to the menu.");
+                Console.WriteLine("\n\nOptions: \n\n1. Add an item to cart.\n\n2. Delete an item from cart.\n\n3. Check out.\n\n4. Cancel and return to the menu.");
 
                 var cki = Console.ReadKey();
 
@@ -150,6 +148,10 @@ namespace PartOrderingApp.UI
                         if (success)
                         {
                             DeletePartFromOrderWorkflow(inventory, order);
+                        }
+                        else
+                        {
+                            DisplayInventory(inventory); //this display and show cart logic needs to be more consistent
                         }
                         break;
 
@@ -169,7 +171,7 @@ namespace PartOrderingApp.UI
                         success = CheckCartForZero(order);
                         if (success)
                         {
-                            success = CancelOrderWorkflow(inventory, order);
+                            success = CancelOrderWorkflow(user, inventory, order);
                             if(success)
                             {
                                 CheckOutOrCancel = true;
@@ -198,14 +200,15 @@ namespace PartOrderingApp.UI
 
             if (success == false)
             {
-                Console.WriteLine("Sorry, your cart is empty. Press any key to try again.");
+                Console.WriteLine("\n\nSorry, your cart is empty. Press any key to try again.");
                 Console.ReadKey();
             }
             return success;
         }
-        private bool CancelOrderWorkflow(IInventory inventory, Order order)
+        private bool CancelOrderWorkflow(User user, IInventory inventory, Order order)
         {
-            Console.WriteLine("\n\nAre you sure you'd like to cancel your order? (y or n)");
+
+            Console.WriteLine("\n\nAre you sure you'd like to cancel? (y or n)");
 
             var cki = Console.ReadKey();
 
@@ -214,7 +217,7 @@ namespace PartOrderingApp.UI
             switch (cki.Key)
             {
                 case ConsoleKey.Y:
-                    Manager.CancelOrder(order);
+                    Manager.CancelOrder(user, order);
                     Console.WriteLine("\n\nOrder canceled. Press any key to return to the menu.");
                     Console.ReadKey();
                     success = true;
@@ -253,7 +256,15 @@ namespace PartOrderingApp.UI
 
                     Console.WriteLine($"{response.Message}");
                     Console.ReadKey();
-                    success = true;
+                    if (response.Success == true)
+                    {
+                        success = true;
+                    }
+                    else
+                    {
+                        DisplayInventory(inventory);
+                        DisplayCart(order);
+                    }
                     break;
 
                 case ConsoleKey.N:
@@ -276,7 +287,7 @@ namespace PartOrderingApp.UI
         }
         private void DeletePartFromOrderWorkflow(IInventory inventory, Order order)
         {
-            Console.WriteLine("\n\nEnter the number of the item to delete from the cart, then press enter.");
+            Console.WriteLine("\n\nEnter the serial number of the item to delete from the cart, then press enter.");
 
             string input = Console.ReadLine();
 
@@ -313,22 +324,17 @@ namespace PartOrderingApp.UI
                 Console.WriteLine("Your cart is currently empty"); //will this ever happen?
             }
 
-            int scale = 0;
-
             foreach(Part part in order.Parts)
             {
-                scale++;
-                part.CartID = scale;
-                Console.WriteLine($"{part.CartID}. {part.Name} -- Cost: {part.Cost}"); //how do I shave number to hundredths place?
+
+                Console.WriteLine($"{part.SerialNumber}. {part.Name} -- Cost: {part.Cost}"); //how do I shave number to hundredths place?
             }
         }
         private void ViewPendingOrdersWorkFlow(User user)
         {
-            //datetime will be printed here as well...
-
-            //orders will have to show whether they are pending or not.
-
             Console.Clear();
+
+            IInventory inventory = Manager.GetInventory();
 
             Console.WriteLine("        ---- Your orders ----\n\n");
 
@@ -339,36 +345,111 @@ namespace PartOrderingApp.UI
             }
             else
             {
+                user.Orders = Manager.GetPendingStatus(user);
+
                 foreach (Order order in user.Orders)
                 {
-                    Console.WriteLine($"Bogus datetime.\nOrder total: {order.Total}\n\nParts:\n");
-
-                    foreach (Part part in order.Parts)
+                    if (order.PendingStatus == true)
                     {
-                        Console.WriteLine($"Category: {part.Category}\n{part.Name} Cost: {part.Cost}");
+                        Console.WriteLine($"\n\nOrder ID: {order.OrderID}\n{order.DateTime}.\nOrder total: {order.Total}\n\nParts:");
+
+                        foreach (Part part in order.Parts)
+                        {
+                            Console.WriteLine($"Category: {part.Category}\n{part.Name} Cost: {part.Cost}");
+                        }
                     }
                 }
 
-                Console.WriteLine("\n\nOptions:\n\n1. Edit a pending order\n\n2. Cancel a pending order\n\n3. Esc: Return to menu.");
-
-                var cki = Console.ReadKey();
-
-                switch (cki.Key)
-                {
-                    case ConsoleKey.Y:
-                        EditOrderWorkFlow();
-                        break;
-
-                    //cancel should be easy enough
-
-                    case ConsoleKey.Escape:
-                        break;
-                }
+                EditPendingOrderWorkflow(user, inventory);
             }
         }
-        private void EditOrderWorkFlow()
+        private void EditPendingOrderWorkflow(User user, IInventory inventory)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("\nOptions:\n\n1. Edit an order.\n\n2. Cancel an order.\n\nEsc: Return to menu.");
+
+            var cki = Console.ReadKey();
+
+            switch (cki.Key)
+            {
+                case ConsoleKey.D1:
+
+                    WorkflowResponse responseEdit = SelectOrderWorkflow(user); 
+
+                    if (!responseEdit.Success) 
+                    {
+                        Console.WriteLine($"{responseEdit.Message}");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{responseEdit.Message}"); 
+                        Console.ReadKey();
+
+                        Order newOrder = Manager.DuplicateOrderForEditing(responseEdit.Order);
+                        DisplayInventory(inventory);
+                        DisplayCart(newOrder);
+                        EditOrderWorkFlow(inventory, user, newOrder);
+                    }
+                    break;
+
+                case ConsoleKey.D2:
+                    
+                    WorkflowResponse responseDelete = SelectOrderWorkflow(user);
+
+                    if (!responseDelete.Success)
+                    {
+                        Console.WriteLine($"{responseDelete.Message}");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{responseDelete.Message}");
+                        Console.ReadKey();
+                        DeleteOrderWorkflow(user, responseDelete.Order);
+                    }
+                    break;
+
+                case ConsoleKey.Escape:
+                    break;
+
+                default:
+                    Console.WriteLine("\n\nInvalid input. Press any key to return to the menu.");
+                    Console.ReadKey();
+                    break;
+            }
+        }
+        private void DeleteOrderWorkflow(User user, Order order)
+        {
+            Console.WriteLine("\n\nAre you sure you'd like to delete this order? (y or n)");
+
+            var cki = Console.ReadKey();
+
+            switch(cki.Key)
+            {
+                case ConsoleKey.Y:
+                    Manager.DeleteOrder(user, order);
+                    Console.WriteLine("\n\nOrder successfully deleted. Press any key to return to the menu.");
+                    Console.ReadKey();
+                    break;
+
+                case ConsoleKey.N:
+                    break;
+
+                default:
+                    Console.WriteLine("\n\nError: Invalid input. Press any key to return to the menu.");
+                    Console.ReadKey();
+                    break;
+            }
+        }
+        private WorkflowResponse SelectOrderWorkflow(User user)
+        {
+            Console.WriteLine("\n\nSelect an order by entering the Order ID, then hit enter.");
+
+            string input = Console.ReadLine();
+
+            WorkflowResponse response = Manager.SelectOrder(user, input);
+
+            return response;
         }
     }
 }
