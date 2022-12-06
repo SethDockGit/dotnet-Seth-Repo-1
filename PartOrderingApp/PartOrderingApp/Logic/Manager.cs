@@ -165,7 +165,7 @@ namespace PartOrderingApp.Logic
 
                 foreach (Part part in order.Parts)
                 {
-                    Inventory.Inventory[part.Id]--;
+                    Inventory.Inventory[part.Id]--; //should I do this here or in data layer?
                 }
 
                 if (user.Orders.Count == 0)
@@ -182,6 +182,10 @@ namespace PartOrderingApp.Logic
                     Order highestID = user.Orders.OrderByDescending(o => o.OrderID).First();
                     order.OrderID = highestID.OrderID + 1; 
                     order.DateTime = DateTime.Now;
+
+                    IUserData.ReWriteFile();
+                    
+                    Inventory.ReWriteFile();
                 }
             }
             else
@@ -282,10 +286,17 @@ namespace PartOrderingApp.Logic
         {
             user.Orders.Remove(order);
 
+            IUserData.ReWriteFile();
+
+            //data should be adjusted at the data level not the manager!!! But a method is not required and the data source is a property...
+
             foreach (Part part in order.Parts)
             {
                 Inventory.Inventory[part.Id]++;
             }
+
+            Inventory.ReWriteFile();
+            
         }
         public Order DuplicateOrderForEditing(Order order) 
         {

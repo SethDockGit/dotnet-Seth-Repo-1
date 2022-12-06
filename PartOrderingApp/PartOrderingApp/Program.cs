@@ -9,11 +9,16 @@ namespace PartOrderingApp
     {
         static void Main(string[] args)
         {
+
             TestInventory inventory = new TestInventory();
 
-            TestUserData userData = new TestUserData();
+            TxtInventory txtInventory = new TxtInventory();
 
-            IO io = new IO(inventory, userData);
+            TestUserData testUserData = new TestUserData();
+
+            TxtUserData txtUserData = new TxtUserData();
+
+            IO io = new IO(txtInventory, txtUserData);
 
             io.MainMenu();
         }

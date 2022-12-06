@@ -7,10 +7,9 @@ namespace PartOrderingApp.Data
 {
     public interface IUserData
     {
-        public List<User> Users { get; set; }
-
-
+        public User User { get; set; }
         public User GetUser(string username);
+        public void ReWriteFile();
     }
 
 }

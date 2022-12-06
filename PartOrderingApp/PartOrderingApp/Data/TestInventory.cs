@@ -85,5 +85,10 @@ namespace PartOrderingApp.Data
                 {8, 32 }
             };
         }
+
+        public void ReWriteFile()
+        {
+            //nothing happens
+        }
     }
 }

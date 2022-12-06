@@ -10,5 +10,6 @@ namespace PartOrderingApp.Models
                                                         //WHEN THE DATASET IS UP AND RUNNING
         public string Username { get; set; }
         public UserCategory Category { get; set; }
+        public string UserFilepath { get; set; } //only used for txtdata obv
     }
 }
