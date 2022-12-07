@@ -10,8 +10,8 @@ namespace PartOrderingApp.Logic
 {
     public class Manager
     {
-        private IInventory Inventory;
-        private IUserData IUserData; //does this belong here? Address once userdata live is configured.
+        public IInventory Inventory;
+        public IUserData IUserData; //does this belong here? Address once userdata live is configured.
         //I could use the main menu to find a user in program, then pass it in and set the user as a property here.
 
         public Manager(IInventory inventory, IUserData userData)
@@ -117,10 +117,12 @@ namespace PartOrderingApp.Logic
         public void CancelOrder(User user, Order order)
         {
 
-            if(order.OrderID == 0) //checks for if this is a new or pending order and acts accordingly.
-            {
-                order.Parts.Clear(); 
-            }
+            //if(order.OrderID == 0) //checks for if this is a new or pending order and acts accordingly.
+            //{
+                //order.Parts.Clear(); //this doesn't do anything I don't think, because an order is never added to the user 
+                                     //and a new order is generated if they want to try again anyway
+
+            //}
 
             foreach (Order o in user.Orders)
             {
@@ -212,6 +214,7 @@ namespace PartOrderingApp.Logic
         }
         private bool CheckInventory(Order order, WorkflowResponse response)
         {
+            //checks number of parts of each ID in the order against inventory 
 
             var groupedBy = order.Parts.GroupBy(p => p.Id).ToList();
 

@@ -167,16 +167,12 @@ namespace PartOrderingApp.UI
                         }                                              
                         break;
 
-                    case ConsoleKey.D4:
-                        success = CheckCartForZero(order);
-                        if (success)
+                    case ConsoleKey.D4:                       
+                        success = CancelOrderWorkflow(user, inventory, order);
+                        if(success)
                         {
-                            success = CancelOrderWorkflow(user, inventory, order);
-                            if(success)
-                            {
-                                CheckOutOrCancel = true;
-                            }
-                        }
+                            CheckOutOrCancel = true;
+                        }                       
                         break;
 
                     default:

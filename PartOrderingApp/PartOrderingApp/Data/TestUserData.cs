@@ -51,7 +51,7 @@ namespace PartOrderingApp.Data
         }
         public void ReWriteFile()
         {
-            //nothing happens, but that is bad code...
+            //nothing happens
         }
     }
 }
