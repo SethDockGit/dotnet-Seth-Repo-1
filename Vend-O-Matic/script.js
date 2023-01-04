@@ -96,7 +96,7 @@ for (let i = 0; i < inventory.length; i++) {
 
     var message = `${inventory[i].price}${inventory[i].name}`
 
-    var button = `<button type="button" class="btn btn-secondary btn-lg" style="width: 150px" onclick="loadVend(${inventory[i].id}, ${message})"><u>${inventory[i].name}</u>
+    var button = `<button type="button" class="btn btn-secondary btn-lg" style="width: 150px" onclick="selectItem(${inventory[i].id}, ${message})"><u>${inventory[i].name}</u>
     </br>$${inventory[i].price.toFixed(2)}</br></br>(Quantity: ${inventory[i].quantity})</button>`;
 
     var col = `<div class="col-sm-4" style="padding: 20px;">${button}</div>`;
@@ -105,19 +105,13 @@ for (let i = 0; i < inventory.length; i++) {
 
 }
 
-let buy = false;
+let itemID = -1;
 
-function buy(buy){
-    buy = true;
-}
+function selectItem(id, message){
 
-function loadVend(id, message){
+    displayMessage(message);
 
-    displayMessage(message)
-
-    if (buy == true){
-        requestVend(id);
-    }
+    itemID = id;
 }
 
 function displayMessage(message){
@@ -126,7 +120,7 @@ function displayMessage(message){
 }
 
 
-function requestVend(id){
+function requestVend(itemID){
     var item = inventory[id];
     
     var message = "";
