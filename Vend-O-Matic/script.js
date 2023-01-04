@@ -138,7 +138,7 @@ function requestVend(){
     }
     else{
         item.quantity--;
-        document.getElementById("${itemID}")
+        document.getElementById(`${itemID}${inventory[itemID].quantity}`).innerHTML += item.quantity;
         currentMoney -= item.price;
         displayBalance();
 
