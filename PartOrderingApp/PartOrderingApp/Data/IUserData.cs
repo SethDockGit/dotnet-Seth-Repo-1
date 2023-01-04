@@ -7,7 +7,6 @@ namespace PartOrderingApp.Data
 {
     public interface IUserData
     {
-        public User User { get; set; }
         public User GetUser(string username);
         public void ReWriteFile();
     }

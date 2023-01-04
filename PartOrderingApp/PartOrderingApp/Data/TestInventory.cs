@@ -8,7 +8,7 @@ namespace PartOrderingApp.Data
 {
     public class TestInventory : IInventory
     {
-        public Dictionary<int, int> Inventory { get; set; } //key: productId, value: how many in stock
+        public Dictionary<int, int> InvDictionary { get; set; } //key: productId, value: how many in stock
         public List<Part> Parts { get; set; }
 
         public TestInventory()
@@ -73,7 +73,7 @@ namespace PartOrderingApp.Data
                 },
             };
 
-            Inventory = new Dictionary<int, int>() //define the inventory stock by the product id and the stock of that product
+            InvDictionary = new Dictionary<int, int>() //define the inventory stock by the product id and the stock of that product
             {
                 {1, 52 }, //Product with id 1 has 52 items in stock
                 {2, 26 },

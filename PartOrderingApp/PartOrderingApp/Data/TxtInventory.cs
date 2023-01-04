@@ -9,13 +9,13 @@ namespace PartOrderingApp.Data
 {
     public class TxtInventory : IInventory
     {
-        public Dictionary<int, int> Inventory { get; set; }
+        public Dictionary<int, int> InvDictionary { get; set; }
         public List<Part> Parts { get; set; }
         private string SaveFile { get; set; }
         public TxtInventory()
         {
             SaveFile = @"C:\Data\PartOrderingApp\Inventory.txt";
-            Inventory = new Dictionary<int, int>();
+            InvDictionary = new Dictionary<int, int>();
             Parts = new List<Part>();
 
             PopulateItems();
@@ -42,7 +42,7 @@ namespace PartOrderingApp.Data
 
                         int stock = int.Parse(partProps[1]);
 
-                        Inventory.Add(part.Id, stock);
+                        InvDictionary.Add(part.Id, stock);
 
                         Parts.Add(revised);
 
@@ -119,7 +119,7 @@ namespace PartOrderingApp.Data
                     {
                         sw.Write("\n");
                     }
-                    sw.Write($"*{part.Id}#{Inventory[part.Id]}");
+                    sw.Write($"*{part.Id}#{InvDictionary[part.Id]}");
 
                 }
             }

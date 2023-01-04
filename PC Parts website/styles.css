@@ -1,0 +1,43 @@
+body{
+    background-color:black;
+    color:white;
+    text-align: center;
+}
+a{
+
+    margin-right: 20px;
+}
+.lime{
+    color:limegreen;
+
+}
+.address{
+    text-align:right;
+    color: red
+}
+hr{
+    color: orange;
+}
+.red{
+    color:red;
+}
+table{
+    margin-left: 250px;
+    margin-bottom: 80px;
+    
+}
+table, th, td{
+    font-size: larger;
+    border:2px solid;
+    border-collapse: collapse;
+}
+#marginR{
+    padding-right: 250px;
+}
+#marginLeft{
+    margin-left: 110px;
+}
+.marLeft{
+    text-align: left;
+}
+.resizedTextbox {width: 100px; height: 20px}

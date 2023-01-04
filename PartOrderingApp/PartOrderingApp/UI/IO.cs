@@ -115,9 +115,9 @@ namespace PartOrderingApp.UI
             foreach (Part part in inventory.Parts)
             {
                 Console.WriteLine($"{part.Id}. {part.Name}\nCost: {part.Cost}");
-                Console.WriteLine($"Number in stock: {inventory.Inventory[part.Id]}\n\n");
+                Console.WriteLine($"Number in stock: {inventory.InvDictionary[part.Id]}\n\n");
 
-                if (inventory.Inventory[part.Id] < 1) 
+                if (inventory.InvDictionary[part.Id] < 1) 
                 {
                     part.IsAvailable = false;
                 }

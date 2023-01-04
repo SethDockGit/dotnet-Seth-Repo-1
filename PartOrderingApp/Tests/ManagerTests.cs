@@ -266,7 +266,7 @@ namespace Tests
         public void Manager_ExecuteOrder_CanUpdateInventory()
         {
 
-            int stockBeforeOrdering = Manager.Inventory.Inventory[1];
+            int stockBeforeOrdering = Manager.Inventory.InvDictionary[1];
 
             Order order = new Order();
             order.Parts = new List<Part>();
@@ -275,7 +275,7 @@ namespace Tests
 
             WorkflowResponse response = Manager.ExecuteOrder(TestUsers[0], order);
 
-            Assert.True(Manager.Inventory.Inventory[1] == stockBeforeOrdering - 1);
+            Assert.True(Manager.Inventory.InvDictionary[1] == stockBeforeOrdering - 1);
         }
         [Fact]
         public void Manager_ExecuteOrder_CanDeleteObsoleteOrder()
@@ -366,7 +366,7 @@ namespace Tests
         [Fact]
         public void Manager_DeleteOrder_CanUpdateInventory()
         {
-            int stockBeforeDeleting = Manager.Inventory.Inventory[1];
+            int stockBeforeDeleting = Manager.Inventory.InvDictionary[1];
 
             Order order = new Order();
             order.Parts = new List<Part>();
@@ -375,7 +375,7 @@ namespace Tests
 
             Manager.DeleteOrder(TestUsers[0], order);
 
-            Assert.True(Manager.Inventory.Inventory[1] == stockBeforeDeleting + 1);
+            Assert.True(Manager.Inventory.InvDictionary[1] == stockBeforeDeleting + 1);
         }
         [Fact]
         public void Manager_DuplicateOrderForEditing_CanCorrectlyDuplicateOrder()

@@ -1,0 +1,14 @@
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\bin\Debug\netcoreapp3.1\fizzbuzz.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\bin\Debug\netcoreapp3.1\fizzbuzz.deps.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\bin\Debug\netcoreapp3.1\fizzbuzz.runtimeconfig.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\bin\Debug\netcoreapp3.1\fizzbuzz.runtimeconfig.dev.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\bin\Debug\netcoreapp3.1\fizzbuzz.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\bin\Debug\netcoreapp3.1\fizzbuzz.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\obj\Debug\netcoreapp3.1\fizzbuzz.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\obj\Debug\netcoreapp3.1\fizzbuzz.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\obj\Debug\netcoreapp3.1\fizzbuzz.AssemblyInfoInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\obj\Debug\netcoreapp3.1\fizzbuzz.AssemblyInfo.cs
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\obj\Debug\netcoreapp3.1\fizzbuzz.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\obj\Debug\netcoreapp3.1\fizzbuzz.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\obj\Debug\netcoreapp3.1\fizzbuzz.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\fizzbuzz\fizzbuzz\obj\Debug\netcoreapp3.1\fizzbuzz.genruntimeconfig.cache

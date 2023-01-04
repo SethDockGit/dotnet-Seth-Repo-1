@@ -8,8 +8,6 @@ namespace PartOrderingApp.Data
 {
     public class TestUserData : IUserData
     {
-        public User User { get; set; } //irrelevant, added to satisfy implementation, property is used in txtdatasource
-
         public List<User> Users { get; set; }
 
         //for an in-memory data source like this, do I need to update this data source when an order is being created? It doesn't have any affect on functionality...

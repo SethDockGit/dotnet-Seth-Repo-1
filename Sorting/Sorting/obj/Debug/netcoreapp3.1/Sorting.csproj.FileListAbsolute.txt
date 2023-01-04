@@ -1,0 +1,14 @@
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\bin\Debug\netcoreapp3.1\Sorting.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\bin\Debug\netcoreapp3.1\Sorting.deps.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\bin\Debug\netcoreapp3.1\Sorting.runtimeconfig.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\bin\Debug\netcoreapp3.1\Sorting.runtimeconfig.dev.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\bin\Debug\netcoreapp3.1\Sorting.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\bin\Debug\netcoreapp3.1\Sorting.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\obj\Debug\netcoreapp3.1\Sorting.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\obj\Debug\netcoreapp3.1\Sorting.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\obj\Debug\netcoreapp3.1\Sorting.AssemblyInfoInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\obj\Debug\netcoreapp3.1\Sorting.AssemblyInfo.cs
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\obj\Debug\netcoreapp3.1\Sorting.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\obj\Debug\netcoreapp3.1\Sorting.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\obj\Debug\netcoreapp3.1\Sorting.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Sorting\Sorting\obj\Debug\netcoreapp3.1\Sorting.genruntimeconfig.cache

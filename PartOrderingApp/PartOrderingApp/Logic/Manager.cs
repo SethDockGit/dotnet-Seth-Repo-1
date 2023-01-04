@@ -21,7 +21,7 @@ namespace PartOrderingApp.Logic
 
             foreach (Part part in inventory.Parts)
             {
-                if (inventory.Inventory[part.Id] < 1)
+                if (inventory.InvDictionary[part.Id] < 1)
                 {
                     part.IsAvailable = false;
                 }
@@ -54,7 +54,7 @@ namespace PartOrderingApp.Logic
                 response.Success = false;
                 response.Message = "Sorry, input not matched to part ID. Part not added to order.";
             }
-            else if (Inventory.Inventory[choice] == 0)
+            else if (Inventory.InvDictionary[choice] == 0)
             {
                 response.Success = false;
                 response.Message = "Sorry, that part is out of stock. Part not added to order";
@@ -142,7 +142,8 @@ namespace PartOrderingApp.Logic
 
             if(user.Category == UserCategory.Premium)
             {
-                order.Total = order.Total * .9m;
+                decimal total = order.Total * .9m;
+                order.Total = decimal.Round(total, 2);
                 response.Message = "\n\nThanks for choosing a premium account. A 10% discount was applied to your order.";
             }
 
@@ -167,7 +168,7 @@ namespace PartOrderingApp.Logic
 
                 foreach (Part part in order.Parts)
                 {
-                    Inventory.Inventory[part.Id]--; //should I do this here or in data layer?
+                    Inventory.InvDictionary[part.Id]--; //should I do this here or in data layer?
                 }
 
                 if (user.Orders.Count == 0)
@@ -206,7 +207,7 @@ namespace PartOrderingApp.Logic
 
                 foreach (Part part in toDelete.Parts)
                 {
-                    Inventory.Inventory[part.Id]++;
+                    Inventory.InvDictionary[part.Id]++;
                 }
 
                 user.Orders.Remove(toDelete);
@@ -222,7 +223,7 @@ namespace PartOrderingApp.Logic
 
             for(int i = 0; i < groupedBy.Count; i++)
             {
-                if (groupedBy[i].ToList().Count > Inventory.Inventory[groupedBy[i].First().Id])
+                if (groupedBy[i].ToList().Count > Inventory.InvDictionary[groupedBy[i].First().Id])
                 {
                     success = false;
                 }
@@ -295,7 +296,7 @@ namespace PartOrderingApp.Logic
 
             foreach (Part part in order.Parts)
             {
-                Inventory.Inventory[part.Id]++;
+                Inventory.InvDictionary[part.Id]++;
             }
 
             Inventory.ReWriteFile();
