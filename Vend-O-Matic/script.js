@@ -94,9 +94,9 @@ document.getElementById("items").innerHTML += `${row}`;
 
 for (let i = 0; i < inventory.length; i++) {
 
-    var message = `${inventory[i].price}${inventory[i].name}`
+    var message = `${inventory[i].price}${inventory[i].name}`;
 
-    var button = `<button type="button" class="btn btn-secondary btn-lg" style="width: 150px" onclick="selectItem(${inventory[i].id}, ${message})"><u>${inventory[i].name}</u>
+    var button = `<button type="button" class="btn btn-secondary btn-lg" style="width: 150px" onclick="selectItem(${inventory[i].id}, '${message}')"><u>${inventory[i].name}</u>
     </br>$${inventory[i].price.toFixed(2)}</br></br>(Quantity: ${inventory[i].quantity})</button>`;
 
     var col = `<div class="col-sm-4" style="padding: 20px;">${button}</div>`;
@@ -120,8 +120,8 @@ function displayMessage(message){
 }
 
 
-function requestVend(itemID){
-    var item = inventory[id];
+function requestVend(){
+    var item = inventory[itemID];
     
     var message = "";
 
