@@ -97,7 +97,7 @@ for (let i = 0; i < inventory.length; i++) {
     var message = `${inventory[i].price}${inventory[i].name}`;
 
     var button = `<button type="button" class="btn btn-secondary btn-lg" style="width: 150px" onclick="selectItem(${inventory[i].id})"><u>${inventory[i].name}</u>
-    </br>$${inventory[i].price.toFixed(2)}</br></br><div id="${i}${inventory[i].quanitity}"></div>(Quantity: ${inventory[i].quantity})</button>`;
+    </br>$${inventory[i].price.toFixed(2)}</br></br><div id="${i}${inventory[i].quanitity}">(Quantity: ${inventory[i].quantity})</div></button>`;
 
     var col = `<div class="col-sm-4" style="padding: 20px;">${button}</div>`;
         
