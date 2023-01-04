@@ -3,26 +3,32 @@ let currentMoney = 0.00;
 function addDollar(){
 
     currentMoney += 1.00;
+    displayBalance();
 }
 
 function addQuarter(){
 
     currentMoney += .25;
+    displayBalance();
 }
 
 function addDime(){
 
     currentMoney += .10;
+    displayBalance();
 }
 
 function addNickel(){
 
     currentMoney += .05;
+    displayBalance();
 }
 
 function displayBalance(){
-    document.getElementById("currentBalance").innerText = currentMoney;
+    document.getElementById("currentBalance").innerText = currentMoney.toFixed(2);
 }
+
+displayBalance();
 
 let inventory = [
     {
@@ -75,62 +81,50 @@ let inventory = [
     },
     {
         "id": 8,
-        "name": "Dinnerinacan",
+        "name": "Dinner-in-a-can",
         "quantity": 8,
         "price": 5.25
     }
 ];
 
 
+var row = `<div class="row" id="1"></div>`;
 
+document.getElementById("items").innerHTML += `${row}`;
 
 for (let i = 0; i < inventory.length; i++) {
 
-    if (i % 3 == 0 || i == 0){
-        document.getElementById("items").innerHTML += `<div class="row" id="${i}"></div>`;
-    }
+    var message = `${inventory[i].price}${inventory[i].name}`
 
-    var button = `<button type="button" class="btn btn-secondary btn-lg"><u>${inventory[i].name}</u>
-    </br>$${inventory[i].price}</br></br>(Quantity: ${inventory[i].quantity})</button>`;
+    var button = `<button type="button" class="btn btn-secondary btn-lg" style="width: 150px" onclick="loadVend(${inventory[i].id}, ${message})"><u>${inventory[i].name}</u>
+    </br>$${inventory[i].price.toFixed(2)}</br></br>(Quantity: ${inventory[i].quantity})</button>`;
 
-    var col = `<div class="col" style="background-color:lavender; height:130px;">${button}</div>`;
+    var col = `<div class="col-sm-4" style="padding: 20px;">${button}</div>`;
         
-    document.getElementById(`${i}`).innerHTML += `${col}`;
+    document.getElementById("1").innerHTML += `${col}`;
 
 }
 
+let buy = false;
 
-
-document.getElementById("1A").innerHTML += `<u>${inventory[0].name}</u>
-</br>$${inventory[0].price}</br></br>(Quantity: ${inventory[0].quantity})`
- 
-document.getElementById("1B").innerHTML += `<u>${inventory[1].name}</u>
-</br>$${inventory[1].price}</br></br>(Quantity: ${inventory[1].quantity})`
-
-document.getElementById("1C").innerHTML += `<u>${inventory[2].name}</u>
-</br>$${inventory[2].price}</br></br>(Quantity: ${inventory[2].quantity})`
-
-document.getElementById("2A").innerHTML += `<u>${inventory[3].name}</u>
-</br>$${inventory[3].price}</br></br>(Quantity: ${inventory[3].quantity})`
-
-document.getElementById("2B").innerHTML += `<u>${inventory[4].name}</u>
-</br>$${inventory[4].price}</br></br>(Quantity: ${inventory[4].quantity})`
-
-document.getElementById("2C").innerHTML += `<u>${inventory[5].name}</u>
-</br>$${inventory[5].price}</br></br>(Quantity: ${inventory[5].quantity})`
-
-document.getElementById("3A").innerHTML += `<u>${inventory[6].name}</u>
-</br>$${inventory[6].price}</br></br>(Quantity: ${inventory[6].quantity})`
-
-document.getElementById("3B").innerHTML += `<u>${inventory[7].name}</u>
-</br>$${inventory[7].price}</br></br>(Quantity: ${inventory[7].quantity})`
-
-document.getElementById("3C").innerHTML += `<u>${inventory[8].name}</u>
-</br>$${inventory[8].price}</br></br>(Quantity: ${inventory[8].quantity})`
-
-function populateItems(){
-    //TODO: implement code to populate the page with the items in the inventory
+function buy(buy){
+    buy = true;
 }
+
+function loadVend(id, message){
+
+    displayMessage(message)
+
+    if (buy == true){
+        requestVend(id);
+    }
+}
+
+function displayMessage(message){
+
+    document.getElementById("MessagePort").innerText = message;
+}
+
 
 function requestVend(id){
     var item = inventory[id];
@@ -149,7 +143,10 @@ function requestVend(id){
     else{
         item.quantity--;
         currentMoney -= item.price;
+        displayBalance();
 
         message = `Vended a ${item.name}, thank you!`;
     }
+
+    displayMessage(message);
 }
