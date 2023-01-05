@@ -141,13 +141,13 @@ function requestVend(){
     var message = "";
 
     if(item === undefined){
-        message = `DEV ERROR: Item of id ${id} not found.`
+        message = `Please select an item.`
     }
     else if(item.quantity === 0){
         message = `Sorry, ${item.name} is out of stock.`
     }
     else if(currentMoney < item.price){
-        message = `${item.price}$ is needed for this item, please enter more money.`;
+        message = `$${item.price} is needed for this item, please enter more money.`;
     }
     else{
         item.quantity--;
