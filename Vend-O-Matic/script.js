@@ -96,12 +96,17 @@ for (let i = 0; i < inventory.length; i++) {
 
     var message = `${inventory[i].price}${inventory[i].name}`;
 
-    var button = `<button type="button" class="btn btn-secondary btn-lg" style="width: 150px" onclick="selectItem(${inventory[i].id})"><u>${inventory[i].name}</u>
-    </br>$${inventory[i].price.toFixed(2)}</br></br><div id="${i}${inventory[i].quanitity}">(Quantity: ${inventory[i].quantity})</div></button>`;
+    var button = `<button type="button" class="btn btn-secondary btn-m" style="width: 150px" onclick="selectItem(${inventory[i].id})"><u>${inventory[i].name}</u>
+    </br>$${inventory[i].price.toFixed(2)}</br></br><div id="${i}-quantity">(Quantity: ${inventory[i].quantity})</div></button>`;
 
     var col = `<div class="col-sm-4" style="padding: 20px;">${button}</div>`;
         
     document.getElementById("1").innerHTML += `${col}`;
+
+    if (inventory[i].quantity === 0){
+    
+        document.getElementById(`${i}-quantity`).innerText = "Out of stock";
+    }
 
 }
 
@@ -110,6 +115,11 @@ let itemID = -1;
 function selectItem(id){
 
     var message = `$${inventory[id].price} ${inventory[id].name}`;
+
+    if (inventory[id].quantity === 0){
+        
+        message = "Sorry, that item is out of stock.";
+    }
 
     displayMessage(message);
 
@@ -120,6 +130,9 @@ function displayMessage(message){
 
     document.getElementById("MessagePort").innerText = message;
 }
+
+
+
 
 
 function requestVend(){
@@ -138,12 +151,22 @@ function requestVend(){
     }
     else{
         item.quantity--;
-        document.getElementById(`${itemID}${inventory[itemID].quantity}`).innerHTML += item.quantity;
+        document.getElementById(`${itemID}-quantity`).innerHTML = `(Quantity: ${item.quantity})`;
         currentMoney -= item.price;
         displayBalance();
 
         message = `Vended a ${item.name}, thank you!`;
+
+        if (inventory[itemID].quantity === 0){
+    
+            document.getElementById(`${itemID}-quantity`).innerText = "Out of stock";
+        }
+
+        itemID = -1;
+
     }
 
     displayMessage(message);
 }
+
+

@@ -1,62 +1,69 @@
 <html>
-    <head>
-        <title> Vending Machine </title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.css" />
-    </head>
-    <body>
-<!-- Content here -->
-        <div class="container text-center" style="margin: 50px; border:2px solid;">
-            Vend-O-Matic
-        </div>
+
+<head>
+  <title> Vending Machine </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.css" />
+</head>
+
+<body>
+  <!-- Content here -->
+  <div class="container-fluid text-center" style="margin: 50px; border:2px solid">
+    <b>
+      Vend-O-Matic
+    </b>
+  </div>
 
 
+  <div class="container">
+    <div class="row">
+      <div class="col-8" id="items">
+      </div>
+      <div class="col-4" id="other" style="border:2px solid">
         <div class="container">
-          <div class="row">
-            <div class="col-10" id="items">
+          <div class="row justify-content-md-center" style="margin: 5px;"id="Balance">
+            Current Balance
+            <div class="row justify-content-md-center" style="border:2px solid; margin: 15px;" id="currentBalance">
+              $0.00
             </div>
-            <div class="col-2" id="other">
-              <div class="row text-center" id="Balance">
-                Current Balance 
-                <div class="row" style="border:2px solid" id="currentBalance">
-                  $0.00
+            <div class="container-3">
+              <div class="row">
+                <div class="col-6 mx-auto">
+                  <button onclick="addDollar()" style="margin: 3px;">Dollar</button>
                 </div>
-                <div class="container-3">
-                  <div class="row">
-                    <div class="col-6">
-                      <button onclick="addDollar()">Dollar</button>
-                    </div>
-                    <div class="col-6">
-                      <button onclick="addQuarter()">Quarter</button>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-6">
-                      <button onclick="addDime()">Dime</button>
-                    </div>
-                    <div class="col-6">
-                      <button onclick="addNickel()">Nickel</button>
-                    </div>
-                  </div>
+                <div class="col-6 mx-auto">
+                  <button onclick="addQuarter()" style="margin: 3px;">Quarter</button>
                 </div>
-              </div>
-              <div class="row" id="MessagePort" style="color:green; background-color: black; width: 200px; height: 100px;">
-                blorp
               </div>
               <div class="row">
-                <button id="buy" onclick="requestVend()">Buy</button>
-              </div>
-              <div class="row-6" id="Empty">
-
+                <div class="col-6 mx-auto">
+                  <button onclick="addDime()" style="margin: 3px;">Dime</button>
+                </div>
+                <div class="col-6 mx-auto">
+                  <button onclick="addNickel()" style="margin: 3px;">Nickel</button>
+                </div>
               </div>
             </div>
           </div>
+          <div class="row justify-content-md-center" id="MessagePort"
+            style="color:green; background-color: black; margin: 15px; max-width: 350px; max-height: 200px; border:2px solid;">
+            <b>Welcome to Vend-O-Matic. Please select a treat.</b>
+          </div>
+          <div class="row justify-content-md-center" style="margin: 10px;">
+            <button id="buy" onclick="requestVend()">Buy</button>
+          </div>
+          <div class="row-6" id="Empty">
+            <div class="container">
+            </div>
+          </div>
         </div>
+      </div>
 
 
-           
-             
-    </body>
-    <script src="script.js"></script>
+
+
+</body>
+<script src="script.js"></script>
+
 </html>
