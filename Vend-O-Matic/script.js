@@ -25,7 +25,7 @@ function addNickel(){
 }
 
 function displayBalance(){
-    document.getElementById("currentBalance").innerText = currentMoney.toFixed(2);
+    document.getElementById("currentBalance").innerText = `$${currentMoney.toFixed(2)}`;
 }
 
 displayBalance();
@@ -96,7 +96,7 @@ for (let i = 0; i < inventory.length; i++) {
 
     var message = `${inventory[i].price}${inventory[i].name}`;
 
-    var button = `<button type="button" class="btn btn-secondary btn-m" style="width: 150px" onclick="selectItem(${inventory[i].id})"><u>${inventory[i].name}</u>
+    var button = `<button type="button" class="btn btn-primary btn-m" style="width: 150px" onclick="selectItem(${inventory[i].id})"><u>${inventory[i].name}</u>
     </br>$${inventory[i].price.toFixed(2)}</br></br><div id="${i}-quantity">(Quantity: ${inventory[i].quantity})</div></button>`;
 
     var col = `<div class="col-sm-4" style="padding: 20px;">${button}</div>`;
