@@ -9,7 +9,7 @@ namespace MaterialsApp.Logic
 {
     public class Manager
     {
-        private IDataSource IDataSource { get; set; }
+        public IDataSource IDataSource { get; set; }
         public Manager(IDataSource dataSource)
         {
             IDataSource = dataSource;
@@ -31,7 +31,7 @@ namespace MaterialsApp.Logic
                 else
                 {
                     response.Success = false;
-                    response.Message = $"Error: User {username} was not found. Press any key to return to the main menu.";
+                    response.Message = $"Error: User {username} was not found.";
                 }
             }
             catch(Exception ex)

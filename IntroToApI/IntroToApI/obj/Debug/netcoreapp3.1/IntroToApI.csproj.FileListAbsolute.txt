@@ -1,0 +1,10 @@
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\IntroToApI\IntroToApI\bin\Debug\netcoreapp3.1\IntroToApI.deps.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\IntroToApI\IntroToApI\bin\Debug\netcoreapp3.1\IntroToApI.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\IntroToApI\IntroToApI\bin\Debug\netcoreapp3.1\IntroToApI.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\IntroToApI\IntroToApI\obj\Debug\netcoreapp3.1\IntroToApI.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\IntroToApI\IntroToApI\obj\Debug\netcoreapp3.1\IntroToApI.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\IntroToApI\IntroToApI\obj\Debug\netcoreapp3.1\IntroToApI.AssemblyInfoInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\IntroToApI\IntroToApI\obj\Debug\netcoreapp3.1\IntroToApI.AssemblyInfo.cs
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\IntroToApI\IntroToApI\obj\Debug\netcoreapp3.1\IntroToApI.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\IntroToApI\IntroToApI\obj\Debug\netcoreapp3.1\IntroToApI.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\IntroToApI\IntroToApI\obj\Debug\netcoreapp3.1\IntroToApI.pdb

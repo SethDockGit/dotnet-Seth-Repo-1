@@ -13,7 +13,7 @@ namespace MaterialsApp
         private Manager Manager { get; set; }
         public IO(IDataSource dataSource)
         {
-            Manager = new Manager(dataSource);
+            Manager = new ManagerFactory().GetManager();
         }
         public void Run()
         {

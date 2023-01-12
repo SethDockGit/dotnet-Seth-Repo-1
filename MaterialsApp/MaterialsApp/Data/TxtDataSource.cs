@@ -56,7 +56,7 @@ namespace MaterialsApp.Data
         }
         public User Authenticate(string username)
         {
-            User user = Users.SingleOrDefault(user => user.Username == username);
+            User user = Users.SingleOrDefault(user => user.Username.ToLower() == username);
             return user;
         }
         public User GetUser(User user)
