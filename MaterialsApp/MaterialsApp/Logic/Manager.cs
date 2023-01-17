@@ -59,7 +59,7 @@ namespace MaterialsApp.Logic
                 {
                     int newAmount = RouteDeposit(user, resource, depositAmount);
                     response.Success = true;
-                    response.Message = $"\nDeposit successful. {depositAmount} added to {resource}.\n\nNew balance: {newAmount}\n\nPress any key to return to the main menu.";
+                    response.Message = $"\nDeposit successful. {depositAmount} added to {resource}.\n\nNew balance: {newAmount}";
                 }
             }
             catch(Exception ex)
@@ -91,7 +91,7 @@ namespace MaterialsApp.Logic
                 {
                     int newAmount = RouteWithdrawal(user, resource, withdrawAmount);
                     response.Success = true;
-                    response.Message = $"\nWithdrawal successful. {withdrawAmount} added to {resource}.\n\nNew balance: {newAmount}\n\n. Press any key to return to the main menu.";
+                    response.Message = $"\nWithdrawal successful. {withdrawAmount} added to {resource}.\n\nNew balance: {newAmount}";
                 }
             }
             catch(Exception ex)

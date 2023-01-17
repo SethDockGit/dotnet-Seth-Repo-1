@@ -1,0 +1,10 @@
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagementSystem\obj\Debug\netcoreapp3.1\StudentManagementSystem.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagementSystem\obj\Debug\netcoreapp3.1\StudentManagementSystem.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagementSystem\obj\Debug\netcoreapp3.1\StudentManagementSystem.AssemblyInfoInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagementSystem\obj\Debug\netcoreapp3.1\StudentManagementSystem.AssemblyInfo.cs
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagementSystem\obj\Debug\netcoreapp3.1\StudentManagementSystem.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagementSystem\bin\Debug\netcoreapp3.1\StudentManagementSystem.deps.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagementSystem\bin\Debug\netcoreapp3.1\StudentManagementSystem.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagementSystem\bin\Debug\netcoreapp3.1\StudentManagementSystem.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagementSystem\obj\Debug\netcoreapp3.1\StudentManagementSystem.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagementSystem\obj\Debug\netcoreapp3.1\StudentManagementSystem.pdb

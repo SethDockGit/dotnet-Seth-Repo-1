@@ -1,0 +1,127 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using StudentManagementSystem.Models;
+
+namespace StudentManagementSystem.Data
+{
+    public class TxtDataSource : IDataSource
+    {
+
+        public string StudentSaveFile { get; set; }
+        public string CourseSaveFile { get; set; }
+        public List<Course> Courses { get; set; }
+        public List<Student> Students { get; set; }
+
+
+        public TxtDataSource()
+        {
+            StudentSaveFile = @"C:\Data\StudentManagement\students.txt";
+            CourseSaveFile = @"C:\Data\StudentManagement\courses.txt";
+
+            Students = new List<Student>();
+            Courses = new List<Course>();
+
+            if (File.Exists(StudentSaveFile))
+            {
+                PopulateStudents();
+            }
+            else
+            {
+                File.Create(StudentSaveFile);
+            }
+            if (File.Exists(CourseSaveFile))
+            {
+                PopulateCourses();
+            }
+            else
+            {
+                File.Create(CourseSaveFile);
+            }
+        }
+
+        private void PopulateCourses()
+        {
+            using(StreamReader sr = File.OpenText(CourseSaveFile))
+            {
+                string line = "";
+
+                while((line = sr.ReadLine()) != null)
+                {
+                    string[] splitline = line.Split(',');
+
+                    Course course = new Course()
+                    {
+                        CourseId = int.Parse(splitline[0]),
+                        CourseName = splitline[1],
+                        Professor = splitline[2],
+                        Description = splitline[3],
+                    };
+
+                    Courses.Add(course);
+                }
+            }
+        }
+
+        private void PopulateStudents()
+        {
+            using (StreamReader sr = File.OpenText(StudentSaveFile))
+            {
+                string line = "";
+
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] splitline = line.Split('^');
+
+                    Student student = new Student()
+                    {
+                        Id = int.Parse(splitline[0]),
+                        Name = splitline[1],
+                        Age = int.Parse(splitline[2]),
+                        Courses = new List<Course>()
+                    };
+
+                    string[] courses = splitline[3].Split('*');
+
+                    for (int i = 1; i < courses.Length; i++)
+                    {
+                        string[] courseProperties = courses[i].Split('&'); ///try line instead of courses[i] if fail
+
+                        Course course = new Course()
+                        {
+                            CourseId = int.Parse(courseProperties[0]),
+                            CourseName = courseProperties[1],
+                            Professor = courseProperties[2],
+                            Description = courseProperties[3],
+                        };
+
+                        student.Courses.Add(course);
+                    }
+
+                    Students.Add(student);
+                }
+            }
+        }
+
+        public void AddStudent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Student> GetStudents()
+        {
+            return Students;
+        }
+
+        public void RemoveStudent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Course> GetCourses()
+        {
+            return Courses;
+        }
+    }
+}

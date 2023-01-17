@@ -34,9 +34,30 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        [Route("{username}/{amount}")]
-        public WorkflowResponse DepositResources([FromBody]ResourceType resource, string username, int amount)
+        [Route("deposit")]
+        public WorkflowResponse DepositResource([FromBody]TransactionRequest transaction)
         {
+            var username = transaction.Username;
+            var amount = transaction.Amount;
+            ResourceType resource;
+            
+            switch(transaction.ResourceType)
+            {
+                case "wood":
+                    resource = ResourceType.Wood;
+                    break;
+                case "stone":
+                    resource = ResourceType.Stone;
+                    break;
+                case "gold":
+                    resource = ResourceType.Gold;
+                    break;
+                case "iron":
+                    resource = ResourceType.Iron;
+                    break;
+                default:
+                    throw new Exception("String failed to convert to resource type");
+            }
 
             var managerFactory = new ManagerFactory();
             var manager = managerFactory.GetManager();
@@ -45,8 +66,40 @@ namespace WebApplication1.Controllers
             WorkflowResponse response = manager.DepositResource(user, resource, amount);
 
             return response;
+        }
+        [HttpPost]
+        [Route("withdraw")]
+        public WorkflowResponse WithdrawResource([FromBody] TransactionRequest transaction)
+        {
+            var username = transaction.Username;
+            var amount = transaction.Amount;
+            ResourceType resource;
 
+            switch (transaction.ResourceType)
+            {
+                case "wood":
+                    resource = ResourceType.Wood;
+                    break;
+                case "stone":
+                    resource = ResourceType.Stone;
+                    break;
+                case "gold":
+                    resource = ResourceType.Gold;
+                    break;
+                case "iron":
+                    resource = ResourceType.Iron;
+                    break;
+                default:
+                    throw new Exception("String failed to convert to resource type");
+            }
 
+            var managerFactory = new ManagerFactory();
+            var manager = managerFactory.GetManager();
+            var user = manager.IDataSource.Authenticate(username);
+
+            WorkflowResponse response = manager.WithdrawResource(user, resource, amount);
+
+            return response;
         }
     }
 }

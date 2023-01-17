@@ -5,7 +5,7 @@ var username = "";
 
 function checkResources(){
 
-    var username = document.getElementById("username").value;
+    username = document.getElementById("username").value;
 
     fetch(`${api}/materials/${username}`)
         .then((response) => response.json())
@@ -16,7 +16,9 @@ function checkResources(){
 
             if(data.success === false){
 
+                selectContinue();
                 document.getElementById('yourResources').innerText += data.message;
+
             }
             else{
 
@@ -92,10 +94,14 @@ function depositResource(){
     var amount = document.getElementById("enterAmount").value;
 
     var obj = {
-        ResourceType: resourceSelection
+        
+        amount: Number(amount),
+        resourceType: resourceSelection,
+        username: username
+
     }
 
-    fetch(`${api}/materials/${username}/${amount}`, {
+    fetch(`${api}/materials/deposit`, {
         method: 'POST',
         body: JSON.stringify(obj),
         headers: {
@@ -105,6 +111,67 @@ function depositResource(){
     .then((response) => response.json())
     .then((data) => {
         console.log(data);
+
+
+        document.getElementById("transactionMessage").innerText = "";
+
+        document.getElementById("transactionMessage").innerText += data.message;
+
+        document.getElementById("transactionMessage").innerHTML += `</br><button onclick="selectContinue()">Continue</button>`;
+        
     });
+}
+
+function withdrawResource(){
+
+    var amount = document.getElementById("enterAmount").value;
+
+    var obj = {
+        
+        amount: Number(amount),
+        resourceType: resourceSelection,
+        username: username
+
+    }
+
+    fetch(`${api}/materials/withdraw`, {
+        method: 'POST',
+        body: JSON.stringify(obj),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+
+
+        document.getElementById("transactionMessage").innerText = "";
+
+        document.getElementById("transactionMessage").innerText += data.message;
+
+        document.getElementById("transactionMessage").innerHTML += `</br><button onclick="selectContinue()">Continue</button>`;
+        
+    });
+}
+
+function selectContinue(){
+    username = "";
+    amount = 0;
+    resourceSelection = "";
+
+    document.getElementById("depositOrWithdraw").style.display = "none";
+
+    document.getElementById("enterAmount").style.display = "none";
+
+    document.getElementById("selectResource").style.display = "none";
+
+    document.getElementById("deposit").style.display = "none";
+
+    document.getElementById("withdraw").style.display = "none";
+
+    document.getElementById('yourResources').innerText = '';
+
+    document.getElementById("transactionMessage").innerText = "";
 
 }
