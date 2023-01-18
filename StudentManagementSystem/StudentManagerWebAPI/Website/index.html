@@ -7,20 +7,25 @@
         <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.css" />
     </head>
 
-    <body>
+    <body onload="showStudentView()" style="margin:auto; background-color:beige">
+        
+        <div class="container-fluid text-center" style="margin-top:50px; text-align:center; font-size:xx-large; max-width:500px; 
+        margin:auto; border:5px solid; background-color:lightskyblue;"><b>Student and Course Management</b>
+        </div> </br>
 
-        <h6>Student and Course Manager</h6> </br>
-        <button type="button" class="btn btn-primary" onclick="showStudentView()">Student View</button>
-        <button type="button" class="btn btn-primary" onclick="showCourseView()">Course View</button>
-        <div id="content">
+        <div style="margin:auto; text-align:center">
+            <button type="button" class="btn btn-secondary" onclick="showStudentView()">Student View</button>
+            <button type="button" class="btn btn-secondary" onclick="showCourseView()">Course View</button>
+        </div>
+        <div style="margin:auto; text-align:center" id="content">
 
         </div>
-        <div id="edit">
+        <div style="margin:auto; text-align:center" id="edit">
 
 
         </div>
-        <div id="message">
-            
+        <div style="margin:auto; text-align:center" id="message">
+
         </div>
   
 

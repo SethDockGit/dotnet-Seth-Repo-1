@@ -8,6 +8,7 @@ namespace StudentManagementSystem.Data
     public class TestDataSource : IDataSource
     {
         public List<Student> Students { get; set; }
+        List<Course> IDataSource.Courses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); } //can change this to mirror students if using testdata
 
         public List<Course> Courses = new List<Course>()
         {

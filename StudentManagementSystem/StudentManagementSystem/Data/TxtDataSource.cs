@@ -15,7 +15,6 @@ namespace StudentManagementSystem.Data
         public List<Course> Courses { get; set; }
         public List<Student> Students { get; set; }
 
-
         public TxtDataSource()
         {
             StudentSaveFile = @"C:\Data\StudentManagement\students.txt";
@@ -39,29 +38,6 @@ namespace StudentManagementSystem.Data
             else
             {
                 File.Create(CourseSaveFile);
-            }
-        }
-
-        private void PopulateCourses()
-        {
-            using(StreamReader sr = File.OpenText(CourseSaveFile))
-            {
-                string line = "";
-
-                while((line = sr.ReadLine()) != null)
-                {
-                    string[] splitline = line.Split(',');
-
-                    Course course = new Course()
-                    {
-                        CourseId = int.Parse(splitline[0]),
-                        CourseName = splitline[1],
-                        Professor = splitline[2],
-                        Description = splitline[3],
-                    };
-
-                    Courses.Add(course);
-                }
             }
         }
 
@@ -140,11 +116,6 @@ namespace StudentManagementSystem.Data
             return Students;
         }
 
-        public void RemoveStudent()
-        {
-            throw new NotImplementedException();
-        }
-
         public List<Course> GetCourses()
         {
             return Courses;
@@ -165,5 +136,40 @@ namespace StudentManagementSystem.Data
 
             return success;
         }
+        private void PopulateCourses()
+        {
+            using (StreamReader sr = File.OpenText(CourseSaveFile))
+            {
+                string line = "";
+
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] splitline = line.Split(',');
+
+                    Course course = new Course()
+                    {
+                        CourseId = int.Parse(splitline[0]),
+                        CourseName = splitline[1],
+                        Professor = splitline[2],
+                        Description = splitline[3],
+                    };
+
+                    Courses.Add(course);
+                }
+            }
+        }
+        private void ReWriteCourseFile()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddCourse(Course course)
+        {
+            Courses.Add(course);
+
+            ReWriteCourseFile();
+        }
+
+
     }
 }

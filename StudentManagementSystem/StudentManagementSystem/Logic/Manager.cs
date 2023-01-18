@@ -111,9 +111,64 @@ namespace StudentManagementSystem.Logic
             return response;
         }
 
-        public WorkflowResponse AddCourses(int studentID, int[] courseIDs)
+        public WorkflowResponse AddCourseToStudent(SCourseEditTransfer transfer)
         {
-            throw new NotImplementedException();
+            WorkflowResponse response = new WorkflowResponse();
+
+            var student = IDataSource.Students.SingleOrDefault(s => s.Id == transfer.StudentId);
+
+            var course = IDataSource.Courses.SingleOrDefault(c => c.CourseId == transfer.CourseId);
+
+            if (student == null)
+            {
+                response.Success = false;
+                response.Message = "Error: student not found.";
+            }
+            else if (course == null)
+            {
+                response.Success = false;
+                response.Message = "Error: course not found.";
+            }
+            else
+            {
+                response.Success = true;
+                response.Message = $"Course {course.CourseName} successfully added to student {student.Name}.";
+                student.Courses.Add(course);
+            }
+
+            //error handle here then?
+
+            return response;
+        }
+
+        public WorkflowResponse RemoveCourseFromStudent(SCourseEditTransfer transfer)
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            var student = IDataSource.Students.SingleOrDefault(s => s.Id == transfer.StudentId);
+
+            var course = IDataSource.Courses.SingleOrDefault(c => c.CourseId == transfer.CourseId);
+
+            if (student == null)
+            {
+                response.Success = false;
+                response.Message = "Error: student not found.";
+            }
+            else if (course == null)
+            {
+                response.Success = false;
+                response.Message = "Error: course not found.";
+            }
+            else
+            {
+                response.Success = true;
+                response.Message = $"Course {course.CourseName} successfully removed from student {student.Name}.";
+                student.Courses.Remove(course);
+            }
+
+            //error handle here then?
+
+            return response;
         }
     }
 }

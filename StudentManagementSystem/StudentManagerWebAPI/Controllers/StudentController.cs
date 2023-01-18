@@ -55,10 +55,20 @@ namespace StudentManagerWebAPI.Controllers
             return response;
         }
         [HttpPost]
-        [Route("addcourses")]
-        public WorkflowResponse AddCourses(int studentID, int[] courseIDs)
+        [Route("addstudentcourse")]
+        public WorkflowResponse AddCourseToStudent([FromBody]SCourseEditTransfer transfer)
         {
-            WorkflowResponse response = Manager.AddCourses(studentID, courseIDs);
+
+            WorkflowResponse response = Manager.AddCourseToStudent(transfer);
+
+            return response;
+
+        }
+        [HttpPost]
+        [Route("removestudentcourse")]
+        public WorkflowResponse RemoveCourseFromStudent([FromBody]SCourseEditTransfer transfer)
+        {
+            WorkflowResponse response = Manager.RemoveCourseFromStudent(transfer);
 
             return response;
         }
