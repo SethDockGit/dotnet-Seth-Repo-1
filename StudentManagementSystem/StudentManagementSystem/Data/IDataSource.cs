@@ -10,8 +10,9 @@ namespace StudentManagementSystem.Data
         public List<Student> Students { get; set; }
         public List<Student> GetStudents();
         public void RemoveStudent();
-        public void AddStudent();
         List<Course> GetCourses();
+        public void AddStudent(Student student);
+        public bool DeleteStudent(Student student);
     }
 
 

@@ -73,12 +73,12 @@ namespace StudentManagementSystem.Logic
 
             student.Id = highestID + 1;
 
-            IDataSource.Students.Add(student);
+            IDataSource.AddStudent(student);
 
             if(IDataSource.Students.Contains(student))
             {
                 response.Success = true;
-                response.Message = $"{student.Name} ID: {student.Id} Added successfully.";
+                response.Message = $"Student '{student.Name}' ID: {student.Id} Added successfully.";
             }
             else
             {
@@ -89,11 +89,31 @@ namespace StudentManagementSystem.Logic
             return response;
         }
 
-        public WorkflowResponse DeleteStudent(Student student)
+        public WorkflowResponse DeleteStudent(int studentID)
         {
             WorkflowResponse response = new WorkflowResponse();
 
+            var toDelete = IDataSource.Students.SingleOrDefault(s => s.Id == studentID);
+
+            bool success = IDataSource.DeleteStudent(toDelete);
+
+            if (success)
+            {
+                response.Success = true;
+                response.Message = $"Student {toDelete.Name} successfully deleted.";
+            }
+            else
+            {
+                response.Success = false;
+                response.Message = $"Error: student of ID {studentID} not found.";
+            }
+
             return response;
+        }
+
+        public WorkflowResponse AddCourses(int studentID, int[] courseIDs)
+        {
+            throw new NotImplementedException();
         }
     }
 }

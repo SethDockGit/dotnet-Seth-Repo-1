@@ -27,8 +27,6 @@ function getStudentById(){
 
             document.getElementById("yourStudent").innerHTML += `Student: ${data.name} || Age: ${data.age}`
         });
-
-
 }
 
 

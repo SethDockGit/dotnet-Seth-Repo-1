@@ -49,13 +49,12 @@ function showCourseView(){
     document.getElementById("edit").innerHTML = `<button type="button" class="btn btn-primary" onclick="selectEditCourses()">Edit Courses</button>`;
 }
 
-
 function selectEditStudents(){
 
-    document.getElementById("edit").innerHTML = "";
+    document.getElementById("edit").innerText = "";
     document.getElementById("edit").innerHTML += `<button type="button" class="btn btn-primary" 
-    onclick="addStudent()">Add a Student</button><button type="button" class="btn btn-primary" 
-    onclick="removeStudent()">Remove a Student</button><button type="button" class="btn btn-primary" 
+    onclick="selectAddStudent()">Add a Student</button><button type="button" class="btn btn-primary" 
+    onclick="selectRemoveStudent()">Remove a Student</button><button type="button" class="btn btn-primary" 
     onclick="editStudent()">Edit a Student</button><button type="button" class="btn btn-primary" 
     onclick="cancelEditStudents()">Cancel</button>`;
 
@@ -64,21 +63,18 @@ function selectEditStudents(){
 var newStudentName = "";
 var newStudentAge = 0;
 let courseIDs = new Array();
+let courses = new Array();
 
-function addStudent(){
+function selectAddStudent(){
 
-    document.getElementById("edit").innerHTML += `</br><input id="enterName" type="text" placeholder="Enter name: (Last, First)">`;
+    document.getElementById("edit").innerHTML = `</br></br><input id="enterName" type="text" placeholder="Enter name: (Last, First)">`;
     document.getElementById("edit").innerHTML += `<input id="enterAge" type="text" placeholder="Enter Age">`;
-    document.getElementById("edit").innerHTML += `<button type="button" class="btn btn-primary" 
+    document.getElementById("edit").innerHTML += `</br><button type="button" class="btn btn-primary" 
     onclick="saveNewStudent()">Save New Student</button>`;
     document.getElementById("edit").innerHTML += `<button type="button" class="btn btn-primary" 
     onclick="cancelAddStudent()">Cancel</button>`;
 
-
-    //here I'll add to the "edit" div inputs to add for new student, turn into an object,
-    //and give over to C#. Have an option to cancel where any global variables will be reset.
 }
-
 function saveNewStudent(){
 
     newStudentName = document.getElementById("enterName").value; 
@@ -86,11 +82,11 @@ function saveNewStudent(){
 
     var obj = {
 
-        Id: -1,  
+        Id: Number(-1),  
         Name: newStudentName,
-        Age: newStudentAge,
-        Courses: undefined,
-        CourseIDArray: undefined,
+        Age: Number(newStudentAge),
+        Courses: courses,
+        CourseIDArray: courseIDs,
     }
 
     fetch(`${api}/student/addstudent`, {
@@ -104,26 +100,65 @@ function saveNewStudent(){
     .then((data) => {
         console.log(data);
 
-        //document.getElementById("Message").innerText = "";
-        //document.getElementById("Message").innerText += data.message;
-        //make a button to continue/reset
+
+        document.getElementById("message").innerHTML += `</br>${data.message}`;
+        document.getElementById("message").innerHTML += `</br><button type="button" class="btn btn-primary" 
+        onclick="continueToMain()">Continue</button>`;
     })
 }
+function continueToMain(){
+    
+    showStudentView();
+    document.getElementById("message").innerText = "";
 
+}
 function cancelAddStudent(){
+    
+    selectEditStudents();
+}
+function selectRemoveStudent(){
 
+    document.getElementById("edit").innerHTML = `<input id="studentRemoveId" type="text" placeholder="Enter the ID of the Student to Delete" style="width: 400px">`;
+    document.getElementById("edit").innerHTML += `</br><button type="button" class="btn btn-primary" 
+    onclick="confirmRemoveStudent()">Confirm: Remove Student</button>`;
+    document.getElementById("edit").innerHTML += `<button type="button" class="btn btn-primary" 
+    onclick="cancelRemoveStudent()">Cancel</button>`;
 }
 
-function removeStudent(){
 
+
+function confirmRemoveStudent(){
+
+    var deleteStudentID = document.getElementById("studentRemoveId").value;
+
+    var toDelete = Number(deleteStudentID);
+
+    fetch(`${api}/student/${toDelete}`, {
+        method: 'DELETE'
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        debugger;
+        document.getElementById("message").innerHTML += `</br>${data.message}`;
+        document.getElementById("message").innerHTML += `</br><button type="button" class="btn btn-primary" 
+        onclick="continueToMain()">Continue</button>`;
+
+    });
 }
+
+function cancelRemoveStudent(){
+
+    selectEditStudents();
+}
+
 function editStudent(){
 
 }
 function cancelEditStudents(){
 
+    showStudentView();
 }
-
 function selectEditCourses(){
 
     document.getElementById("edit").innerHTML = "";

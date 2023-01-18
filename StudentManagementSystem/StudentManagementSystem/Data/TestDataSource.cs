@@ -39,10 +39,6 @@ namespace StudentManagementSystem.Data
             Students = GetStudents();
         }
 
-        public void AddStudent()
-        {
-            throw new NotImplementedException();
-        }
 
         public List<Course> GetCourses()
         {
@@ -85,6 +81,16 @@ namespace StudentManagementSystem.Data
         }
 
         public void RemoveStudent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddStudent(Student student)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteStudent(Student student)
         {
             throw new NotImplementedException();
         }

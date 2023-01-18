@@ -10,6 +10,5 @@ namespace StudentManagementSystem.Models
         public string Name { get; set; }
         public int Age { get; set; }
         public List<Course> Courses { get; set; }
-        public int[] CourseIDArray { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using StudentManagementSystem.Models;
 
@@ -104,10 +105,35 @@ namespace StudentManagementSystem.Data
             }
         }
 
-        public void AddStudent()
+        public void ReWriteStudentsFile()
         {
-            throw new NotImplementedException();
+            File.Delete(StudentSaveFile);
+
+            File.Create(StudentSaveFile).Close();
+
+            foreach(var student in Students)
+            {
+                if(Students.Count > 0)
+                {
+                    using (StreamWriter sw = File.AppendText(StudentSaveFile))
+                    {
+                        if (student != Students.First())
+                        {
+                            sw.Write("\n");
+                        }
+                        sw.Write($"{student.Id}^{student.Name}^{student.Age}^");
+
+                        foreach (var course in student.Courses)
+                        {
+                            sw.Write($"*{course.CourseId}&{course.CourseName}&{course.Professor}&{course.Description}");
+                        }
+                    }
+                }
+            }
+
+            PopulateStudents();
         }
+
 
         public List<Student> GetStudents()
         {
@@ -122,6 +148,22 @@ namespace StudentManagementSystem.Data
         public List<Course> GetCourses()
         {
             return Courses;
+        }
+
+        public void AddStudent(Student student)
+        {
+            Students.Add(student);
+
+            ReWriteStudentsFile();
+        }
+
+        public bool DeleteStudent(Student student)
+        {
+            bool success = Students.Remove(student);
+
+            ReWriteStudentsFile();
+
+            return success;
         }
     }
 }

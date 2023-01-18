@@ -46,6 +46,23 @@ namespace StudentManagerWebAPI.Controllers
 
             return response;
         }
+        [HttpDelete]
+        [Route("{id}")]
+        public WorkflowResponse DeleteStudent(int id)
+        {
+            WorkflowResponse response = Manager.DeleteStudent(id);
+
+            return response;
+        }
+        [HttpPost]
+        [Route("addcourses")]
+        public WorkflowResponse AddCourses(int studentID, int[] courseIDs)
+        {
+            WorkflowResponse response = Manager.AddCourses(studentID, courseIDs);
+
+            return response;
+        }
+
 
     }
 }
