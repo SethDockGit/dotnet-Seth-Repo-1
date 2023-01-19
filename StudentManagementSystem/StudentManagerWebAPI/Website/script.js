@@ -13,6 +13,8 @@ function showStudentView(){
 
         document.getElementById("content").innerHTML = '<table class="table table-bordered w-auto" style="background-color:lightskyblue; margin:auto; text-align:center" id="studentsTable">';
 
+        //check for nonzero amount of students.
+
         for(let i = 0; i < data.students.length; i++){
 
             document.getElementById("studentsTable").innerHTML += 
@@ -86,7 +88,7 @@ function saveNewStudent(){
         console.log(data);
 
 
-        document.getElementById("message").innerHTML += `</br>${data.message}`;
+        document.getElementById("message").innerHTML +=  data.message;
         document.getElementById("message").innerHTML += `</br><button type="button" class="btn btn-secondary" 
         onclick="continueToMain()">Continue</button>`;
     })
@@ -99,7 +101,7 @@ function continueToMain(){
 }
 function cancelAddStudent(){
     
-    selectEditStudents();
+    studentEditOptions();
 }
 function selectRemoveStudent(){
 
@@ -124,17 +126,16 @@ function confirmRemoveStudent(){
     .then((response) => response.json())
     .then((data) => {
         console.log(data);
-        debugger;
-        document.getElementById("message").innerHTML += `</br>${data.message}`;
+
+        document.getElementById("message").innerText += data.message;
         document.getElementById("message").innerHTML += `</br><button type="button" class="btn btn-secondary" 
         onclick="continueToMain()">Continue</button>`;
-
     });
 }
 
 function cancelRemoveStudent(){
 
-    selectEditStudents();
+    studentEditOptions();
 }
 
 function getStudentId(){
@@ -194,7 +195,7 @@ function addCourseToStudent(){
     .then((data) => {
         console.log(data);
 
-        document.getElementById("message").innertext = `${data.message}`;
+        document.getElementById("message").innertext = data.message;
     });
 }
 function removeCourseFromStudent(){
@@ -223,7 +224,7 @@ function removeCourseFromStudent(){
 
 
 }
-function ConfirmEditedStudent(){
+function confirmEditedStudent(){
     
     tempStudent.Age = document.getElementById("enterStudentAge").value;
     tempStudent.StudentName = document.getElementById("enterStudentName").value;
@@ -258,7 +259,6 @@ function showCourseView(){
             document.getElementById("coursesTable").innerHTML += 
             `<tr><td>Course ID: ${data.courses[i].courseId}</td><td>Name: ${data.courses[i].courseName}</td>
             <td>Professor: ${data.courses[i].professor}</td><td>Description: ${data.courses[i].description}</td>`;
-
         } 
     });
 
@@ -276,9 +276,6 @@ function selectEditCourses(){
 }
 function selectAddCourse(){
     document.getElementById("edit").innerHTML = `</br></br><input id="enterCourseTitle" type="text" placeholder="Enter title of the course here">`;
-    document.getElementById("edit").innerHTML += `<input id="enterAge" type="text" placeholder="Enter Age">`;
-    document.getElementById("edit").innerHTML += `</br><button type="button" class="btn btn-secondary" 
-    onclick="saveNewStudent()">Save New Student</button>`;
     document.getElementById("edit").innerHTML += `<button type="button" class="btn btn-secondary" 
     onclick="cancelAddStudent()">Cancel</button>`;
 }

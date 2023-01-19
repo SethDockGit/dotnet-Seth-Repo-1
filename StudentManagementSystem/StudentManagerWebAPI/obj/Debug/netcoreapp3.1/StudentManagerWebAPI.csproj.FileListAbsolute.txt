@@ -34,3 +34,5 @@ C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManag
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\obj\Debug\netcoreapp3.1\StudentManagerWebAPI.dll
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\obj\Debug\netcoreapp3.1\StudentManagerWebAPI.pdb
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\obj\Debug\netcoreapp3.1\StudentManagerWebAPI.genruntimeconfig.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\WebsiteRefactor\package-lock.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\WebsiteRefactor\package.json

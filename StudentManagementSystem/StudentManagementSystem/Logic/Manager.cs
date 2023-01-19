@@ -28,14 +28,13 @@ namespace StudentManagementSystem.Logic
             }
             else if(students.Count == 0)
             {
-                response.Success = false;
+                response.Success = true;
                 response.Message = "There are currently 0 students enrolled.";
             }
             else
             {
                 response.Success = true;
                 response.Students = students;
-                //message?
             }
             return response;
         }
@@ -53,7 +52,7 @@ namespace StudentManagementSystem.Logic
             }
             else if (courses.Count == 0)
             {
-                response.Success = false;
+                response.Success = true;
                 response.Message = "There are currently no courses available.";
             }
             else
@@ -69,9 +68,16 @@ namespace StudentManagementSystem.Logic
         {
             WorkflowResponse response = new WorkflowResponse();
 
-            var highestID = IDataSource.Students.Max(s => s.Id);
+            if(IDataSource.Students.Count == 0)
+            {
+                student.Id = 1;
+            }
+            else
+            {
+                var highestID = IDataSource.Students.Max(s => s.Id); 
 
-            student.Id = highestID + 1;
+                student.Id = highestID + 1;
+            }
 
             IDataSource.AddStudent(student);
 
