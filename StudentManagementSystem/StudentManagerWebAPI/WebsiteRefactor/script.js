@@ -12,12 +12,15 @@ function showStudentView(){
         students = data.students;
 
         document.getElementById("content").innerHTML = 
-        '<table class="table table-bordered w-auto" style="background-color:lightskyblue; margin:auto; text-align:center" id="studentsTable">';
+        '<p class="h2">Students</p><table class="table table-bordered w-auto" style="background-color:lightskyblue; margin:auto; text-align:center" id="studentsTable">';
+
+        document.getElementById("studentsTable").innerHTML = `<thead><tr><th scope="col">ID</th>
+          <th scope="col">Name (Last, First)</th><th scope="col"></th></tr></thead>`;
 
         for(let i = 0; i < data.students.length; i++){
 
             document.getElementById("studentsTable").innerHTML += 
-            `<tr><td>Student ID: ${data.students[i].id}</td><td>${data.students[i].name}</td>
+            `<tr><th scope="row">${data.students[i].id}</th><td>${data.students[i].name}</td>
             <td id="student${[i]}"><button type="button" class="btn btn-secondary" onclick="viewStudent(${[i]})">View</button></td>`;
         } 
     });
