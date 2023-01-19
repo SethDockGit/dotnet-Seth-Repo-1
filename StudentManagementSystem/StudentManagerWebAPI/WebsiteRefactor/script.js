@@ -73,7 +73,7 @@ function addCourseToStudent(){
             <label for="courseID">Course ID</label>
             <input type="email" class="form-control" id="courseIDToAdd" placeholder="Enter course ID">
          </div>
-        <button type="submit" onclick="confirmAddCourseToStudent()" data-toggle="modal" data-target="addCourseModal"
+        <button type="submit" onclick="confirmAddCourseToStudent()" data-bs-toggle="modal" data-bs-target="addCourseModal"
         class="btn btn-primary">Submit</button>
     </form>`;
 }
@@ -99,26 +99,6 @@ function confirmAddCourseToStudent(){
 
         document.getElementById("editForms").innerText = "";
 
-        document.getElementById("modal").innerHTML =     
-        `<div class="modal" id="addCourseModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Add Course</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              ${data.message}
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>`;
-
     });
 }
 function dropCourseFromStudent(){
@@ -127,6 +107,26 @@ function dropCourseFromStudent(){
 function enrollNewStudent(){
 
 }
+
+document.getElementById("modal").innerHTML =     
+
+`<div class="modal fade" id="addCourseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      ...
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary">Understood</button>
+    </div>
+  </div>
+</div>
+</div>`;
 
 var courses = new Array();
 
