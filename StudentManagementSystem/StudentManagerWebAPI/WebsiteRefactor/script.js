@@ -73,7 +73,7 @@ function addCourseToStudent(){
             <label for="courseID">Course ID</label>
             <input type="email" class="form-control" id="courseIDToAdd" placeholder="Enter course ID">
          </div>
-        <button type="submit" onclick="confirmAddCourseToStudent()" data-bs-toggle="modal" data-bs-target="addCourseModal"
+        <button type="submit" onclick="confirmAddCourseToStudent()" data-bs-toggle="modal" data-bs-target="#addCourseModal"
         class="btn btn-primary">Submit</button>
     </form>`;
 }
@@ -99,6 +99,10 @@ function confirmAddCourseToStudent(){
 
         document.getElementById("editForms").innerText = "";
 
+        document.getElementById("addCourseTitle").innerText = `Student ${StudentId}`;
+
+        document.getElementById("addCourseBody").innerText = data.message;
+
     });
 }
 function dropCourseFromStudent(){
@@ -108,25 +112,6 @@ function enrollNewStudent(){
 
 }
 
-document.getElementById("modal").innerHTML =     
-
-`<div class="modal fade" id="addCourseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-<div class="modal-dialog">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-    </div>
-    <div class="modal-body">
-      ...
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      <button type="button" class="btn btn-primary">Understood</button>
-    </div>
-  </div>
-</div>
-</div>`;
 
 var courses = new Array();
 
