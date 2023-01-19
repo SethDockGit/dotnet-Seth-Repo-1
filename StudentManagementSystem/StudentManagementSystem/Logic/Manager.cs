@@ -135,14 +135,18 @@ namespace StudentManagementSystem.Logic
                 response.Success = false;
                 response.Message = "Error: course not found.";
             }
+            else if (student.Courses.Any(c => c.CourseId == transfer.CourseId))
+            {
+                response.Success = false;
+                response.Message = $"{student.Name} is already enrolled in that course";
+            }
             else
             {
                 response.Success = true;
                 response.Message = $"Course {course.CourseName} successfully added to student {student.Name}.";
-                student.Courses.Add(course);
+                IDataSource.AddCourseToStudent(student, course);
+                
             }
-
-            //error handle here then?
 
             return response;
         }
@@ -165,11 +169,16 @@ namespace StudentManagementSystem.Logic
                 response.Success = false;
                 response.Message = "Error: course not found.";
             }
+            else if (!student.Courses.Any(c => c.CourseId == transfer.CourseId))
+            {
+                response.Success = false;
+                response.Message = $"{student.Name} is not enrolled in that course";
+            }
             else
             {
                 response.Success = true;
                 response.Message = $"Course {course.CourseName} successfully removed from student {student.Name}.";
-                student.Courses.Remove(course);
+                IDataSource.RemovecourseFromStudent(student, course);
             }
 
             //error handle here then?

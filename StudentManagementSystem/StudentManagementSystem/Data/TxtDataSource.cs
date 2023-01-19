@@ -170,6 +170,18 @@ namespace StudentManagementSystem.Data
             ReWriteCourseFile();
         }
 
+        public void AddCourseToStudent(Student student, Course course)
+        {
+            student.Courses.Add(course);
 
+            ReWriteStudentsFile();
+        }
+
+        public void RemovecourseFromStudent(Student student, Course course)
+        {
+            student.Courses.Remove(course);
+
+            ReWriteStudentsFile();
+        }
     }
 }

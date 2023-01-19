@@ -13,6 +13,8 @@ namespace StudentManagementSystem.Data
         public List<Course> GetCourses();
         public void AddStudent(Student student);
         public bool DeleteStudent(Student student);
+        public void AddCourseToStudent(Student student, Course course);
+        public void RemovecourseFromStudent(Student student, Course course);
     }
 
 

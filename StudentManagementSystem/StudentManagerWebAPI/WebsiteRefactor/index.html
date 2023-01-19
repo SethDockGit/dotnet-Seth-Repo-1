@@ -1,36 +1,54 @@
 <html>
 
     <head>
-        <title>Student Management</title>
+        <title>Student & Course Management</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="styles.css">
     </head>
 
-    <body onload="showStudentView()" style="margin:auto">
+    <body onload="showStudentView()">
 
+        <div id="modal">
+            
+        </div>
         <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
               <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-              <span class="fs-4">Student Management</span>
+              <span class="fs-4">Student & Course Management
+                
+              </span>
             </a>
           </header>
-        <div class="container">
+        <div class="container" style="margin:10px;">
             <div class="row">
               <div class="col-6">
                 <div>
-                    <button type="button" class="btn btn-primary" onclick="showStudentView()">Student View</button>
-                    <button type="button" class="btn btn-primary" onclick="showCourseView()">Course View</button>
+                    <button type="button" class="btn btn-outline-primary" style="margin:10px;"  onclick="showStudentView()">Student View</button>
+                    <button type="button" class="btn btn-outline-primary" style="margin:10px;"  onclick="showCourseView()">Course View</button>
                 </div>
                 <div id="table">
 
                 </div>
               </div>
               <div class="col-6">
-                <div class="container-lg" id="editor">
+                <div class="container-lg" id="view">
 
                 </div>
               </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div id="addNewForms">
+
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div id="editForms">
+                        
+                    </div>
+                </div>
             </div>
           </div>
     </body>
