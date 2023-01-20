@@ -65,7 +65,7 @@ namespace StudentManagerWebAPI.Controllers
 
         }
         [HttpPost]
-        [Route("removestudentcourse")]
+        [Route("dropstudentcourse")]
         public WorkflowResponse RemoveCourseFromStudent([FromBody]SCourseEditTransfer transfer)
         {
             WorkflowResponse response = Manager.RemoveCourseFromStudent(transfer);

@@ -157,7 +157,7 @@ namespace StudentManagementSystem.Logic
 
             var student = IDataSource.Students.SingleOrDefault(s => s.Id == transfer.StudentId);
 
-            var course = IDataSource.Courses.SingleOrDefault(c => c.CourseId == transfer.CourseId);
+            var course = student.Courses.SingleOrDefault(c => c.CourseId == transfer.CourseId);
 
             if (student == null)
             {
@@ -180,8 +180,6 @@ namespace StudentManagementSystem.Logic
                 response.Message = $"Course {course.CourseName} successfully removed from student {student.Name}.";
                 IDataSource.RemovecourseFromStudent(student, course);
             }
-
-            //error handle here then?
 
             return response;
         }

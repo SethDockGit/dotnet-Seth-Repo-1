@@ -35,6 +35,52 @@ function showStudentView(){
 
     });
 }
+function enrollNewStudent(){
+
+    document.getElementById("editForms").innerHTML =
+    `<form style="padding: 20px; border:2px solid; border-radius: 5px; border-color:lightgray;">
+        <div class="form-group">
+            <label for="studentName">Student Name</label>
+            <input type="text" class="form-control" id="enterName" placeholder="Enter Student Name (Last, First)">
+         </div>
+         <div class="form-group">
+            <label for="studentAge">Student Age</label>
+            <input type="text" class="form-control" id="enterAge" placeholder="Enter Student Age">
+        </div>
+        <button type="submit" onclick="saveNewStudent()" data-bs-toggle="modal" data-bs-target="#saveStudentModal"
+        class="btn btn-primary">Submit</button>
+    </form>`;
+}
+function saveNewStudent(){
+
+    newStudentName = document.getElementById("enterName").value; 
+    newStudentAge = document.getElementById("enterAge").value;
+
+    var APIRequest = {
+
+        Id: -1,
+        Name: newStudentName,
+        Age: newStudentAge,
+        Courses: new Array(),
+    }
+
+    fetch(`${api}/student/addstudent`, {
+        method: 'POST',
+        body: JSON.stringify(APIRequest),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+
+
+        document.getElementById("saveStudentTitle").innerText ="Add New Student";
+        document.getElementById("saveStudentBody").innerText = data.message;
+    })
+
+}
 function viewStudent(i){
 
     selectedStudentID = i + 1;
@@ -71,7 +117,7 @@ function addCourseToStudent(){
     `<form style="padding: 20px; border:2px solid; border-radius: 5px; border-color:lightgray;">
         <div class="form-group">
             <label for="courseID">Course ID</label>
-            <input type="email" class="form-control" id="courseIDToAdd" placeholder="Enter course ID">
+            <input type="text" class="form-control" id="courseIDToAdd" placeholder="Enter course ID">
          </div>
         <button type="submit" onclick="confirmAddCourseToStudent()" data-bs-toggle="modal" data-bs-target="#addCourseModal"
         class="btn btn-primary">Submit</button>
@@ -81,14 +127,14 @@ function confirmAddCourseToStudent(){
     var courseAddID = document.getElementById("courseIDToAdd").value;
     var castedCourseID = Number(courseAddID);
 
-    var transfer = {
+    var APIRequest = {
         StudentId: selectedStudentID,
         CourseId: castedCourseID,
     }
 
     fetch(`${api}/student/addstudentcourse`, {
         method: 'POST',
-        body: JSON.stringify(transfer),
+        body: JSON.stringify(APIRequest),
         headers: {
             'Content-Type': 'application/json'
         }
@@ -99,13 +145,52 @@ function confirmAddCourseToStudent(){
 
         document.getElementById("editForms").innerText = "";
 
-        document.getElementById("addCourseTitle").innerText = `Student ${StudentId}`;
+        document.getElementById("addCourseTitle").innerText = `Student ${selectedStudentID}`;
 
         document.getElementById("addCourseBody").innerText = data.message;
 
     });
 }
 function dropCourseFromStudent(){
+
+    document.getElementById("editForms").innerHTML =
+    `<form style="padding: 20px; border:2px solid; border-radius: 5px; border-color:lightgray;">
+        <div class="form-group">
+            <label for="courseID">Course ID</label>
+            <input type="text" class="form-control" id="courseIDToDrop" placeholder="Enter course ID">
+         </div>
+        <button type="submit" onclick="confirmDropCourseFromStudent()" data-bs-toggle="modal" data-bs-target="#dropCourseModal"
+        class="btn btn-primary">Submit</button>
+    </form>`;
+}
+function confirmDropCourseFromStudent(){
+
+    var courseDropID = document.getElementById("courseIDToDrop").value;
+    var castedCourseID = Number(courseDropID);
+
+    var APIRequest = {
+        StudentId: selectedStudentID,
+        CourseId: castedCourseID,
+    }
+
+    fetch(`${api}/student/dropstudentcourse`, {
+        method: 'POST',
+        body: JSON.stringify(APIRequest),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+
+        document.getElementById("editForms").innerText = "";
+
+        document.getElementById("dropCourseTitle").innerText = `Student ${selectedStudentID}`;
+
+        document.getElementById("dropCourseBody").innerText = data.message;
+
+    });
 
 }
 function enrollNewStudent(){
