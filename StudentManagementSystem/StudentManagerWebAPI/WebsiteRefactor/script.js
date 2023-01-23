@@ -6,7 +6,15 @@ var selectedStudentID = -1; //is changed only by viewStudent()
 
 var selectedStudent;
 
+var selectedCourse;
+
+var selectedCourseID = -1;
+
+var courses = new Array();
+
 function showStudentView(){
+
+    document.getElementById("editForms").innerText = "";
 
     fetch(`${api}/student/students`)
     .then((response) => response.json())
@@ -24,12 +32,16 @@ function showStudentView(){
         </thead><tr><th scope="col">ID</th>
         <th scope="col">Name (Last, First)</th><th scope="col"></th></tr></thead><tbody></tbody></table></div>`;
 
-        for(let i = 0; i < data.students.length; i++){
+        if(data.students !== null){
 
-            document.getElementById("studentsTable").innerHTML += 
-            `<tr><th scope="row">${data.students[i].id}</th><td>${data.students[i].name}</td>
-            <td id="student${[i]}"><button type="button" class="btn btn-primary" onclick="viewStudent(${[i]})">View</button></td>`;
-        } 
+            for(let i = 0; i < data.students.length; i++){
+    
+                document.getElementById("studentsTable").innerHTML += 
+                `<tr><th scope="row">${data.students[i].id}</th><td>${data.students[i].name}</td>
+                <td id="student${[i]}"><button type="button" class="btn btn-primary" onclick="viewStudent(${i})">View</button></td>`;
+            } 
+
+        }
 
         document.getElementById("table").innerHTML += `<button type="button" class="btn btn-success"  style="margin:10px;" onclick="enrollNewStudent()">Enroll New Student</button>`;
 
@@ -39,6 +51,7 @@ function enrollNewStudent(){
 
     document.getElementById("editForms").innerHTML =
     `<form style="padding: 20px; border:2px solid; border-radius: 5px; border-color:lightgray;">
+        <h4>Enroll New Student</h4>
         <div class="form-group">
             <label for="studentName">Student Name</label>
             <input type="text" class="form-control" id="enterName" placeholder="Enter Student Name (Last, First)">
@@ -47,10 +60,13 @@ function enrollNewStudent(){
             <label for="studentAge">Student Age</label>
             <input type="text" class="form-control" id="enterAge" placeholder="Enter Student Age">
         </div>
-        <button type="submit" onclick="saveNewStudent()" data-bs-toggle="modal" data-bs-target="#saveStudentModal"
+        <button type="button" onclick="saveNewStudent()" data-bs-toggle="modal" data-bs-target="#saveStudentModal"
         class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-secondary" onclick="closeForm">Cancel</button>
     </form>`;
 }
+
+
 function saveNewStudent(){
 
     newStudentName = document.getElementById("enterName").value; 
@@ -60,8 +76,8 @@ function saveNewStudent(){
 
         Id: -1,
         Name: newStudentName,
-        Age: newStudentAge,
-        Courses: new Array(),
+        Age: Number(newStudentAge),
+        Courses: courses,
     }
 
     fetch(`${api}/student/addstudent`, {
@@ -78,12 +94,14 @@ function saveNewStudent(){
 
         document.getElementById("saveStudentTitle").innerText ="Add New Student";
         document.getElementById("saveStudentBody").innerText = data.message;
-    })
+    });
 
 }
 function viewStudent(i){
 
-    selectedStudentID = i + 1;
+    selectedStudent = students[i];
+
+    document.getElementById("editForms").innerText = "";
 
     document.getElementById("view").innerHTML = `<div class="card" style="width: 18rem;">
     <div class="card-body">
@@ -109,26 +127,139 @@ function viewStudent(i){
 }
 function editStudent(){
 
+    document.getElementById("editForms").innerHTML =
+    `<form style="padding: 20px; border:2px solid; border-radius: 5px; border-color:lightgray;">
+        <h4>Update Student Information</h4>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="studentName" placeholder="Enter Name (Last, First)">
+         </div>
+         <div class="form-group">
+            <label for="age">Age</label>
+            <input type="text" class="form-control" id="studentAge" placeholder="Enter Student Age">
+        </div>
+        <button type="button" onclick="saveStudentInfo()" data-bs-toggle="modal" data-bs-target="#studentInfoModal"
+        class="btn btn-primary">Submit</button>
+        <button type="button" onclick="deleteStudent()" data-bs-toggle="modal" data-bs-target="#warnDeleteStudentModal"
+        class="btn btn-outline-danger">Delete Student</button>
+        <button type="button" class="btn btn-secondary" onclick="closeForm">Cancel</button>
+    </form>`;
+
+}
+function saveStudentInfo(){
+
+    var name = document.getElementById("studentName").value;
+    var age = document.getElementById("studentAge").value;
+    
+    if(age === NaN || age < 1){
+        document.getElementById("studentInfoBody").innerText = "Age must be a number above zero."
+    }
+    else if(name === ""){
+        document.getElementById("studentInfoBody").innerText = "Name field cannot be blank."
+    }
+    else{
+        var APIRequest = {
+    
+            StudentId: selectedStudent.id,
+            Name: name,
+            Age: Number(age),
+        }
+    
+        fetch(`${api}/student/editstudent`, {
+            method: 'POST',
+            body: JSON.stringify(APIRequest),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+    
+            document.getElementById("studentInfoTitle").innerText = "Edit Student";
+            document.getElementById("studentInfoBody").innerText = data.message;
+            document.getElementById("editForms").innerHTML = "";
+        });
+    }
+
+}
+function deleteStudent(){
+
+    document.getElementById("warnDeleteStudentTitle").innerText = "Delete Student"
+    document.getElementById("warnDeleteStudentBody").innerText = `Are you sure you want to delete ${selectedStudent.name}?`;
+
+}
+function confirmDeleteStudent(){
+
+    var toDelete = selectedStudent.id;
+
+    fetch(`${api}/student/s${toDelete}`, {
+        method: 'DELETE'
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+
+        document.getElementById("deleteStudentTitle").innerText = "Delete Student";
+        document.getElementById("deleteStudentBody").innerText = data.message;
+    });
 
 }
 function addCourseToStudent(){
 
+    //courses needs to be defined first by clicking course view
+
+    var availableCourses = new Array();
+
+    for (let i=0; i < courses.length; i++){
+
+        availableCourses[i] = courses[i];
+
+        for (let j=0; J <selectedStudent.Courses.length; j++){
+
+            if(selectedStudent.Courses[j] === courses[i]){
+                availableCourses[i] === undefined;
+            }
+        }
+    }
+
+    //now loop through available courses, and if it is not undefined at index, add a list item.
+
+
     document.getElementById("editForms").innerHTML =
+
     `<form style="padding: 20px; border:2px solid; border-radius: 5px; border-color:lightgray;">
+    <h4>Add A Course</h4>
+
         <div class="form-group">
             <label for="courseID">Course ID</label>
-            <input type="text" class="form-control" id="courseIDToAdd" placeholder="Enter course ID">
+            <input type="text" class="form-control" id="courseIDToAdd" placeholder="Enter course ID to add">
          </div>
-        <button type="submit" onclick="confirmAddCourseToStudent()" data-bs-toggle="modal" data-bs-target="#addCourseModal"
+
+         <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Dropdown button
+            </button>
+            <ul class="dropdown-menu">
+                <li><button type="button" onclick="test()"
+                class="btn btn-primary">Course name</button></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+        </div>
+
+        <button type="button" onclick="confirmAddCourseToStudent()" data-bs-toggle="modal" data-bs-target="#addCourseModal"
         class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-secondary" onclick="closeForm">Cancel</button>
     </form>`;
 }
+
 function confirmAddCourseToStudent(){
     var courseAddID = document.getElementById("courseIDToAdd").value;
     var castedCourseID = Number(courseAddID);
 
     var APIRequest = {
-        StudentId: selectedStudentID,
+        StudentId: selectedStudent.id,
         CourseId: castedCourseID,
     }
 
@@ -145,7 +276,7 @@ function confirmAddCourseToStudent(){
 
         document.getElementById("editForms").innerText = "";
 
-        document.getElementById("addCourseTitle").innerText = `Student ${selectedStudentID}`;
+        document.getElementById("addCourseTitle").innerText = `Student ${selectedStudent.id}`;
 
         document.getElementById("addCourseBody").innerText = data.message;
 
@@ -155,12 +286,14 @@ function dropCourseFromStudent(){
 
     document.getElementById("editForms").innerHTML =
     `<form style="padding: 20px; border:2px solid; border-radius: 5px; border-color:lightgray;">
+        <h4>Drop a Course</h4>
         <div class="form-group">
             <label for="courseID">Course ID</label>
-            <input type="text" class="form-control" id="courseIDToDrop" placeholder="Enter course ID">
+            <input type="text" class="form-control" id="courseIDToDrop" placeholder="Enter course ID to drop">
          </div>
-        <button type="submit" onclick="confirmDropCourseFromStudent()" data-bs-toggle="modal" data-bs-target="#dropCourseModal"
+        <button type="button" onclick="confirmDropCourseFromStudent()" data-bs-toggle="modal" data-bs-target="#dropCourseModal"
         class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-secondary" onclick="closeForm">Cancel</button>
     </form>`;
 }
 function confirmDropCourseFromStudent(){
@@ -169,7 +302,7 @@ function confirmDropCourseFromStudent(){
     var castedCourseID = Number(courseDropID);
 
     var APIRequest = {
-        StudentId: selectedStudentID,
+        StudentId: selectedStudent.id,
         CourseId: castedCourseID,
     }
 
@@ -186,21 +319,16 @@ function confirmDropCourseFromStudent(){
 
         document.getElementById("editForms").innerText = "";
 
-        document.getElementById("dropCourseTitle").innerText = `Student ${selectedStudentID}`;
+        document.getElementById("dropCourseTitle").innerText = `Student ${selectedStudent.id}`;
 
         document.getElementById("dropCourseBody").innerText = data.message;
 
     });
 
 }
-function enrollNewStudent(){
-
-}
-
-
-var courses = new Array();
-
 function showCourseView(){
+
+    document.getElementById("editForms").innerText = "";
 
     fetch(`${api}/student/courses`)
     .then((response) => response.json())
@@ -218,22 +346,29 @@ function showCourseView(){
         </thead><tr><th scope="col">ID</th>
         <th scope="col">Title</th><th scope="col"></th></tr></thead><tbody></tbody></table></div>`;
 
-        for(let i = 0; i < data.courses.length; i++){
+        if(data.courses !== null){
 
-            document.getElementById("coursesTable").innerHTML += 
-            `<tr><th scope="row">${data.courses[i].courseId}</th><td>${data.courses[i].courseName}</td>
-            <td><button type="button" class="btn btn-primary" onclick="viewCourse(${[i]})">View</button></td>`;
-        } 
+            for(let i = 0; i < data.courses.length; i++){
+    
+                document.getElementById("coursesTable").innerHTML += 
+                `<tr><th scope="row">${data.courses[i].courseId}</th><td>${data.courses[i].courseName}</td>
+                <td><button type="button" class="btn btn-primary" onclick="viewCourse(${i})">View</button></td>`;
+            } 
+        }
 
         document.getElementById("table").innerHTML += `<button type="button" class="btn btn-success"  style="margin:10px;" onclick="addNewCourse()">Add a New Course</button>`;
     });
 }
 function viewCourse(i){
 
+    selectedCourse = courses[i];
+
+    document.getElementById("editForms").innerText = "";
+
     document.getElementById("view").innerHTML = `<div class="card" style="width: 18rem;">
     <div class="card-body">
       <h5 class="card-title">${courses[i].courseName}</h5>
-      <h6 class="card-subtitle mb-2 text-muted">Professor: ${courses[i].professor}</h6>
+      <h6 class="card-subtitle mb-2 text-muted">Prof: ${courses[i].professor}</h6>
       <h6 class="card-subtitle mb-2 text-muted">ID: ${courses[i].courseId}</h6>
       <p class="card-text">
       <button type="button" class="btn btn-outline-info" style="margin:10px;"  onclick="editCourse()">Edit</button>
@@ -245,7 +380,165 @@ function viewCourse(i){
 }
 function editCourse(){
 
+    document.getElementById("editForms").innerHTML =
+    `<form style="padding: 20px; border:2px solid; border-radius: 5px; border-color:lightgray;">
+        <h4>Update Course Information</h4>
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="updateCourseTitle" placeholder="Enter Title">
+         </div>
+         <div class="form-group">
+            <label for="Professor">Professor</label>
+            <input type="text" class="form-control" id="updateProfessor" placeholder="Enter Professor Name">
+        </div>
+        <div class="form-group">
+            <label for="Description">Description</label>
+            <input type="text" class="form-control" id="updateDescription" placeholder="Enter Course Description">
+        </div>
+        <button type="button" onclick="saveCourseInfo()" data-bs-toggle="modal" data-bs-target="#courseInfoModal"
+        class="btn btn-primary">Submit</button>
+        <button type="button" onclick="deleteCourse()" data-bs-toggle="modal" data-bs-target="#warnDeleteCourseModal"
+        class="btn btn-outline-danger">Delete Course</button>
+        <button type="button" class="btn btn-secondary" onclick="closeForm">Cancel</button>
+    </form>`;
+
+
+}
+function saveCourseInfo(){
+
+    var title = document.getElementById("updateCourseTitle").value;
+    var professor = document.getElementById("updateProfessor").value;
+    var description = document.getElementById("updateDescription").value;
+    
+    if(title === "" || professor === "" || description === ""){
+        document.getElementById("courseInfoBody").innerText = "One or more fields was left blank. Please try again."
+    }
+    else{
+        debugger;
+        var APIRequest = {
+    
+            CourseId: selectedCourse.courseId,
+            CourseName: title,
+            Professor: professor,
+            Description: description,
+        }
+    
+        fetch(`${api}/student/editcourse`, {
+            method: 'POST',
+            body: JSON.stringify(APIRequest),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            document.getElementById("courseInfoTitle").innerText = "Edit Course";
+            document.getElementById("courseInfoBody").innerText = data.message;
+            document.getElementById("editForms").innerHTML = "";
+        });
+    }
+}
+function deleteCourse(){
+
+    document.getElementById("warnDeleteCourseTitle").innerText = "Delete Course"
+    document.getElementById("warnDeleteCourseBody").innerText = `Are you sure you want to delete course ${selectedCourse.courseName}?`;
+
+}
+function confirmDeleteCourse(){
+
+    var toDelete = selectedCourse.courseId;
+
+    fetch(`${api}/student/c${toDelete}`, {
+        method: 'DELETE'
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+
+        document.getElementById("deleteCourseTitle").innerText = "Delete Course";
+        document.getElementById("deleteCourseBody").innerText = data.message;
+    });
+
 }
 function addNewCourse(){
 
+    document.getElementById("editForms").innerHTML =
+    `<form style="padding: 20px; border:2px solid; border-radius: 5px; border-color:lightgray;">
+        <h4>Add New Course</h4>
+        <div class="form-group">
+            <label for="courseTitle">Course Title</label>
+            <input type="text" class="form-control" id="courseTitle" placeholder="Enter Title of Course">
+         </div>
+         <div class="form-group">
+            <label for="courseID">Course ID</label>
+            <input type="text" class="form-control" id="courseID" placeholder="Enter Course ID">
+        </div>
+        <div class="form-group">
+            <label for="professor">Professor</label>
+            <input type="text" class="form-control" id="professor" placeholder="Enter Name of Professor">
+        </div> 
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input type="text" class="form-control" id="description" placeholder="Enter Course Description">
+        </div> 
+        <button type="button" onclick="saveNewCourse()" data-bs-toggle="modal" data-bs-target="#saveCourseModal"
+        class="btn btn-primary">Submit</button>
+        <button type="button" onclick="closeForm" class="btn btn-secondary">Cancel</button>
+    </form>`;
+}
+function saveNewCourse(){
+
+    var newCourseTitle = document.getElementById("courseTitle").value; 
+    var newCourseID = document.getElementById("courseID").value;
+    var professor = document.getElementById("professor").value;
+    var description = document.getElementById("description").value;
+
+    let sendRequest = true;
+
+    if(courses !== null){
+
+        for(let i =0; i < courses.length; i++){
+
+            if (courses[i].courseId === newCourseID){
+
+                sendRequest = false;
+            }
+        }
+    }
+    debugger;
+
+    if(sendRequest){
+
+        var APIRequest = {
+    
+            CourseId: Number(newCourseID),
+            CourseName: newCourseTitle,
+            Professor: professor,
+            Description: description,
+        }
+    
+        fetch(`${api}/student/addcourse`, {
+            method: 'POST',
+            body: JSON.stringify(APIRequest),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+    
+            document.getElementById("saveCourseTitle").innerText ="Add New Course";
+            document.getElementById("saveCourseBody").innerText = data.message;
+        });
+    }
+    else {
+        document.getElementById("saveCourseTitle").innerText ="Add New Course";
+        document.getElementById("saveCourseBody").innerText = "Error: Duplicate course ID found.";
+    }
+}
+function closeForm(){
+
+	document.getElementById("editForms").innerHTML = "";
 }

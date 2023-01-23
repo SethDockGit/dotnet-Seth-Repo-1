@@ -40,23 +40,49 @@ namespace StudentManagerWebAPI.Controllers
         }
         [HttpPost]
         [Route("addstudent")]
-        public WorkflowResponse AddStudent([FromBody]Student student)
+        public WorkflowResponse AddStudent([FromBody] Student student)
         {
             WorkflowResponse response = Manager.AddStudent(student);
 
             return response;
         }
+        [HttpPost]
+        [Route("editstudent")]
+        public WorkflowResponse EditStudent([FromBody] SInfoEditTransfer transfer)
+        {
+            WorkflowResponse response = Manager.EditStudentInfo(transfer);
+
+            return response;
+        }
+        [HttpPost]
+        [Route("addcourse")]
+        public WorkflowResponse AddCourse([FromBody] Course course)
+        {
+            WorkflowResponse response = Manager.AddCourse(course);
+
+            return response;
+        }
         [HttpDelete]
-        [Route("{id}")]
+        [Route("s{id}")]
         public WorkflowResponse DeleteStudent(int id)
         {
             WorkflowResponse response = Manager.DeleteStudent(id);
 
             return response;
         }
+        [HttpDelete]
+        [Route("c{id}")]
+        public WorkflowResponse DeleteCourse(int id)
+        {
+            WorkflowResponse response = Manager.DeleteCourse(id);
+
+            return response;
+        }
+
+
         [HttpPost]
         [Route("addstudentcourse")]
-        public WorkflowResponse AddCourseToStudent([FromBody]SCourseEditTransfer transfer)
+        public WorkflowResponse AddCourseToStudent([FromBody] SCourseEditTransfer transfer)
         {
 
             WorkflowResponse response = Manager.AddCourseToStudent(transfer);
@@ -66,13 +92,19 @@ namespace StudentManagerWebAPI.Controllers
         }
         [HttpPost]
         [Route("dropstudentcourse")]
-        public WorkflowResponse RemoveCourseFromStudent([FromBody]SCourseEditTransfer transfer)
+        public WorkflowResponse RemoveCourseFromStudent([FromBody] SCourseEditTransfer transfer)
         {
             WorkflowResponse response = Manager.RemoveCourseFromStudent(transfer);
 
             return response;
         }
+        [HttpPost]
+        [Route("editcourse")]
+        public WorkflowResponse EditCourse([FromBody] Course course)
+        {
+            WorkflowResponse response = Manager.EditCourseInfo(course);
 
-
+            return response;
+        }
     }
 }

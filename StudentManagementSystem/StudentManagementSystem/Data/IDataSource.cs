@@ -15,6 +15,10 @@ namespace StudentManagementSystem.Data
         public bool DeleteStudent(Student student);
         public void AddCourseToStudent(Student student, Course course);
         public void RemovecourseFromStudent(Student student, Course course);
+        public void AddCourse(Course course);
+        public void EditStudentInfo();
+        public void EditCourseInfo();
+        public bool DeleteCourse(Course course);
     }
 
 

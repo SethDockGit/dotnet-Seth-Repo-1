@@ -88,8 +88,25 @@ namespace StudentManagementSystem.Logic
             }
             else
             {
-                response.Success = false;
-                response.Message = $"Error: Unable to add student.";
+                throw new Exception("Error: Failed to add to student.");
+            }
+
+            return response;
+        }
+        public WorkflowResponse AddCourse(Course course)
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            IDataSource.AddCourse(course);
+
+            if (IDataSource.Courses.Contains(course))
+            {
+                response.Success = true;
+                response.Message = $"Course '{course.CourseName}' Added successfully.";
+            }
+            else
+            {
+                throw new Exception("Error: Failed to add to student.");
             }
 
             return response;
@@ -179,6 +196,63 @@ namespace StudentManagementSystem.Logic
                 response.Success = true;
                 response.Message = $"Course {course.CourseName} successfully removed from student {student.Name}.";
                 IDataSource.RemovecourseFromStudent(student, course);
+            }
+
+            return response;
+        }
+
+        public WorkflowResponse EditStudentInfo(SInfoEditTransfer transfer)
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            var studentToEdit = IDataSource.Students.SingleOrDefault(s => s.Id == transfer.StudentId);
+
+            studentToEdit.Age = transfer.Age;
+            studentToEdit.Name = transfer.Name;
+
+            IDataSource.EditStudentInfo();
+
+            response.Success = true;
+            response.Message = $"Information for {studentToEdit.Name} successfully updated";
+
+            return response;
+
+        }
+
+        public WorkflowResponse EditCourseInfo(Course course)
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            var courseToEdit = IDataSource.Courses.SingleOrDefault(c => c.CourseId == course.CourseId);
+
+            courseToEdit.CourseName = course.CourseName;
+            courseToEdit.Professor = course.Professor;
+            courseToEdit.Description = course.Description;
+
+            IDataSource.EditCourseInfo();
+
+            response.Success = true;
+            response.Message = $"Information for course {courseToEdit.CourseName} successfully updated";
+
+            return response;
+        }
+        public WorkflowResponse DeleteCourse(int ID)
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            var toDelete = IDataSource.Courses.SingleOrDefault(c => c.CourseId == ID);
+
+            bool success = IDataSource.DeleteCourse(toDelete);
+
+            if (success)
+            {
+                response.Success = true;
+                response.Message = $"Course {toDelete.CourseName} successfully deleted.";
+            }
+            else
+            {
+                response.Success = false;
+                response.Message = $"Error: course of ID {ID} not found."; //can this even happen?
             }
 
             return response;

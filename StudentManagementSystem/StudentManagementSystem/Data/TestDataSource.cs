@@ -105,5 +105,25 @@ namespace StudentManagementSystem.Data
         {
             throw new NotImplementedException();
         }
+
+        public void AddCourse(Course course)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EditStudentInfo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EditCourseInfo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteCourse(Course course)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

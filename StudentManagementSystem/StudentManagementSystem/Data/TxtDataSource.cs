@@ -144,7 +144,7 @@ namespace StudentManagementSystem.Data
 
                 while ((line = sr.ReadLine()) != null)
                 {
-                    string[] splitline = line.Split(',');
+                    string[] splitline = line.Split('*');
 
                     Course course = new Course()
                     {
@@ -160,7 +160,25 @@ namespace StudentManagementSystem.Data
         }
         private void ReWriteCourseFile()
         {
-            throw new NotImplementedException();
+            File.Delete(CourseSaveFile);
+
+            File.Create(CourseSaveFile).Close();
+
+            foreach (var course in Courses)
+            {
+                if (Courses.Count > 0)
+                {
+                    using (StreamWriter sw = File.AppendText(CourseSaveFile))
+                    {
+                        if (course != Courses.First())
+                        {
+                            sw.Write("\n");
+                        }
+                        sw.Write($"{course.CourseId}*{course.CourseName}*{course.Professor}*{course.Description}");
+                    }
+                }
+            }
+            PopulateCourses();
         }
 
         public void AddCourse(Course course)
@@ -182,6 +200,25 @@ namespace StudentManagementSystem.Data
             student.Courses.Remove(course);
 
             ReWriteStudentsFile();
+        }
+
+        public void EditStudentInfo()
+        {
+            ReWriteStudentsFile();
+        }
+
+        public void EditCourseInfo()
+        {
+            ReWriteCourseFile();
+        }
+
+        public bool DeleteCourse(Course course)
+        {
+            bool success = Courses.Remove(course);
+
+            ReWriteCourseFile();
+
+            return success;
         }
     }
 }
