@@ -23,14 +23,6 @@ namespace StudentManagementSystem.Data
             Students = new List<Student>();
             Courses = new List<Course>();
 
-            if (File.Exists(StudentSaveFile))
-            {
-                PopulateStudents();
-            }
-            else
-            {
-                File.Create(StudentSaveFile);
-            }
             if (File.Exists(CourseSaveFile))
             {
                 PopulateCourses();
@@ -38,6 +30,14 @@ namespace StudentManagementSystem.Data
             else
             {
                 File.Create(CourseSaveFile);
+            }
+            if (File.Exists(StudentSaveFile))
+            {
+                PopulateStudents();
+            }
+            else
+            {
+                File.Create(StudentSaveFile);
             }
         }
 
@@ -63,22 +63,26 @@ namespace StudentManagementSystem.Data
 
                     for (int i = 1; i < courses.Length; i++)
                     {
-                        string[] courseProperties = courses[i].Split('&'); ///try line instead of courses[i] if fail
 
-                        Course course = new Course()
-                        {
-                            CourseId = int.Parse(courseProperties[0]),
-                            CourseName = courseProperties[1],
-                            Professor = courseProperties[2],
-                            Description = courseProperties[3],
-                        };
+                        int id = int.Parse(courses[i]);
+
+                        var course = GetCourseByID(id);
 
                         student.Courses.Add(course);
+                
                     }
 
                     Students.Add(student);
                 }
             }
+        }
+        public Course GetCourseByID(int id)
+        {
+
+            Course course = Courses.SingleOrDefault(c => c.CourseId == id);
+
+            return course;
+
         }
 
         public void ReWriteStudentsFile()
@@ -101,7 +105,7 @@ namespace StudentManagementSystem.Data
 
                         foreach (var course in student.Courses)
                         {
-                            sw.Write($"*{course.CourseId}&{course.CourseName}&{course.Professor}&{course.Description}");
+                            sw.Write($"*{course.CourseId}");
                         }
                     }
                 }

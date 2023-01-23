@@ -16,6 +16,15 @@ function showStudentView(){
 
     document.getElementById("editForms").innerText = "";
 
+    fetch(`${api}/student/courses`)
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+
+        courses = data.courses;
+    
+    });
+
     fetch(`${api}/student/students`)
     .then((response) => response.json())
     .then((data) => {
@@ -62,11 +71,9 @@ function enrollNewStudent(){
         </div>
         <button type="button" onclick="saveNewStudent()" data-bs-toggle="modal" data-bs-target="#saveStudentModal"
         class="btn btn-primary">Submit</button>
-        <button type="button" class="btn btn-secondary" onclick="closeForm">Cancel</button>
+        <button type="button" class="btn btn-secondary" onclick="closeForm()">Cancel</button>
     </form>`;
 }
-
-
 function saveNewStudent(){
 
     newStudentName = document.getElementById("enterName").value; 
@@ -142,7 +149,7 @@ function editStudent(){
         class="btn btn-primary">Submit</button>
         <button type="button" onclick="deleteStudent()" data-bs-toggle="modal" data-bs-target="#warnDeleteStudentModal"
         class="btn btn-outline-danger">Delete Student</button>
-        <button type="button" class="btn btn-secondary" onclick="closeForm">Cancel</button>
+        <button type="button" class="btn btn-secondary" onclick="closeForm()">Cancel</button>
     </form>`;
 
 }
@@ -207,60 +214,70 @@ function confirmDeleteStudent(){
 }
 function addCourseToStudent(){
 
-    //courses needs to be defined first by clicking course view
-
-    var availableCourses = new Array();
-
-    for (let i=0; i < courses.length; i++){
-
-        availableCourses[i] = courses[i];
-
-        for (let j=0; J <selectedStudent.Courses.length; j++){
-
-            if(selectedStudent.Courses[j] === courses[i]){
-                availableCourses[i] === undefined;
-            }
-        }
-    }
-
-    //now loop through available courses, and if it is not undefined at index, add a list item.
-
-
     document.getElementById("editForms").innerHTML =
 
     `<form style="padding: 20px; border:2px solid; border-radius: 5px; border-color:lightgray;">
     <h4>Add A Course</h4>
 
-        <div class="form-group">
-            <label for="courseID">Course ID</label>
-            <input type="text" class="form-control" id="courseIDToAdd" placeholder="Enter course ID to add">
-         </div>
-
          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown button
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Available Courses
             </button>
-            <ul class="dropdown-menu">
-                <li><button type="button" onclick="test()"
-                class="btn btn-primary">Course name</button></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
+            <ul class="dropdown-menu" id="availableCourses">
+
             </ul>
         </div>
-
+        <div id="addCourseToStudentForm"></div>
+        </br>
         <button type="button" onclick="confirmAddCourseToStudent()" data-bs-toggle="modal" data-bs-target="#addCourseModal"
         class="btn btn-primary">Submit</button>
-        <button type="button" class="btn btn-secondary" onclick="closeForm">Cancel</button>
+        <button type="button" class="btn btn-secondary" onclick="closeForm()">Cancel</button>
     </form>`;
-}
 
+    var availableCourses = new Array();
+
+    if(selectedStudent.courses.count === 0){
+
+        availableCourses = courses;
+
+    }
+    else{
+
+        for (let i=0; i < courses.length; i++){
+    
+            availableCourses[i] = courses[i];
+    
+            for (let j=0; j <selectedStudent.courses.length; j++){
+    
+                if(selectedStudent.courses[j].courseId === courses[i].courseId){
+                    availableCourses[i].courseId = -1;
+                }
+            }
+        }
+    }
+
+    document.getElementById("availableCourses").innerHTML = "";
+
+    for(let j = 0; j < availableCourses.length; j++){
+
+        if(availableCourses[j].courseId !== -1){
+
+            document.getElementById("availableCourses").innerHTML += `<li onclick="selectCourseToAdd(${j})">${availableCourses[j].courseId}: ${availableCourses[j].courseName}</li>`;
+        }
+    }
+}
+function selectCourseToAdd(j){
+
+    selectedCourseID = courses[j].courseId;
+
+    document.getElementById("addCourseToStudentForm").innerHTML += `</br>Selected: ${courses[j].courseName}</br>`;
+
+}
 function confirmAddCourseToStudent(){
-    var courseAddID = document.getElementById("courseIDToAdd").value;
-    var castedCourseID = Number(courseAddID);
 
     var APIRequest = {
         StudentId: selectedStudent.id,
-        CourseId: castedCourseID,
+        CourseId: selectedCourseID,
     }
 
     fetch(`${api}/student/addstudentcourse`, {
@@ -293,7 +310,7 @@ function dropCourseFromStudent(){
          </div>
         <button type="button" onclick="confirmDropCourseFromStudent()" data-bs-toggle="modal" data-bs-target="#dropCourseModal"
         class="btn btn-primary">Submit</button>
-        <button type="button" class="btn btn-secondary" onclick="closeForm">Cancel</button>
+        <button type="button" class="btn btn-secondary" onclick="closeForm()">Cancel</button>
     </form>`;
 }
 function confirmDropCourseFromStudent(){
@@ -399,7 +416,7 @@ function editCourse(){
         class="btn btn-primary">Submit</button>
         <button type="button" onclick="deleteCourse()" data-bs-toggle="modal" data-bs-target="#warnDeleteCourseModal"
         class="btn btn-outline-danger">Delete Course</button>
-        <button type="button" class="btn btn-secondary" onclick="closeForm">Cancel</button>
+        <button type="button" class="btn btn-secondary" onclick="closeForm()">Cancel</button>
     </form>`;
 
 
@@ -470,10 +487,6 @@ function addNewCourse(){
             <label for="courseTitle">Course Title</label>
             <input type="text" class="form-control" id="courseTitle" placeholder="Enter Title of Course">
          </div>
-         <div class="form-group">
-            <label for="courseID">Course ID</label>
-            <input type="text" class="form-control" id="courseID" placeholder="Enter Course ID">
-        </div>
         <div class="form-group">
             <label for="professor">Professor</label>
             <input type="text" class="form-control" id="professor" placeholder="Enter Name of Professor">
@@ -484,35 +497,18 @@ function addNewCourse(){
         </div> 
         <button type="button" onclick="saveNewCourse()" data-bs-toggle="modal" data-bs-target="#saveCourseModal"
         class="btn btn-primary">Submit</button>
-        <button type="button" onclick="closeForm" class="btn btn-secondary">Cancel</button>
+        <button type="button" onclick="closeForm()" class="btn btn-secondary">Cancel</button>
     </form>`;
 }
 function saveNewCourse(){
 
     var newCourseTitle = document.getElementById("courseTitle").value; 
-    var newCourseID = document.getElementById("courseID").value;
     var professor = document.getElementById("professor").value;
     var description = document.getElementById("description").value;
 
-    let sendRequest = true;
-
-    if(courses !== null){
-
-        for(let i =0; i < courses.length; i++){
-
-            if (courses[i].courseId === newCourseID){
-
-                sendRequest = false;
-            }
-        }
-    }
-    debugger;
-
-    if(sendRequest){
-
         var APIRequest = {
     
-            CourseId: Number(newCourseID),
+            CourseId: -1,
             CourseName: newCourseTitle,
             Professor: professor,
             Description: description,
@@ -532,11 +528,7 @@ function saveNewCourse(){
             document.getElementById("saveCourseTitle").innerText ="Add New Course";
             document.getElementById("saveCourseBody").innerText = data.message;
         });
-    }
-    else {
-        document.getElementById("saveCourseTitle").innerText ="Add New Course";
-        document.getElementById("saveCourseBody").innerText = "Error: Duplicate course ID found.";
-    }
+
 }
 function closeForm(){
 

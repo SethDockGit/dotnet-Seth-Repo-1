@@ -88,7 +88,7 @@ namespace StudentManagementSystem.Logic
             }
             else
             {
-                throw new Exception("Error: Failed to add to student.");
+                throw new Exception("Error: Failed to add student.");
             }
 
             return response;
@@ -96,6 +96,17 @@ namespace StudentManagementSystem.Logic
         public WorkflowResponse AddCourse(Course course)
         {
             WorkflowResponse response = new WorkflowResponse();
+
+            if (IDataSource.Courses.Count == 0)
+            {
+                course.CourseId = 1;
+            }
+            else
+            {
+                var highestID = IDataSource.Courses.Max(c => c.CourseId);
+
+                course.CourseId = highestID + 1;
+            }
 
             IDataSource.AddCourse(course);
 
@@ -106,7 +117,7 @@ namespace StudentManagementSystem.Logic
             }
             else
             {
-                throw new Exception("Error: Failed to add to student.");
+                throw new Exception("Error: Failed to add course.");
             }
 
             return response;
@@ -252,10 +263,17 @@ namespace StudentManagementSystem.Logic
             else
             {
                 response.Success = false;
-                response.Message = $"Error: course of ID {ID} not found."; //can this even happen?
+                response.Message = $"Error: course of ID {ID} not found."; 
             }
 
             return response;
+        }
+
+        public Course GetCourseByID(int id)
+        {
+            Course toGet = IDataSource.Courses.SingleOrDefault(c => c.CourseId == id);
+
+            return toGet;
         }
     }
 }
