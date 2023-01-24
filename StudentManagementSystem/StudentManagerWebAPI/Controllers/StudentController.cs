@@ -38,15 +38,6 @@ namespace StudentManagerWebAPI.Controllers
 
             return response;
         }
-
-        [HttpGet]
-        [Route("getCourseBy{id}")]
-        public Course GetCourseByID(int id)
-        {
-            Course course = Manager.GetCourseByID(id);
-
-            return course;
-        }
         [HttpPost]
         [Route("addstudent")]
         public WorkflowResponse AddStudent([FromBody] Student student)

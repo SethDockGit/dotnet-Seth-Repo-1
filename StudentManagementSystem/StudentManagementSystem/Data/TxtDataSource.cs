@@ -105,7 +105,7 @@ namespace StudentManagementSystem.Data
 
                         foreach (var course in student.Courses)
                         {
-                            sw.Write($"*{course.CourseId}");
+                            sw.Write($"*{course.CourseId}"); //what's going on here?
                         }
                     }
                 }
