@@ -2,7 +2,7 @@ var api = `https://localhost:44398`;
 
 var students = new Array();
 
-var selectedStudentID = -1; //is changed only by viewStudent()
+var selectedStudentID = -1; 
 
 var selectedStudent;
 
@@ -20,7 +20,6 @@ function showStudentView() {
     fetch(`${api}/student/courses`)
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
 
             courses = data.courses;
 
@@ -29,7 +28,6 @@ function showStudentView() {
     fetch(`${api}/student/students`)
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
 
             students = data.students;
 
@@ -110,8 +108,6 @@ function saveNewStudent() {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
-
 
                 document.getElementById("saveStudentTitle").innerText = "Add New Student";
                 document.getElementById("saveStudentBody").innerText = data.message;
@@ -196,7 +192,6 @@ function saveStudentInfo() {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
 
                 document.getElementById("studentInfoTitle").innerText = "Edit Student";
                 document.getElementById("studentInfoBody").innerText = data.message;
@@ -222,7 +217,6 @@ function confirmDeleteStudent() {
     })
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
 
             document.getElementById("deleteStudentTitle").innerText = "Delete Student";
             document.getElementById("deleteStudentBody").innerText = data.message;
@@ -306,7 +300,6 @@ function confirmAddCourseToStudent() {
     })
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
 
             document.getElementById("editForms").innerText = "";
 
@@ -349,7 +342,6 @@ function confirmDropCourseFromStudent() {
     })
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
 
             document.getElementById("editForms").innerText = "";
 
@@ -367,7 +359,6 @@ function showCourseView() {
     fetch(`${api}/student/courses`)
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
 
             courses = data.courses;
 
@@ -466,7 +457,6 @@ function saveCourseInfo() {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 document.getElementById("courseInfoTitle").innerText = "Edit Course";
                 document.getElementById("courseInfoBody").innerText = data.message;
                 document.getElementById("editForms").innerHTML = "";
@@ -488,7 +478,6 @@ function confirmDeleteCourse() {
     })
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
 
             document.getElementById("deleteCourseTitle").innerText = "Delete Course";
             document.getElementById("deleteCourseBody").innerText = data.message;
@@ -545,7 +534,6 @@ function saveNewCourse() {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
 
                 document.getElementById("saveCourseTitle").innerText = "Add New Course";
                 document.getElementById("saveCourseBody").innerText = data.message;
