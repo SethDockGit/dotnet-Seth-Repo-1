@@ -8,18 +8,23 @@ import Divider from '@mui/material/Divider';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+
 
 
 export default function CreateTrip(){
 
-    const startCrew = [
-        {
-            id: 0,
-            name: '',
-            phone: '',
-            email: '',
-        }
-    ]
+    const startCrew = []
 
     const { trips, setTrips } = useContext(TripsContext);
 
@@ -69,6 +74,7 @@ export default function CreateTrip(){
                 phone: crewPhone,
                 email: crewEmail,
             }
+        debugger;
         
         setCrew([...crew, crewMember]);
     }
@@ -93,6 +99,15 @@ export default function CreateTrip(){
 
         setTrips([...trips, trip]);
     }
+    const handleClickRemoveCrew = (e) => {
+
+        const value1 = e.currentTarget.getAttribute("data-value1")
+        
+        var newCrew = crew.filter(c => c.id !== value1);
+        
+        setCrew(newCrew);
+            
+    }
 
     const displayDate = () => {
 
@@ -112,18 +127,18 @@ export default function CreateTrip(){
             </Typography>
         )
     }
-    const mapCrewList = () => {
+    const showCrewList = () => {
 
         return crew.map(function(val, index){
 
-            if(index > 0){
-
                 return(
-                    <>
-                    <ListItem>{val.name} • {val.phone} • {val.email}</ListItem>           
-                    </>
-                )
-            }
+                    
+                    <ListItem key={index}>
+                        {val.name} • {val.phone} • {val.email}
+                        <Button type="button" class="close" onClick={handleClickRemoveCrew} data-value1={val.id}>x</Button>
+                    </ListItem>           
+                    
+                )        
         })
     }
 
@@ -142,8 +157,7 @@ export default function CreateTrip(){
             onChange={handleStartDateChange}
             renderInput={(params) => <TextField {...params} />}
             />
-        </div>
-        <div style={{margin:15}}>
+
             <DesktopDatePicker
             label="Trip End Date"
             inputFormat="MM/DD/YYYY"
@@ -156,7 +170,7 @@ export default function CreateTrip(){
         <Divider light />
         <div style={{margin:15}}>
             <Typography variant="h4" sx={{fontSize:30}}>Location</Typography>
-            <Typography variant="caption">Select a Location</Typography>
+            <Typography variant="caption">Name a Location</Typography>
             <br/>
             <TextField placeholder='Enter Location' onChange={handleLocationChange}></TextField>
         </div>
@@ -174,7 +188,7 @@ export default function CreateTrip(){
                     maxHeight: 300,
                     '& ul': { padding: 0 },
                   }}>
-                {mapCrewList()}
+                    {showCrewList()}
             </List>
             <div>
                 <Typography variant="caption">Add Crew Member</Typography><br/>
@@ -183,10 +197,25 @@ export default function CreateTrip(){
                 <TextField placeholder='Email' onChange={handleCrewEmailChange}></TextField>
                 <Button variant="contained" sx={{backgroundColor:"gray"}} onClick={handleCrewChange}>Add</Button>
             </div>
+            <br/><br/>
         </div>
         <Divider light />
         <div style={{margin:15}}>
             <Typography variant="h4" sx={{fontSize:30}}>Gear</Typography>
+
+                <TableContainer sx={{ maxWidth: 650 }} component={Paper}>
+                  <Table sx={{ maxWidth: 650 }}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Item</TableCell>
+                        <TableCell align="right">Quantity</TableCell>
+                        <TableCell align="right">Who's bringing it?</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
         </div>
         <Divider light />
         <Button style={{margin:15}} variant="contained" sx={{backgroundColor:"gray"}} onClick={handleTripChange}>Create New Trip</Button>
