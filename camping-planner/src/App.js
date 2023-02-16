@@ -9,37 +9,52 @@ import { useState } from 'react';
 import CreateTrip from './Components/CreateTrip/CreateTrip';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import PastTrip from './Components/PastTrip/PastTrip';
 
 function App() {
 
   document.body.style = 'background: oldlace;'
 
-  //lightcyan?
-  //moccasin?
+  const testCrew = [
+    {
+      id: 1,
+      name: "Seth",
+      phone: "768-230-5738",
+      email: "seth@seth.com"
+    }
+  ]
+  const testGear = [
+    {
+      id: 1,
+      name: "pack",
+      quantity: 4
+    }
+  ]
   const testTrips = [
     {
       id: 1,
       location: "BWCA",
-      startDate: null,
-      endDate: null,
-      crew: null,
-      gear: null,
+      startDate: dayjs().add(7, 'day'),
+      endDate: dayjs().add(14, 'day'),
+      crew: testCrew,
+      gear: testGear,
     },
     {
       id: 2,
       location: "YellowStone",
-      startDate: null,
-      endDate: null,
-      crew: null,
-      gear: null,
+      startDate: dayjs().subtract(14, 'day'),
+      endDate: dayjs().subtract(7, 'day'),
+      crew: testCrew,
+      gear: testGear,
     },
     {
       id: 3,
       location: "Jay Cooke",
-      startDate: null,
-      endDate: null,
-      crew: null,
-      gear: null,
+      startDate: dayjs().subtract(14, 'day'),
+      endDate: dayjs().subtract(7, 'day'),
+      crew: testCrew,
+      gear: testGear,
     },
   ];
 
@@ -62,6 +77,10 @@ const router = createBrowserRouter([{
     {
       path: "/trips/:id",
       element: <Trip/>
+    },
+    {
+      path: "/trips/:id/past",
+      element: <PastTrip/>
     },
     {
       path: "/trips/create",
