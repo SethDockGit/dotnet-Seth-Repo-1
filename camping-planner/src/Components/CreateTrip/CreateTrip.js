@@ -15,6 +15,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -36,6 +38,7 @@ export default function CreateTrip(){
     const [gear, setGear] = useState(startGear);
     const [gearName, setGearName] = useState("");
     const [gearQuantity, setGearQuantity] = useState(0);
+    const navigate = useNavigate();
     //const [gearBringer, setGearBringer] = useState("");
 
     //const [trip, setTrip] = useState();
@@ -177,6 +180,7 @@ export default function CreateTrip(){
         }
 
         setTrips([...trips, trip]);
+        navigate("/trips");
     }
     const displayLocation = () => {
         return(
