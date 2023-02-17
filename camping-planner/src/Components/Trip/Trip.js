@@ -21,7 +21,7 @@ import React from "react";
 
 export default function Trip(){
 
-    const {trips} = useContext(TripsContext)
+    const {trips, setTrips} = useContext(TripsContext);
     const {id} = useParams();
     const [trip, setTrip] = useState(trips.find(t => t.id == id));
     const [crew, setCrew] = useState(trip.crew);
@@ -41,9 +41,19 @@ export default function Trip(){
         
         var newCrew = trip.crew.filter(c => c.id != value1);
 
-        trip.crew = newCrew;
         setCrew(newCrew);
-        setTrip(trip);    
+
+        var newTrip =
+        {
+            id: trip.id,
+            location: trip.location,
+            startDate: trip.startDate,
+            endDate: trip.endDate,
+            crew: newCrew,
+            gear: trip.gear
+        }
+
+        setTrip(newTrip);    
     }
     const handleClickRemoveGear = (e) => {
 
@@ -51,9 +61,19 @@ export default function Trip(){
     
         var newGear = trip.gear.filter(g => g.id != value1);
     
-        trip.gear = newGear;
         setGear(newGear);
-        setTrip(trip);
+
+        var newTrip =
+        {
+            id: trip.id,
+            location: trip.location,
+            startDate: trip.startDate,
+            endDate: trip.endDate,
+            crew: trip.crew,
+            gear: newGear
+        }
+
+        setTrip(newTrip);
     }
     const showCrewList = () => {
 
@@ -113,9 +133,18 @@ export default function Trip(){
             }
         
         setCrew([...crew, crewMember]);
-        trip.crew = crew;
-        debugger;
-        setTrip(trip);
+
+        var newTrip =
+        {
+            id: trip.id,
+            location: trip.location,
+            startDate: trip.startDate,
+            endDate: trip.endDate,
+            crew: crew,
+            gear: trip.gear
+        }
+
+        setTrip(newTrip);
     }
     const showGear = () => {  
         return trip.gear.map(function(val, index){
@@ -145,10 +174,19 @@ export default function Trip(){
     const handleLocationChange = (e) => {
         setLocation(e.target.value);
     }
-    const saveLocationChange = (e) => {
-        trip.location = e.currentTarget.getAttribute("data-value1")
-        setTrip(trip);
-        debugger;
+    const saveLocationChange = () => {
+  
+        var newTrip =
+        {
+            id: trip.id,
+            location: location,
+            startDate: startDate,
+            endDate: endDate,
+            crew: crew,
+            gear: gear
+        }
+        setTrip(newTrip);
+        setTrips(trips);
         setDisplayLocationForm(<div></div>);
     }
 
@@ -182,10 +220,20 @@ export default function Trip(){
     }
     const saveDatesChange = () => {
 
-        trip.startDate = startDate;
-        trip.endDate = endDate;
+        var newTrip =
+        {
+            id: trip.id,
+            location: trip.location,
+            startDate: startDate,
+            endDate: endDate,
+            crew: trip.crew,
+            gear: trip.gear
+        }
 
-        setTrip(trip);
+        var newTrips = trips.filter(t => t.id != trip.id);
+        setTrip(newTrip);
+        setTrips(newTrips);
+        setTrips([...newTrips, newTrip]);
 
         document.getElementById("showDate").innerHTML = `Saved! </br> New Dates:  ${dayjs(startDate).format('MM/DD/YYYY')} to ${dayjs(endDate).format('MM/DD/YYYY')}`;
         
