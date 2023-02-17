@@ -25,10 +25,13 @@ export default function Trip(){
     const {id} = useParams();
     const [trip, setTrip] = useState(trips.find(t => t.id == id));
     const [crew, setCrew] = useState(trip.crew);
+    const [crewName, setCrewName] = useState("");
+    const [crewPhone, setCrewPhone] = useState("");
+    const [crewEmail, setCrewEmail] = useState("");
+    const [displayCrewForm, setDisplayCrewForm] = useState();
     const [gear, setGear] = useState(trip.gear);
     const [location, setLocation] = useState(trip.location);
     const [displayLocationForm, setDisplayLocationForm] = useState();
-    const [displayDatePickers, setDisplayDatePickers] = useState();
     const [startDate, setStartDate] = React.useState(dayjs(trip.startDate));
     const [endDate, setEndDate] = React.useState(dayjs(trip.endDate));
 
@@ -63,6 +66,57 @@ export default function Trip(){
             )        
         })
     }
+    const showCrewForm = () => {
+
+        setDisplayCrewForm(
+
+            <div>
+                <Typography variant="caption">Add Crew Member</Typography><br/>
+                <TextField placeholder='Name' onChange={handleCrewNameChange}></TextField>
+                <TextField placeholder='Phone' onChange={handleCrewPhoneChange}></TextField>
+                <TextField placeholder='Email' onChange={handleCrewEmailChange}></TextField>
+                <Button variant="contained" sx={{backgroundColor:"gray"}} onClick={handleCrewChange}>Add</Button>
+            </div>
+        )
+    }
+    const handleCrewNameChange = (e) => {
+        setCrewName(e.target.value);
+    }
+    const handleCrewPhoneChange = (e) => {
+        setCrewPhone(e.target.value);
+    }
+    const handleCrewEmailChange = (e) => {
+        setCrewEmail(e.target.value);
+    }
+    const handleCrewChange = () => {
+
+        var nextId;
+
+        if(crew.length === 0){
+            nextId = 0;
+        }
+        else{
+            var newArray = crew.map(function(val, index){
+                return(
+                    val.id
+                )
+            });
+            nextId = Math.max(...newArray);
+        }
+
+        let crewMember = 
+            {
+                id: nextId +1,
+                name: crewName,
+                phone: crewPhone,
+                email: crewEmail,
+            }
+        
+        setCrew([...crew, crewMember]);
+        trip.crew = crew;
+        debugger;
+        setTrip(trip);
+    }
     const showGear = () => {  
         return trip.gear.map(function(val, index){
             return(
@@ -94,34 +148,10 @@ export default function Trip(){
     const saveLocationChange = (e) => {
         trip.location = e.currentTarget.getAttribute("data-value1")
         setTrip(trip);
+        debugger;
         setDisplayLocationForm(<div></div>);
     }
-    const showDatePickers = () => {
 
-        setDisplayDatePickers(
-
-            <div>
-                <Typography variant="caption">Select a Date Range</Typography>
-                <br/>
-                <DesktopDatePicker
-                label="Trip Start Date"
-                inputFormat="MM/DD/YYYY"
-                value={startDate}
-                onChange={handleStartDateChange}
-                renderInput={(params) => <TextField {...params} error={false} />}
-                />
-
-                <DesktopDatePicker
-                label="Trip End Date"
-                inputFormat="MM/DD/YYYY"
-                value={endDate}
-                onChange={handleEndDateChange}
-                renderInput={(params) => <TextField {...params} error={false} />}
-                />
-                <Button type="button" onClick={saveDatesChange} data-value1={startDate} data-value2={endDate}>Save</Button>
-            </div> 
-        )
-    }
     const handleStartDateChange = (newValue) => {
 
         if (dayjs(newValue).isAfter(dayjs(endDate))){
@@ -150,7 +180,14 @@ export default function Trip(){
             setEndDate(newValue);
         }
     }
-    const saveDatesChange = (e) => {
+    const saveDatesChange = () => {
+
+        trip.startDate = startDate;
+        trip.endDate = endDate;
+
+        setTrip(trip);
+
+        document.getElementById("showDate").innerHTML = `Saved! </br> New Dates:  ${dayjs(startDate).format('MM/DD/YYYY')} to ${dayjs(endDate).format('MM/DD/YYYY')}`;
         
     }
     return (
@@ -160,12 +197,28 @@ export default function Trip(){
             <div style={{margin:15, marginTop:15}}>
                 <Typography variant="h4" sx={{fontSize:30}}>
                     Dates
-                    <Button size="small" variant="contained" sx={{backgroundColor:"gray", ml:2}} onClick={showDatePickers}>Edit</Button>
                 </Typography>
+                <Typography variant="caption">Select a Date Range</Typography>
+                <br/>
+                <DesktopDatePicker
+                label="Trip Start Date"
+                inputFormat="MM/DD/YYYY"
+                value={startDate}
+                onChange={handleStartDateChange}
+                renderInput={(params) => <TextField {...params} error={false} />}
+                />
+
+                <DesktopDatePicker
+                label="Trip End Date"
+                inputFormat="MM/DD/YYYY"
+                value={endDate}
+                onChange={handleEndDateChange}
+                renderInput={(params) => <TextField {...params} error={false} />}
+                />
+                <Button size="small" variant="contained" sx={{backgroundColor:"gray", ml:2}} onClick={saveDatesChange}>Save</Button>
                 <Typography id="showDate" style={{marginTop:15, fontWeight:'light', fontSize: 16}} variant="h5">
                     {dayjs(trip.startDate).format('MM/DD/YYYY')} to {dayjs(trip.endDate).format('MM/DD/YYYY')}
                 </Typography>
-                {displayDatePickers}
             </div>
             <Divider light />
             <div style={{margin:15}}>
@@ -180,7 +233,7 @@ export default function Trip(){
             <div style={{margin:15}}>
                 <Typography variant="h4" sx={{fontSize:30}}>
                     Crew
-                    <Button size="small" variant="contained" sx={{backgroundColor:"gray", ml:2}}>Add</Button>
+                    <Button size="small" variant="contained" sx={{backgroundColor:"gray", ml:2}} onClick={showCrewForm}>Add</Button>
                 </Typography>
                 <br/>
                 <List sx={{
@@ -194,6 +247,7 @@ export default function Trip(){
                       }}>
                     {showCrewList()}
                 </List>
+                {displayCrewForm}
             </div>
             <Divider light />
             <div style={{margin:15}}>
