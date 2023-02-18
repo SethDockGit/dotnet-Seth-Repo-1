@@ -27,9 +27,8 @@ export default function CreateTrip(){
 
     const { trips, setTrips } = useContext(TripsContext);
 
-    const [startDate, setStartDate] = React.useState(dayjs(''));
-    const [endDate, setEndDate] = React.useState(dayjs(''));
-    //const [showDate, setShowDate] = useState(false);
+    const [startDate, setStartDate] = React.useState('');
+    const [endDate, setEndDate] = React.useState('');
     const [location, setLocation] = useState("");
     const [crew, setCrew] = useState(startCrew);
     const [crewName, setCrewName] = useState("");
@@ -38,20 +37,20 @@ export default function CreateTrip(){
     const [gear, setGear] = useState(startGear);
     const [gearName, setGearName] = useState("");
     const [gearQuantity, setGearQuantity] = useState(0);
+    const [dateMessage, setDateMessage] = useState("No dates selected");
+    const [failCreateTrip, setFailCreateTrip] = useState(false);
     const navigate = useNavigate();
+    
     //const [gearBringer, setGearBringer] = useState("");
-
-    //const [trip, setTrip] = useState();
-    //this will be used for editing an existing trip, not creating a new one.
 
     const handleStartDateChange = (newValue) => {
 
         if (dayjs(newValue).isAfter(dayjs(endDate))){
-            document.getElementById("showDate").innerText = "Start date cannot be later than end date.";
+            setDateMessage("Start date cannot be later than end date.");
         }
         else if(dayjs(newValue).isBefore(dayjs(endDate))){
 
-            document.getElementById("showDate").innerText = `${dayjs(newValue).format('MM/DD/YYYY')} to ${dayjs(endDate).format('MM/DD/YYYY')}`;
+            setDateMessage(`${dayjs(newValue).format('MM/DD/YYYY')} to ${dayjs(endDate).format('MM/DD/YYYY')}`);
             setStartDate(newValue);
 
         }
@@ -62,17 +61,27 @@ export default function CreateTrip(){
     const handleEndDateChange = (newValue) => {
 
         if (dayjs(newValue).isBefore(dayjs(startDate))){
-            document.getElementById("showDate").innerText = "End date cannot be earlier than start date."
+            setDateMessage("End date cannot be earlier than start date.");
         }
         else if (dayjs(newValue).isAfter(dayjs(startDate))){
 
-            document.getElementById("showDate").innerText = `${dayjs(startDate).format('MM/DD/YYYY')} to ${dayjs(newValue).format('MM/DD/YYYY')}`;
+            setDateMessage(`${dayjs(startDate).format('MM/DD/YYYY')} to ${dayjs(newValue).format('MM/DD/YYYY')}`);
             setEndDate(newValue);
 
         }
         else{
             setEndDate(newValue);
         }
+    }
+    const showDateMessage = () => {
+
+        return (
+            <div>
+            <Typography id="showDate" style={{margin:15, fontWeight:'light', fontSize: 16}} variant="h5">
+                {dateMessage}
+            </Typography> 
+            </div>
+        )
     }
     const handleLocationChange = (e) => {
         setLocation(e.target.value);
@@ -162,25 +171,47 @@ export default function CreateTrip(){
     }
     const handleTripChange = () => {
 
-        var newArray = trips.map(function(val, index){
-            return(
-                val.id
-            )
-        });
+        if (location == "" || startDate == "" || endDate == ""){
 
-        var nextId = Math.max(...newArray);
+            setFailCreateTrip(true);
 
-        let trip = {
-            id: nextId +1,
-            location: location,
-            startDate: startDate,
-            endDate: endDate,
-            crew: null,
-            gear: null,
         }
+        else{
+            
+            var newArray = trips.map(function(val, index){
+                return(
+                    val.id
+                )
+            });
 
-        setTrips([...trips, trip]);
-        navigate("/trips");
+            var nextId = Math.max(...newArray);
+
+            let trip = {
+                id: nextId +1,
+                location: location,
+                startDate: startDate,
+                endDate: endDate,
+                crew: crew,
+                gear: gear,
+            }
+
+            setTrips([...trips, trip]);
+            navigate("/trips");
+
+        }
+    }
+    const failMessage = () => {
+        
+        return (
+            <div>
+            {
+            failCreateTrip &&   
+                <div style={{marginTop:15}}>
+                    <Typography color="red" variant="h6">Error: Must enter a date and location</Typography>
+                </div>    
+            }
+            </div>
+        )
     }
     const displayLocation = () => {
         return(
@@ -238,9 +269,7 @@ export default function CreateTrip(){
             />
         </div> 
         <div>
-        <Typography id="showDate" style={{margin:15, fontWeight:'light', fontSize: 16}} variant="h5">
-            No dates selected
-        </Typography>
+        {showDateMessage()}
         </div>
         <Divider light />
         <div style={{margin:15}}>
@@ -301,6 +330,7 @@ export default function CreateTrip(){
         </div>
         <Divider light />
         <Button style={{margin:15}} variant="contained" sx={{backgroundColor:"gray"}} onClick={handleTripChange}>Create New Trip</Button>
+        {failMessage()}
         </>
 
     )

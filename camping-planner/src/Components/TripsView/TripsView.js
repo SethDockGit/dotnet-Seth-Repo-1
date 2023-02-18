@@ -63,14 +63,6 @@ export default function TripsView(){
                 )
             }})};
 
-    const sortedPastTrips = () => {
-
-        return trips.map(function(val, index) {
-
-
-        })
-    }   
-
     return(
         <div>
             <Typography sx={{margin:4}} variant="h5">Upcoming</Typography>

@@ -15,15 +15,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { useNavigate } from "react-router-dom";
+
 
 export default function Trip(){
 
-    const {trips} = useContext(TripsContext)
+    const {trips, setTrips} = useContext(TripsContext);
     const {id} = useParams();
     const [trip, setTrip] = useState(trips.find(t => t.id == id));
-    const [crew, setCrew] = useState(trip.crew);
-    const [gear, setGear] = useState(trip.gear);
-    const [location, setLocation] = useState(trip.location);
+    const navigate = useNavigate();
 
     const showCrewList = () => {
 
@@ -47,7 +47,11 @@ export default function Trip(){
             )
         })
     }
+    const deleteTrip = () => {
 
+        setTrips(trips.filter(t => t.id != trip.id))
+        navigate("/trips");
+    }
     return (
         <>
             <Typography variant="h4" style={{margin:15}}>{trip.location}</Typography>
@@ -105,6 +109,7 @@ export default function Trip(){
               </Table>
             </TableContainer>
             </div>
+            <Button style={{margin:15}} variant="contained" sx={{backgroundColor:"gray"}} onClick={deleteTrip}>Delete Trip</Button>
         </>
     )
         

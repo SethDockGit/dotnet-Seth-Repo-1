@@ -18,7 +18,7 @@ export default function Home(){
                     justifyContent: 'center',
                     fontSize:36
                     }} >
-                Welcome to CampPlan beta
+                Welcome to CampPlan Beta
                 </Typography>
                 <br/>
                 <Typography variant="body1"style={{

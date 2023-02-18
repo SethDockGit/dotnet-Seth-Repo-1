@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
 import { TripsContext } from "../../Contexts/TripsContext";
 import { useState } from "react";
@@ -19,6 +19,7 @@ import TextField from "@mui/material/TextField";
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import React from "react";
 
+
 export default function Trip(){
 
     const {trips, setTrips} = useContext(TripsContext);
@@ -37,17 +38,19 @@ export default function Trip(){
     const [displayGearForm, setDisplayGearForm] = useState();
     const [gearName, setGearName] = useState("");
     const [gearQuantity, setGearQuantity] = useState(0);
-
+    const [dateMessage, setDateMessage] = useState(`${dayjs(trip.startDate).format('MM/DD/YYYY')} to ${dayjs(trip.endDate).format('MM/DD/YYYY')}`);
+    const navigate = useNavigate();
 
     const handleStartDateChange = (newValue) => {
 
         if (dayjs(newValue).isAfter(dayjs(endDate))){
-            document.getElementById("showDate").innerText = "Start date cannot be later than end date.";
+            setDateMessage("Start date cannot be later than end date.");
         }
         else if(dayjs(newValue).isBefore(dayjs(endDate))){
 
-            document.getElementById("showDate").innerText = `${dayjs(newValue).format('MM/DD/YYYY')} to ${dayjs(endDate).format('MM/DD/YYYY')}`;
+            setDateMessage(`${dayjs(newValue).format('MM/DD/YYYY')} to ${dayjs(endDate).format('MM/DD/YYYY')}`);
             setStartDate(newValue);
+
         }
         else{
             setStartDate(newValue);
@@ -56,16 +59,27 @@ export default function Trip(){
     const handleEndDateChange = (newValue) => {
 
         if (dayjs(newValue).isBefore(dayjs(startDate))){
-            document.getElementById("showDate").innerText = "End date cannot be earlier than start date."
+            setDateMessage("End date cannot be earlier than start date.");
         }
         else if (dayjs(newValue).isAfter(dayjs(startDate))){
 
-            document.getElementById("showDate").innerText = `${dayjs(startDate).format('MM/DD/YYYY')} to ${dayjs(newValue).format('MM/DD/YYYY')}`;
+            setDateMessage(`${dayjs(startDate).format('MM/DD/YYYY')} to ${dayjs(newValue).format('MM/DD/YYYY')}`);
             setEndDate(newValue);
+
         }
         else{
             setEndDate(newValue);
         }
+    }
+    const showDateMessage = () => {
+
+        return (
+            <div>
+            <Typography id="showDate" style={{margin:15, fontWeight:'light', fontSize: 16}} variant="h5">
+                {dateMessage}
+            </Typography> 
+            </div>
+        )
     }
     const saveDatesChange = () => {
 
@@ -335,6 +349,11 @@ export default function Trip(){
         setTrips([...newTrips, newTrip]);
         setDisplayGearForm(false);
     }
+    const deleteTrip = () => {
+
+        setTrips(trips.filter(t => t.id != trip.id))
+        navigate("/trips");
+    }
     return (
         <>
             <Typography variant="h4" style={{margin:15}}>{trip.location}</Typography>
@@ -348,7 +367,7 @@ export default function Trip(){
                 <DesktopDatePicker
                 label="Trip Start Date"
                 inputFormat="MM/DD/YYYY"
-                value={startDate}  //??
+                value={startDate} 
                 onChange={handleStartDateChange}
                 renderInput={(params) => <TextField {...params} error={false} />}
                 />
@@ -356,14 +375,12 @@ export default function Trip(){
                 <DesktopDatePicker
                 label="Trip End Date"
                 inputFormat="MM/DD/YYYY"
-                value={endDate}    //???
+                value={endDate}    
                 onChange={handleEndDateChange}
                 renderInput={(params) => <TextField {...params} error={false} />}
                 />
                 <Button size="small" variant="contained" sx={{backgroundColor:"gray", ml:2}} onClick={saveDatesChange}>Save</Button>
-                <Typography id="showDate" style={{marginTop:15, fontWeight:'light', fontSize: 16}} variant="h5">
-                    {dayjs(trip.startDate).format('MM/DD/YYYY')} to {dayjs(trip.endDate).format('MM/DD/YYYY')}
-                </Typography>
+                {showDateMessage()}
             </div>
             <Divider light />
             <div style={{margin:15}}>
@@ -416,6 +433,7 @@ export default function Trip(){
                 </TableContainer>
                 {gearForm()}
             </div>
+            <Button style={{margin:15}} variant="contained" sx={{backgroundColor:"gray"}} onClick={deleteTrip}>Delete Trip</Button>
         </>
     )
         
