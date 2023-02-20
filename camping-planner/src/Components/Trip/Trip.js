@@ -83,23 +83,28 @@ export default function Trip(){
     }
     const saveDatesChange = () => {
 
-        var newTrip =
-        {
-            id: trip.id,
-            location: trip.location,
-            startDate: startDate,
-            endDate: endDate,
-            crew: trip.crew,
-            gear: trip.gear
+        if(startDate == null || endDate == null){
+            setDateMessage("You must select a start and end date before you can save.");
         }
+        else{
 
-        var newTrips = trips.filter(t => t.id != trip.id);
-        setTrip(newTrip);
-        setTrips(newTrips);
-        setTrips([...newTrips, newTrip]);
+            var newTrip =
+            {
+                id: trip.id,
+                location: trip.location,
+                startDate: startDate,
+                endDate: endDate,
+                crew: trip.crew,
+                gear: trip.gear
+            }
+    
+            var newTrips = trips.filter(t => t.id != trip.id);
+            setTrip(newTrip);
+            setTrips(newTrips);
+            setTrips([...newTrips, newTrip]);
 
-        document.getElementById("showDate").innerHTML = `Saved! </br> New Dates:  ${dayjs(startDate).format('MM/DD/YYYY')} to ${dayjs(endDate).format('MM/DD/YYYY')}`;
-        
+            setDateMessage(`Saved! New Dates:  ${dayjs(startDate).format('MM/DD/YYYY')} to ${dayjs(endDate).format('MM/DD/YYYY')}`);
+        }     
     }
     const handleShowLocationForm = () => {
         setDisplayLocationForm(true);
