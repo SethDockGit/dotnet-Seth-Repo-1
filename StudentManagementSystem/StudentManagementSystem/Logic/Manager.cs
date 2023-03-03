@@ -19,38 +19,67 @@ namespace StudentManagementSystem.Logic
         {
             WorkflowResponse response = new WorkflowResponse();
 
-            List<Student> students = IDataSource.GetStudents();
+            Exception ex = new Exception();
 
-            if(students.Count == 0)
+            try
             {
-                response.Success = true;
-                response.Message = "There are currently 0 students enrolled.";
+                List<Student> students = IDataSource.GetStudents();
+
+                if(students.Count == 0)
+                {
+                    response.Success = true;
+                    response.Message = "There are currently 0 students enrolled.";
+                }
+                else
+                {
+                    response.Success = true;
+                    response.Students = students;
+                }
             }
-            else
+            catch(Exception e)
             {
-                response.Success = true;
-                response.Students = students;
+                response.Success=false;
+                response.Message = e.Message + e.StackTrace;
+
+                ex = e;
             }
+
             return response;
+
         }
         public WorkflowResponse GetCourses()
         {
             WorkflowResponse response = new WorkflowResponse();
 
-            List<Course> courses = IDataSource.GetCourses();
+            Exception ex = new Exception();
 
-            if (courses.Count == 0)
+            try
             {
-                response.Success = true;
-                response.Message = "There are currently no courses available.";
-            }
-            else
-            {
-                response.Success = true;
-                response.Courses = courses;
+                List<Course> courses = IDataSource.GetCourses();
 
+                if (courses.Count == 0)
+                {
+                    response.Success = true;
+                    response.Message = "There are currently no courses available.";
+                }
+                else
+                {
+                    response.Success = true;
+                    response.Courses = courses;
+
+                }
+                return response;
             }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
+
+                ex = e;
+            }
+
             return response;
+            
         }
         public WorkflowResponse AddStudent(Student student)
         {
@@ -69,18 +98,20 @@ namespace StudentManagementSystem.Logic
                 student.Id = highestID + 1;
             }
 
-            IDataSource.AddStudent(student);
+            Exception ex = new Exception();
 
-            students = IDataSource.GetStudents();
-
-            if(students.Contains(student))
+            try
             {
+                IDataSource.AddStudent(student);
                 response.Success = true;
                 response.Message = $"Student '{student.Name}' ID: {student.Id} Added successfully.";
             }
-            else
+            catch(Exception e)
             {
-                throw new Exception("Error: Failed to add student.");
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
+
+                ex = e;
             }
 
             return response;
@@ -90,6 +121,8 @@ namespace StudentManagementSystem.Logic
             WorkflowResponse response = new WorkflowResponse();
 
             List<Course> courses = IDataSource.GetCourses();
+
+            Exception ex = new Exception();
 
             if (courses.Count == 0)
             {
@@ -102,20 +135,20 @@ namespace StudentManagementSystem.Logic
                 course.CourseId = highestID + 1;
             }
 
-            IDataSource.AddCourse(course);
-
-            courses = IDataSource.GetCourses();
-
-            if (courses.Contains(course))  
+            try
             {
+                IDataSource.AddCourse(course);
                 response.Success = true;
-                response.Message = $"Course '{course.CourseName}' Added successfully.";
+                response.Message = $"Course '{course.CourseTitle}' Added successfully.";
             }
-            else
+            catch(Exception e)
             {
-                throw new Exception("Error: Failed to add course.");
-            }
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
 
+                ex = e;
+            }
+ 
             return response;
         }
         public WorkflowResponse DeleteStudent(int studentID)
@@ -126,21 +159,33 @@ namespace StudentManagementSystem.Logic
 
             var toDelete = students.SingleOrDefault(s => s.Id == studentID);
 
-            bool success = IDataSource.DeleteStudent(toDelete);
+            Exception ex = new Exception();
+            try
+            {
+                bool success = IDataSource.DeleteStudent(toDelete);
 
-            if (success)
-            {
-                response.Success = true;
-                response.Message = $"Student {toDelete.Name} successfully deleted.";
+                if(success)
+                {
+                    response.Success = true;
+                    response.Message = $"Student {toDelete.Name} successfully deleted.";
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = $"Error: Unable to delete student.";
+                }
             }
-            else
+            catch(Exception e)
             {
-                throw new Exception("Error: Student not found.");
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
+
+                ex = e;
             }
 
             return response;
         }
-        public WorkflowResponse AddCourseToStudent(SCourseEditTransfer transfer)
+        public WorkflowResponse AddCourseToStudent(StudentCourse sc)
         {
             WorkflowResponse response = new WorkflowResponse();
 
@@ -148,9 +193,9 @@ namespace StudentManagementSystem.Logic
 
             List<Course> courses = IDataSource.GetCourses();
 
-            var student = students.SingleOrDefault(s => s.Id == transfer.StudentId);
+            var student = students.SingleOrDefault(s => s.Id == sc.StudentId);
 
-            var course = courses.SingleOrDefault(c => c.CourseId == transfer.CourseId);
+            var course = courses.SingleOrDefault(c => c.CourseId == sc.CourseId);
 
             if (student == null)
             {
@@ -162,22 +207,32 @@ namespace StudentManagementSystem.Logic
                 response.Success = false;
                 response.Message = "Error: course not found.";
             }
-            else if (student.Courses.Any(c => c.CourseId == transfer.CourseId))
+            else if (student.Courses.Any(c => c.CourseId == sc.CourseId))
             {
                 response.Success = false;
                 response.Message = $"{student.Name} is already enrolled in that course";
             }
             else
             {
-                response.Success = true;
-                response.Message = $"Course {course.CourseName} successfully added to student {student.Name}.";
-                IDataSource.AddCourseToStudent(student, course);
-                
+                Exception ex = new Exception();
+                try
+                {
+                    IDataSource.AddCourseToStudent(student, course);
+                    response.Success = true;
+                    response.Message = $"Course {course.CourseTitle} successfully added to student {student.Name}.";           
+                }
+                catch(Exception e)
+                {
+                    response.Success = false;
+                    response.Message = e.Message + e.StackTrace;
+
+                    ex = e;
+                }
             }
 
             return response;
         }
-        public WorkflowResponse RemoveCourseFromStudent(SCourseEditTransfer transfer)
+        public WorkflowResponse RemoveCourseFromStudent(StudentCourse sc)
         {
             WorkflowResponse response = new WorkflowResponse();
 
@@ -185,9 +240,9 @@ namespace StudentManagementSystem.Logic
 
             List<Course> courses = IDataSource.GetCourses();
 
-            var student = students.SingleOrDefault(s => s.Id == transfer.StudentId);
+            var student = students.SingleOrDefault(s => s.Id == sc.StudentId);
 
-            var course = courses.SingleOrDefault(c => c.CourseId == transfer.CourseId);
+            var course = courses.SingleOrDefault(c => c.CourseId == sc.CourseId);
 
             if (student == null)
             {
@@ -199,21 +254,32 @@ namespace StudentManagementSystem.Logic
                 response.Success = false;
                 response.Message = "Error: course not found.";
             }
-            else if (!student.Courses.Any(c => c.CourseId == transfer.CourseId))
+            else if (!student.Courses.Any(c => c.CourseId == sc.CourseId))
             {
                 response.Success = false;
                 response.Message = $"{student.Name} is not enrolled in that course";
             }
             else
             {
-                response.Success = true;
-                response.Message = $"Course {course.CourseName} successfully removed from student {student.Name}.";
-                IDataSource.RemoveCourseFromStudent(student, course);
+                Exception ex = new Exception();
+                try
+                {
+                    IDataSource.RemoveCourseFromStudent(student, course);
+                    response.Success = true;
+                    response.Message = $"Course {course.CourseTitle} successfully removed from student {student.Name}.";
+                }
+                catch (Exception e)
+                {
+                    response.Success = false;
+                    response.Message = e.Message + e.StackTrace;
+
+                    ex = e;
+                }
             }
 
             return response;
         }
-        public WorkflowResponse EditStudentInfo(SInfoEditTransfer transfer)
+        public WorkflowResponse EditStudentInfo(StudentInfoTransfer transfer)
         {
             WorkflowResponse response = new WorkflowResponse();
 
@@ -221,10 +287,22 @@ namespace StudentManagementSystem.Logic
 
             var studentToEdit = students.SingleOrDefault(s => s.Id == transfer.StudentId);
 
-            IDataSource.EditStudentInfo(studentToEdit, transfer);
+            Exception ex = new Exception();
 
-            response.Success = true;
-            response.Message = $"Information for {studentToEdit.Name} successfully updated";
+            try
+            {
+                IDataSource.EditStudentInfo(studentToEdit, transfer);
+
+                response.Success = true;
+                response.Message = $"Information for {studentToEdit.Name} successfully updated";
+            }
+            catch(Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
+
+                ex = e;
+            }
 
             return response;
 
@@ -237,10 +315,21 @@ namespace StudentManagementSystem.Logic
 
             var courseToEdit = courses.SingleOrDefault(c => c.CourseId == course.CourseId);
 
-            IDataSource.EditCourseInfo(courseToEdit, course);
+            Exception ex = new Exception();
+            try
+            {
+                IDataSource.EditCourseInfo(courseToEdit, course);
 
-            response.Success = true;
-            response.Message = $"Information for course {courseToEdit.CourseName} successfully updated";
+                response.Success = true;
+                response.Message = $"Information for course {courseToEdit.CourseTitle} successfully updated";
+            }
+            catch(Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
+
+                ex = e;
+            }
 
             return response;
         }
@@ -252,17 +341,29 @@ namespace StudentManagementSystem.Logic
 
             var toDelete = courses.SingleOrDefault(c => c.CourseId == ID);
 
-            bool success = IDataSource.DeleteCourse(toDelete);
+            Exception ex = new Exception();
 
-            if (success)
+            try
             {
-                response.Success = true;
-                response.Message = $"Course {toDelete.CourseName} successfully deleted.";
+                bool success = IDataSource.DeleteCourse(toDelete);
+
+                if (success)
+                {
+                    response.Success = true;
+                    response.Message = $"Course {toDelete.CourseTitle} successfully deleted.";
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = $"Error: Unable to delete course."; 
+                }
             }
-            else
+            catch(Exception e)
             {
                 response.Success = false;
-                response.Message = $"Error: course of ID {ID} not found."; 
+                response.Message = e.Message + e.StackTrace;
+
+                ex = e;
             }
 
             return response;

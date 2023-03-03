@@ -146,7 +146,7 @@ namespace StudentManagementSystem.Data
                     Course course = new Course()
                     {
                         CourseId = int.Parse(splitline[0]),
-                        CourseName = splitline[1],
+                        CourseTitle = splitline[1],
                         Professor = splitline[2],
                         Description = splitline[3],
                     };
@@ -171,7 +171,7 @@ namespace StudentManagementSystem.Data
                         {
                             sw.Write("\n");
                         }
-                        sw.Write($"{course.CourseId}*{course.CourseName}*{course.Professor}*{course.Description}");
+                        sw.Write($"{course.CourseId}*{course.CourseTitle}*{course.Professor}*{course.Description}");
                     }
                 }
             }
@@ -195,7 +195,7 @@ namespace StudentManagementSystem.Data
 
             ReWriteStudentsFile();
         }
-        public void EditStudentInfo(Student studentToEdit, SInfoEditTransfer transfer)
+        public void EditStudentInfo(Student studentToEdit, StudentInfoTransfer transfer)
         {
 
             studentToEdit.Age = transfer.Age;
@@ -206,7 +206,7 @@ namespace StudentManagementSystem.Data
         public void EditCourseInfo(Course courseToEdit, Course course)
         {
 
-            courseToEdit.CourseName = course.CourseName;
+            courseToEdit.CourseTitle = course.CourseTitle;
             courseToEdit.Professor = course.Professor;
             courseToEdit.Description = course.Description;
 

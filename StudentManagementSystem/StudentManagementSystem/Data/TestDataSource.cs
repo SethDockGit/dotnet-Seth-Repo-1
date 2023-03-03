@@ -44,21 +44,21 @@ namespace StudentManagementSystem.Data
             new Course()
             {
                 CourseId = 1,
-                CourseName = "Politics Around the World",
+                CourseTitle = "Politics Around the World",
                 Professor = "Dr. Harry Potter",
                 Description = "Countries around the world have governments. Check em out.",
             },
             new Course()
             {
                 CourseId = 2,
-                CourseName = "Study of people",
+                CourseTitle = "Study of people",
                 Professor = "Dr. Norton Antivirus",
                 Description = "There are lots of people. What are they doing?",
             },
             new Course()
             {
                 CourseId = 3,
-                CourseName = "Music Discourse",
+                CourseTitle = "Music Discourse",
                 Professor = "Billy Gibbons",
                 Description = "Is there a correlation between beards and quality of music?",
             },
@@ -98,14 +98,14 @@ namespace StudentManagementSystem.Data
         {
             student.Courses.Remove(course);
         }
-        public void EditStudentInfo(Student studentToEdit, SInfoEditTransfer transfer)
+        public void EditStudentInfo(Student studentToEdit, StudentInfoTransfer transfer)
         {
             studentToEdit.Age = transfer.Age;
             studentToEdit.Name = transfer.Name;
         }
         public void EditCourseInfo(Course courseToEdit, Course course)
         {
-            courseToEdit.CourseName = course.CourseName;
+            courseToEdit.CourseTitle = course.CourseTitle;
             courseToEdit.Professor = course.Professor;
             courseToEdit.Description = course.Description;
         }

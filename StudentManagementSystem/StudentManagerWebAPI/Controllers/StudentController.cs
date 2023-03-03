@@ -48,7 +48,7 @@ namespace StudentManagerWebAPI.Controllers
         }
         [HttpPost]
         [Route("editstudent")]
-        public WorkflowResponse EditStudent([FromBody] SInfoEditTransfer transfer)
+        public WorkflowResponse EditStudent([FromBody] StudentInfoTransfer transfer)
         {
             WorkflowResponse response = Manager.EditStudentInfo(transfer);
 
@@ -80,19 +80,19 @@ namespace StudentManagerWebAPI.Controllers
         }
         [HttpPost]
         [Route("addstudentcourse")]
-        public WorkflowResponse AddCourseToStudent([FromBody] SCourseEditTransfer transfer)
+        public WorkflowResponse AddCourseToStudent([FromBody] StudentCourse sc)
         {
 
-            WorkflowResponse response = Manager.AddCourseToStudent(transfer);
+            WorkflowResponse response = Manager.AddCourseToStudent(sc);
 
             return response;
 
         }
         [HttpPost]
         [Route("dropstudentcourse")]
-        public WorkflowResponse RemoveCourseFromStudent([FromBody] SCourseEditTransfer transfer)
+        public WorkflowResponse RemoveCourseFromStudent([FromBody] StudentCourse sc)
         {
-            WorkflowResponse response = Manager.RemoveCourseFromStudent(transfer);
+            WorkflowResponse response = Manager.RemoveCourseFromStudent(sc);
 
             return response;
         }

@@ -24,7 +24,7 @@ namespace StudentManagementSystem.Data
                 cmd.CommandText = "INSERT INTO Course VALUES (@CourseId, @CourseTitle, @Professor, @CourseDescription)";
 
                 cmd.Parameters.AddWithValue("@CourseId", course.CourseId);
-                cmd.Parameters.AddWithValue("@CourseTitle", course.CourseName);
+                cmd.Parameters.AddWithValue("@CourseTitle", course.CourseTitle);
                 cmd.Parameters.AddWithValue("@Professor", course.Professor);
                 cmd.Parameters.AddWithValue("@CourseDescription", course.Description);
 
@@ -114,7 +114,7 @@ namespace StudentManagementSystem.Data
                 cmd.Connection = conn;
                 cmd.CommandText = $"UPDATE Course SET CourseTitle=@CourseTitle, Professor=@Professor, CourseDescription=@CourseDescription WHERE CourseId={courseToEdit.CourseId}";
 
-                cmd.Parameters.AddWithValue("@CourseTitle", course.CourseName);
+                cmd.Parameters.AddWithValue("@CourseTitle", course.CourseTitle);
                 cmd.Parameters.AddWithValue("@Professor", course.Professor);
                 cmd.Parameters.AddWithValue("@CourseDescription", course.Description);
 
@@ -123,7 +123,7 @@ namespace StudentManagementSystem.Data
             }
         }
 
-        public void EditStudentInfo(Student studentToEdit, SInfoEditTransfer transfer)
+        public void EditStudentInfo(Student studentToEdit, StudentInfoTransfer transfer)
         {
             using (SqlConnection conn = new SqlConnection())
             {
@@ -161,7 +161,7 @@ namespace StudentManagementSystem.Data
                     {
                         var course = new Course();
                         course.CourseId = (int)dr["CourseId"];
-                        course.CourseName = dr["CourseTitle"].ToString();
+                        course.CourseTitle = dr["CourseTitle"].ToString();
                         course.Description = dr["CourseDescription"].ToString();
                         course.Professor = dr["Professor"].ToString();
 

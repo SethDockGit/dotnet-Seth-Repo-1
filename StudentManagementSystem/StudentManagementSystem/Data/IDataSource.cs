@@ -14,7 +14,7 @@ namespace StudentManagementSystem.Data
         public void AddCourseToStudent(Student student, Course course);
         public void RemoveCourseFromStudent(Student student, Course course);
         public void AddCourse(Course course);
-        public void EditStudentInfo(Student studentToEdit, SInfoEditTransfer transfer);
+        public void EditStudentInfo(Student studentToEdit, StudentInfoTransfer transfer);
         public void EditCourseInfo(Course courseToEdit, Course course);
         public bool DeleteCourse(Course course);
     }

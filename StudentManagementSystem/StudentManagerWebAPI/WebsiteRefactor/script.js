@@ -33,7 +33,7 @@ function showStudentView() {
 
             document.getElementById("table").innerHTML =
                 `<div class="table-wrapper-scroll-y my-custom-scrollbar">
-        <table class="table table-responsive table-bordered table-fixed table-hover" style="background-color:lightskyblue;" id="studentsTable">`;
+        <table class="table table-responsive table-bordered table-fixed table-hover" style="background-color:lightskyblue; min-height:150px;" id="studentsTable">`;
 
             document.getElementById("studentsTable").innerHTML =
                 `<colgroup><col style="width: 1%;"><col><col style="width: 1%;"></colgroup>
@@ -140,7 +140,7 @@ function viewStudent(i) {
     for (let j = 0; j < students[i].courses.length; j++) {
 
         document.getElementById("courses").innerHTML +=
-            `<li class="list-group-item">${students[i].courses[j].courseName} ID: ${students[i].courses[j].courseId}</li>`;
+            `<li class="list-group-item">${students[i].courses[j].courseTitle} ID: ${students[i].courses[j].courseId}</li>`;
     }
 }
 function editStudent() {
@@ -273,7 +273,7 @@ function addCourseToStudent() {
 
         if (availableCourses[j].courseId !== -1) {
 
-            document.getElementById("availableCourses").innerHTML += `<li onclick="selectCourseToAdd(${j})">${availableCourses[j].courseId}: ${availableCourses[j].courseName}</li>`;
+            document.getElementById("availableCourses").innerHTML += `<li onclick="selectCourseToAdd(${j})">${availableCourses[j].courseId}: ${availableCourses[j].courseTitle}</li>`;
         }
     }
 }
@@ -281,7 +281,7 @@ function selectCourseToAdd(j) {
 
     selectedCourseID = courses[j].courseId;
 
-    document.getElementById("addCourseToStudentForm").innerHTML = `</br>Selected: ${courses[j].courseName}</br>`;
+    document.getElementById("addCourseToStudentForm").innerHTML = `</br>Selected: ${courses[j].courseTitle}</br>`;
 
 }
 function confirmAddCourseToStudent() {
@@ -376,7 +376,7 @@ function showCourseView() {
                 for (let i = 0; i < data.courses.length; i++) {
 
                     document.getElementById("coursesTable").innerHTML +=
-                        `<tr><th scope="row">${data.courses[i].courseId}</th><td>${data.courses[i].courseName}</td>
+                        `<tr><th scope="row">${data.courses[i].courseId}</th><td>${data.courses[i].courseTitle}</td>
                 <td><button type="button" class="btn btn-primary" onclick="viewCourse(${i})">View</button></td>`;
                 }
             }
@@ -392,7 +392,7 @@ function viewCourse(i) {
 
     document.getElementById("view").innerHTML = `<div class="card" style="width: 18rem;">
     <div class="card-body">
-      <h5 class="card-title">${courses[i].courseName}</h5>
+      <h5 class="card-title">${courses[i].courseTitle}</h5>
       <h6 class="card-subtitle mb-2 text-muted">Prof: ${courses[i].professor}</h6>
       <h6 class="card-subtitle mb-2 text-muted">ID: ${courses[i].courseId}</h6>
       <p class="card-text">
@@ -443,7 +443,7 @@ function saveCourseInfo() {
         var APIRequest = {
 
             CourseId: selectedCourse.courseId,
-            CourseName: title,
+            CourseTitle: title,
             Professor: professor,
             Description: description,
         }
@@ -466,7 +466,7 @@ function saveCourseInfo() {
 function deleteCourse() {
 
     document.getElementById("warnDeleteCourseTitle").innerText = "Delete Course"
-    document.getElementById("warnDeleteCourseBody").innerText = `Are you sure you want to delete course ${selectedCourse.courseName}?`;
+    document.getElementById("warnDeleteCourseBody").innerText = `Are you sure you want to delete course ${selectedCourse.courseTitle}?`;
 
 }
 function confirmDeleteCourse() {
@@ -520,7 +520,7 @@ function saveNewCourse() {
         var APIRequest = {
 
             CourseId: -1,
-            CourseName: newCourseTitle,
+            CourseTitle: newCourseTitle,
             Professor: professor,
             Description: description,
         }
