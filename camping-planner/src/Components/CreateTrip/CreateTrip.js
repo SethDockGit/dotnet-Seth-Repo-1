@@ -15,7 +15,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -41,7 +40,6 @@ export default function CreateTrip(){
     const [failCreateTrip, setFailCreateTrip] = useState(false);
     const navigate = useNavigate();
     
-    //const [gearBringer, setGearBringer] = useState("");
 
     const handleStartDateChange = (newValue) => {
 

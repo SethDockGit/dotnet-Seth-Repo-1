@@ -100,9 +100,7 @@ export default function Trip(){
     
             var newTrips = trips.filter(t => t.id != trip.id);
             setTrip(newTrip);
-            setTrips(newTrips);
             setTrips([...newTrips, newTrip]);
-
             setDateMessage(`Saved! New Dates:  ${dayjs(startDate).format('MM/DD/YYYY')} to ${dayjs(endDate).format('MM/DD/YYYY')}`);
         }     
     }

@@ -31,6 +31,9 @@ namespace StudentManagementSystem.Logic
                 case "TxtData":
                     return new TxtDataSource();
 
+                case "Database":
+                    return new DBDataSource();
+
                 default:
                     throw new Exception("Data mode could not be configured");
             }

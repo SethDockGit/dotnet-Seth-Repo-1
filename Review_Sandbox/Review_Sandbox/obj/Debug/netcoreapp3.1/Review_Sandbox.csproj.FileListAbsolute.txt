@@ -1,0 +1,14 @@
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\bin\Debug\netcoreapp3.1\Review_Sandbox.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\bin\Debug\netcoreapp3.1\Review_Sandbox.deps.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\bin\Debug\netcoreapp3.1\Review_Sandbox.runtimeconfig.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\bin\Debug\netcoreapp3.1\Review_Sandbox.runtimeconfig.dev.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\bin\Debug\netcoreapp3.1\Review_Sandbox.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\bin\Debug\netcoreapp3.1\Review_Sandbox.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\obj\Debug\netcoreapp3.1\Review_Sandbox.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\obj\Debug\netcoreapp3.1\Review_Sandbox.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\obj\Debug\netcoreapp3.1\Review_Sandbox.AssemblyInfoInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\obj\Debug\netcoreapp3.1\Review_Sandbox.AssemblyInfo.cs
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\obj\Debug\netcoreapp3.1\Review_Sandbox.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\obj\Debug\netcoreapp3.1\Review_Sandbox.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\obj\Debug\netcoreapp3.1\Review_Sandbox.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Review_Sandbox\Review_Sandbox\obj\Debug\netcoreapp3.1\Review_Sandbox.genruntimeconfig.cache

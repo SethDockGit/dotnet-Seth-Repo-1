@@ -36,3 +36,9 @@ C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManag
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\obj\Debug\netcoreapp3.1\StudentManagerWebAPI.genruntimeconfig.cache
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\WebsiteRefactor\package-lock.json
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\WebsiteRefactor\package.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\System.Data.SqlClient.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\sni.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\sni.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\sni.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll

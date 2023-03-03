@@ -94,7 +94,7 @@ namespace StudentManagementSystem.Data
         {
             student.Courses.Add(course);
         }
-        public void RemovecourseFromStudent(Student student, Course course)
+        public void RemoveCourseFromStudent(Student student, Course course)
         {
             student.Courses.Remove(course);
         }

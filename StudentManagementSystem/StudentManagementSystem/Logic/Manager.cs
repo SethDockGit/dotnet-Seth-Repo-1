@@ -21,12 +21,7 @@ namespace StudentManagementSystem.Logic
 
             List<Student> students = IDataSource.GetStudents();
 
-            if(students == null)
-            {
-                response.Success = false;
-                response.Message = "Unable to retrieve list of students.";
-            }
-            else if(students.Count == 0)
+            if(students.Count == 0)
             {
                 response.Success = true;
                 response.Message = "There are currently 0 students enrolled.";
@@ -44,12 +39,7 @@ namespace StudentManagementSystem.Logic
 
             List<Course> courses = IDataSource.GetCourses();
 
-            if (courses == null)
-            {
-                response.Success = false;
-                response.Message = "Unable to retrieve list of courses.";  ///heugh??
-            }
-            else if (courses.Count == 0)
+            if (courses.Count == 0)
             {
                 response.Success = true;
                 response.Message = "There are currently no courses available.";
@@ -80,6 +70,8 @@ namespace StudentManagementSystem.Logic
             }
 
             IDataSource.AddStudent(student);
+
+            students = IDataSource.GetStudents();
 
             if(students.Contains(student))
             {
@@ -112,6 +104,8 @@ namespace StudentManagementSystem.Logic
 
             IDataSource.AddCourse(course);
 
+            courses = IDataSource.GetCourses();
+
             if (courses.Contains(course))  
             {
                 response.Success = true;
@@ -141,8 +135,7 @@ namespace StudentManagementSystem.Logic
             }
             else
             {
-                response.Success = false;
-                response.Message = $"Error: Student of ID {studentID} not found.";
+                throw new Exception("Error: Student not found.");
             }
 
             return response;
@@ -215,7 +208,7 @@ namespace StudentManagementSystem.Logic
             {
                 response.Success = true;
                 response.Message = $"Course {course.CourseName} successfully removed from student {student.Name}.";
-                IDataSource.RemovecourseFromStudent(student, course);
+                IDataSource.RemoveCourseFromStudent(student, course);
             }
 
             return response;

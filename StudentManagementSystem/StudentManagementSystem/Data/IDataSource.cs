@@ -12,7 +12,7 @@ namespace StudentManagementSystem.Data
         public void AddStudent(Student student);
         public bool DeleteStudent(Student student);
         public void AddCourseToStudent(Student student, Course course);
-        public void RemovecourseFromStudent(Student student, Course course);
+        public void RemoveCourseFromStudent(Student student, Course course);
         public void AddCourse(Course course);
         public void EditStudentInfo(Student studentToEdit, SInfoEditTransfer transfer);
         public void EditCourseInfo(Course courseToEdit, Course course);
