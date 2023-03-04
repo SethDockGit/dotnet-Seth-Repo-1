@@ -73,7 +73,7 @@ namespace StudentManagementSystem.Data
             }
         }
 
-        public bool DeleteCourse(Course course)
+        public void DeleteCourse(Course course)
         {
 
             using (SqlConnection conn = new SqlConnection())
@@ -86,10 +86,9 @@ namespace StudentManagementSystem.Data
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
-            return true;
         }
 
-        public bool DeleteStudent(Student student)
+        public void DeleteStudent(Student student)
         {
             using (SqlConnection conn = new SqlConnection())
             {
@@ -101,7 +100,6 @@ namespace StudentManagementSystem.Data
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
-            return true;
         }
 
         public void EditCourseInfo(Course courseToEdit, Course course)

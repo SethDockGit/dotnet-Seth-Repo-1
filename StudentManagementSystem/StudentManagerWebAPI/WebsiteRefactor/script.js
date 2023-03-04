@@ -308,6 +308,7 @@ function confirmAddCourseToStudent() {
             document.getElementById("addCourseBody").innerText = data.message;
 
         });
+    
 }
 function dropCourseFromStudent() {
 

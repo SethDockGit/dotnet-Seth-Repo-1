@@ -125,13 +125,18 @@ namespace StudentManagementSystem.Data
 
             ReWriteStudentsFile();
         }
-        public bool DeleteStudent(Student student)
+        public void DeleteStudent(Student student)
         {
             bool success = Students.Remove(student);
 
-            ReWriteStudentsFile();
-
-            return success;
+            if(success)
+            {
+                ReWriteStudentsFile();
+            }
+            else
+            {
+                throw new Exception("Error: Failed to delete student.");
+            }
         }
         private void PopulateCourses()
         {
@@ -212,13 +217,18 @@ namespace StudentManagementSystem.Data
 
             ReWriteCourseFile();
         }
-        public bool DeleteCourse(Course course)
+        public void DeleteCourse(Course course)
         {
             bool success = Courses.Remove(course);
 
-            ReWriteCourseFile();
-
-            return success;
+            if (success)
+            {
+                ReWriteCourseFile();
+            }
+            else
+            {
+                throw new Exception("Error: Failed to delete course.");
+            }
         }
     }
 }

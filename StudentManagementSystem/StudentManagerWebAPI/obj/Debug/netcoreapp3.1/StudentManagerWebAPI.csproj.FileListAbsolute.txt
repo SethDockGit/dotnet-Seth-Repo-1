@@ -6,8 +6,6 @@ C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManag
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\obj\Debug\netcoreapp3.1\StudentManagerWebAPI.MvcApplicationPartsAssemblyInfo.cache
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\appsettings.Development.json
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\appsettings.json
-C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\Website\package-lock.json
-C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\Website\package.json
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\StudentManagerWebAPI.exe
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\StudentManagerWebAPI.deps.json
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\StudentManagementSystem\StudentManagerWebAPI\bin\Debug\netcoreapp3.1\StudentManagerWebAPI.runtimeconfig.json

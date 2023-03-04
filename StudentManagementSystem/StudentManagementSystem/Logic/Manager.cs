@@ -19,8 +19,6 @@ namespace StudentManagementSystem.Logic
         {
             WorkflowResponse response = new WorkflowResponse();
 
-            Exception ex = new Exception();
-
             try
             {
                 List<Student> students = IDataSource.GetStudents();
@@ -40,8 +38,6 @@ namespace StudentManagementSystem.Logic
             {
                 response.Success=false;
                 response.Message = e.Message + e.StackTrace;
-
-                ex = e;
             }
 
             return response;
@@ -50,8 +46,6 @@ namespace StudentManagementSystem.Logic
         public WorkflowResponse GetCourses()
         {
             WorkflowResponse response = new WorkflowResponse();
-
-            Exception ex = new Exception();
 
             try
             {
@@ -74,8 +68,6 @@ namespace StudentManagementSystem.Logic
             {
                 response.Success = false;
                 response.Message = e.Message + e.StackTrace;
-
-                ex = e;
             }
 
             return response;
@@ -98,8 +90,6 @@ namespace StudentManagementSystem.Logic
                 student.Id = highestID + 1;
             }
 
-            Exception ex = new Exception();
-
             try
             {
                 IDataSource.AddStudent(student);
@@ -110,8 +100,6 @@ namespace StudentManagementSystem.Logic
             {
                 response.Success = false;
                 response.Message = e.Message + e.StackTrace;
-
-                ex = e;
             }
 
             return response;
@@ -121,8 +109,6 @@ namespace StudentManagementSystem.Logic
             WorkflowResponse response = new WorkflowResponse();
 
             List<Course> courses = IDataSource.GetCourses();
-
-            Exception ex = new Exception();
 
             if (courses.Count == 0)
             {
@@ -145,8 +131,6 @@ namespace StudentManagementSystem.Logic
             {
                 response.Success = false;
                 response.Message = e.Message + e.StackTrace;
-
-                ex = e;
             }
  
             return response;
@@ -159,28 +143,18 @@ namespace StudentManagementSystem.Logic
 
             var toDelete = students.SingleOrDefault(s => s.Id == studentID);
 
-            Exception ex = new Exception();
             try
             {
-                bool success = IDataSource.DeleteStudent(toDelete);
+                IDataSource.DeleteStudent(toDelete);
 
-                if(success)
-                {
-                    response.Success = true;
-                    response.Message = $"Student {toDelete.Name} successfully deleted.";
-                }
-                else
-                {
-                    response.Success = false;
-                    response.Message = $"Error: Unable to delete student.";
-                }
+                response.Success = true;
+                response.Message = $"Student {toDelete.Name} successfully deleted.";
+
             }
             catch(Exception e)
             {
                 response.Success = false;
                 response.Message = e.Message + e.StackTrace;
-
-                ex = e;
             }
 
             return response;
@@ -214,7 +188,6 @@ namespace StudentManagementSystem.Logic
             }
             else
             {
-                Exception ex = new Exception();
                 try
                 {
                     IDataSource.AddCourseToStudent(student, course);
@@ -224,9 +197,7 @@ namespace StudentManagementSystem.Logic
                 catch(Exception e)
                 {
                     response.Success = false;
-                    response.Message = e.Message + e.StackTrace;
-
-                    ex = e;
+                    response.Message = "Error: Failed to add course to student." + e.StackTrace;
                 }
             }
 
@@ -261,7 +232,6 @@ namespace StudentManagementSystem.Logic
             }
             else
             {
-                Exception ex = new Exception();
                 try
                 {
                     IDataSource.RemoveCourseFromStudent(student, course);
@@ -271,9 +241,7 @@ namespace StudentManagementSystem.Logic
                 catch (Exception e)
                 {
                     response.Success = false;
-                    response.Message = e.Message + e.StackTrace;
-
-                    ex = e;
+                    response.Message = "Error: Failed to remove course from student." + e.StackTrace;
                 }
             }
 
@@ -287,8 +255,6 @@ namespace StudentManagementSystem.Logic
 
             var studentToEdit = students.SingleOrDefault(s => s.Id == transfer.StudentId);
 
-            Exception ex = new Exception();
-
             try
             {
                 IDataSource.EditStudentInfo(studentToEdit, transfer);
@@ -299,9 +265,7 @@ namespace StudentManagementSystem.Logic
             catch(Exception e)
             {
                 response.Success = false;
-                response.Message = e.Message + e.StackTrace;
-
-                ex = e;
+                response.Message = "Error: Failed to update student info." + e.StackTrace;
             }
 
             return response;
@@ -315,7 +279,6 @@ namespace StudentManagementSystem.Logic
 
             var courseToEdit = courses.SingleOrDefault(c => c.CourseId == course.CourseId);
 
-            Exception ex = new Exception();
             try
             {
                 IDataSource.EditCourseInfo(courseToEdit, course);
@@ -326,9 +289,7 @@ namespace StudentManagementSystem.Logic
             catch(Exception e)
             {
                 response.Success = false;
-                response.Message = e.Message + e.StackTrace;
-
-                ex = e;
+                response.Message = "Error: Failed to update course info." + e.StackTrace;
             }
 
             return response;
@@ -341,29 +302,17 @@ namespace StudentManagementSystem.Logic
 
             var toDelete = courses.SingleOrDefault(c => c.CourseId == ID);
 
-            Exception ex = new Exception();
-
             try
             {
-                bool success = IDataSource.DeleteCourse(toDelete);
+                IDataSource.DeleteCourse(toDelete);
 
-                if (success)
-                {
-                    response.Success = true;
-                    response.Message = $"Course {toDelete.CourseTitle} successfully deleted.";
-                }
-                else
-                {
-                    response.Success = false;
-                    response.Message = $"Error: Unable to delete course."; 
-                }
+                response.Success = true;
+                response.Message = $"Course {toDelete.CourseTitle} successfully deleted.";
             }
             catch(Exception e)
             {
                 response.Success = false;
                 response.Message = e.Message + e.StackTrace;
-
-                ex = e;
             }
 
             return response;

@@ -80,11 +80,14 @@ namespace StudentManagementSystem.Data
         {
             Students.Add(student);
         }
-        public bool DeleteStudent(Student student)
+        public void DeleteStudent(Student student)
         {
             bool success = Students.Remove(student);
 
-            return success;
+            if(!success)
+            {
+                throw new Exception("Error: Failed to delete student.");
+            }
         }
         public void AddCourse(Course course)
         {
@@ -109,11 +112,14 @@ namespace StudentManagementSystem.Data
             courseToEdit.Professor = course.Professor;
             courseToEdit.Description = course.Description;
         }
-        public bool DeleteCourse(Course course)
+        public void DeleteCourse(Course course)
         {
             bool success = Courses.Remove(course);
 
-            return success;
+            if(!success)
+            {
+                throw new Exception("Error: Failed to delete course.");
+            }
         }
     }
 }
