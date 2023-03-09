@@ -7,7 +7,7 @@ namespace InheritanceDemo
     {
         static void Main(string[] args)
         {
-            //GermanShepherd germanShepherd = new GermanShepherd(true, "Rufus");
+            GermanShepherd germanShepherd = new GermanShepherd(true, "Rufus");
 
             Terrier terrier = new Terrier(true, "dorkus");
 

@@ -44,28 +44,28 @@ namespace Game_Of_Life2.Data
         {
             throw new NotImplementedException();
         }
-        public List<Map> ReadMaps()
-        {
-            foreach (File file in (SaveLocation)) //idk how to actually do this
-            {
-                Map map = new Map();
-                using (StreamReader sr = File.OpenText(SaveFile))
-                {
-                    string line = "";
-                    string[] seeds = new string[];
+        //public List<Map> ReadMaps()
+        //{
+        //    foreach (File file in (SaveLocation)) //idk how to actually do this
+        //    {
+        //        Map map = new Map();
+        //        using (StreamReader sr = File.OpenText(SaveFile))
+        //        {
+        //            string line = "";
+        //            string[] seeds = new string[];
 
-                    while((line = sr.ReadLine()) != null)
-                    {
-                        string[] seeds = line;
-                    }
+        //            while((line = sr.ReadLine()) != null)
+        //            {
+        //                string[] seeds = line;
+        //            }
 
-                map.Seeds = //title of file
-                map.ID = //new ID for each title
-                }
-                Maps.Add(map);
-            }
-            return Maps;
-        }
+        //        map.Seeds = //title of file
+        //        map.ID = //new ID for each title
+        //        }
+        //        Maps.Add(map);
+        //    }
+        //    return Maps;
+        //}
         public Map GetMap(string id)
         {
             throw new NotImplementedException();

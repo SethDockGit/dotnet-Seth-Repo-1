@@ -6,3 +6,11 @@ C:\repos\Grocery App\Grocery App\obj\Debug\Grocery App.csproj.SuggestedBindingRe
 C:\repos\Grocery App\Grocery App\obj\Debug\Grocery App.csproj.CoreCompileInputs.cache
 C:\repos\Grocery App\Grocery App\obj\Debug\Grocery App.exe
 C:\repos\Grocery App\Grocery App\obj\Debug\Grocery App.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Grocery App\Grocery App\bin\Debug\Grocery App.exe.config
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Grocery App\Grocery App\bin\Debug\Grocery App.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Grocery App\Grocery App\bin\Debug\Grocery App.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Grocery App\Grocery App\obj\Debug\Grocery App.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Grocery App\Grocery App\obj\Debug\Grocery App.csproj.SuggestedBindingRedirects.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Grocery App\Grocery App\obj\Debug\Grocery App.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Grocery App\Grocery App\obj\Debug\Grocery App.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Grocery App\Grocery App\obj\Debug\Grocery App.pdb

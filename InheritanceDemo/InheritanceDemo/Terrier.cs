@@ -8,7 +8,7 @@ namespace InheritanceDemo
     {
         public Terrier(bool isGood, string name) : base(isGood, name)
         {
-            SignatureMove = "humps a stuffed animal";
+            SignatureMove = "yip";
         }
         public void DoSignatureMove()
         {

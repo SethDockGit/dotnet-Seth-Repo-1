@@ -225,7 +225,6 @@ export default function CreateTrip(){
                     {val.name} • {val.phone} • {val.email}
                     <Button type="button" onClick={handleClickRemoveCrew} data-value1={val.id}>x</Button>
                 </ListItem>           
-                
             )        
         })
     }

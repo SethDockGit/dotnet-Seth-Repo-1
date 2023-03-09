@@ -10,8 +10,6 @@ import dayjs from "dayjs";
 
 export default function TripsView(){
 
-    //to-do: sort by date
-
     const {trips} = useContext(TripsContext);
 
     const showUpcomingTrips = () => {
