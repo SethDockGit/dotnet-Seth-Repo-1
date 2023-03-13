@@ -1,0 +1,10 @@
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbProject\obj\Debug\netcoreapp3.1\BnbProject.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbProject\obj\Debug\netcoreapp3.1\BnbProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbProject\obj\Debug\netcoreapp3.1\BnbProject.AssemblyInfoInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbProject\obj\Debug\netcoreapp3.1\BnbProject.AssemblyInfo.cs
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbProject\obj\Debug\netcoreapp3.1\BnbProject.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbProject\bin\Debug\netcoreapp3.1\BnbProject.deps.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbProject\bin\Debug\netcoreapp3.1\BnbProject.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbProject\bin\Debug\netcoreapp3.1\BnbProject.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbProject\obj\Debug\netcoreapp3.1\BnbProject.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbProject\obj\Debug\netcoreapp3.1\BnbProject.pdb

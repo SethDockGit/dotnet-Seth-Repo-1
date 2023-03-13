@@ -1,0 +1,135 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\BnbProject\\BnbWebAPI\\BnbWebAPI.csproj": {}
+  },
+  "projects": {
+    "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\BnbProject\\BnbProject\\BnbProject.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\BnbProject\\BnbProject\\BnbProject.csproj",
+        "projectName": "BnbProject",
+        "projectPath": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\BnbProject\\BnbProject\\BnbProject.csproj",
+        "packagesPath": "C:\\Users\\Seth\\.nuget\\packages\\",
+        "outputPath": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\BnbProject\\BnbProject\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Seth\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\BnbProject\\BnbWebAPI\\BnbWebAPI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\BnbProject\\BnbWebAPI\\BnbWebAPI.csproj",
+        "projectName": "BnbWebAPI",
+        "projectPath": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\BnbProject\\BnbWebAPI\\BnbWebAPI.csproj",
+        "packagesPath": "C:\\Users\\Seth\\.nuget\\packages\\",
+        "outputPath": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\BnbProject\\BnbWebAPI\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Seth\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\BnbProject\\BnbProject\\BnbProject.csproj": {
+                "projectPath": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\BnbProject\\BnbProject\\BnbProject.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
