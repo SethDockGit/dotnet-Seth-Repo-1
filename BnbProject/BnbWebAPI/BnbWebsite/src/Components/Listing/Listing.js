@@ -72,7 +72,7 @@ const showReviews = () => {
 
         return(
 
-            <Grid xs={3} key={index}>
+            <Grid item xs={3} key={index}>
                 <Card sx={{ maxWidth: 300, margin:3}}>
                     <CardContent>
                       <Typography sx={{ fontSize: 14 }}>
@@ -103,18 +103,18 @@ const showReviews = () => {
             <FavoriteIcon sx={{m:2}}onClick={handleClickFavorite}/>
             <Divider sx={{backgroundColor:'peachpuff'}}/>
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <Grid xs={3}>
+                <Grid item xs={3}>
                     <Typography sx={{mt:1}} variant='h6'>{title}</Typography>
                     <Typography variant='subtitle1'>{location}</Typography>
                     <Button variant="contained" sx={{":hover": {
                         bgcolor: "peachpuff"}, mt:2, backgroundColor:"lightsalmon"}}>Book A Stay</Button>    
                 </Grid>
-                <Grid xs={2}>
+                <Grid item xs={2}>
                     <Typography sx={{mt:1}} variant='h6'>${rate}/Night</Typography>
                 </Grid>
             </Grid>
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <Grid xs={5}>
+                <Grid item xs={5}>
                     <Typography variant='body1'>"{description}"</Typography>           
                 </Grid>
             </Grid>
@@ -122,7 +122,7 @@ const showReviews = () => {
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}> 
-                <Grid xs={5}>
+                <Grid item xs={5}>
                     <Typography sx={{mt:2}} variant='h6'>Amenities:</Typography>
                     {showListingAmenities()}
                 </Grid>
@@ -131,10 +131,10 @@ const showReviews = () => {
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}> 
-                <Grid xs={5}>
+                <Grid item xs={5}>
                     <Typography sx={{mt:2}} variant='h6'>Reviews</Typography>
                 </Grid>
-                <Grid xs={12}/>
+                <Grid item xs={12}/>
                 {showReviews()}
             </Grid>
 

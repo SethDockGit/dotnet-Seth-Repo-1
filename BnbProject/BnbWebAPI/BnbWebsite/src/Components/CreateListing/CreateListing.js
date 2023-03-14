@@ -145,15 +145,15 @@ const showFailMessage = () => {
             {/*here go the pics*/}
             <Divider sx={{backgroundColor:'peachpuff'}}/>
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <Grid xs={2}>
+                <Grid item xs={2}>
                     <Typography sx={{mt:2}} variant='h6'>Listing Title</Typography>
                     <TextField sx={{mb:2}} placeholder='Enter Title' onChange={handleTitleChange}/>
                 </Grid>
-                <Grid xs={2}>
+                <Grid item xs={2}>
                     <Typography sx={{mt:2}} variant='h6'>$ Nightly Rate</Typography>
                     <TextField sx={{mb:2}} placeholder='Enter Rate' onChange={handleRateChange}/>
                 </Grid>
-                <Grid xs={2}>
+                <Grid item xs={2}>
                     <Typography sx={{mt:2}} variant='h6'>Location</Typography>
                     <TextField sx={{mb:2}} placeholder='Enter Location' onChange={handleLocationChange}/>
                 </Grid>
@@ -162,7 +162,7 @@ const showFailMessage = () => {
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <Grid xs={6}>
+                <Grid item xs={6}>
                     <Typography sx={{mt:2}} variant='h6'>Description
                     </Typography>
                     <TextField fullWidth multiline rows={6} sx={{justifyContent: 'center', display: 'flex', mb:2}} placeholder='Describe the property...' onChange={handleDescriptionChange}/>
@@ -172,7 +172,7 @@ const showFailMessage = () => {
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <Grid xs={2}>
+                <Grid item xs={2}>
                     <Typography sx={{mt:2}} variant='h6'>Amenities</Typography>
                     <Box sx={{ maxWidth: 180 }}>
                         <FormControl fullWidth>
@@ -180,6 +180,7 @@ const showFailMessage = () => {
                             <Select
                                 id="amenity-select"
                                 label="Amenities"
+                                value={""}
                                 onChange={handleClickAmenity}
                             >
                                 {showAvailableAmenities()}
@@ -187,12 +188,12 @@ const showFailMessage = () => {
                         </FormControl>
                      </Box>
                 </Grid>
-                <Grid xs={2}>
+                <Grid item xs={2}>
                     <Typography sx={{mt:2}} variant='h6'>Add Custom Amenity</Typography>
                     <TextField sx={{mb:2}} placeholder='Enter Amenity' onChange={handleCustomAmenityChange}/>
                     <Button sx={{color:'lightsalmon'}} onClick={addCustomAmenity}>Add</Button>
                 </Grid>
-                <Grid xs={2}>
+                <Grid item xs={2}>
                     <Typography sx={{mt:2}} variant='h6'>Your Amenities:</Typography>
                     <List sx={{
                         width: '100%',
@@ -211,12 +212,12 @@ const showFailMessage = () => {
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <Grid xs={5}/>
-                <Grid xs={2}>
+                <Grid item xs={5}/>
+                <Grid item xs={2}>
                     <Button variant="contained" sx={{":hover": {
                     bgcolor: "peachpuff"}, backgroundColor:'lightsalmon', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={handleListingChange}>Save</Button>
                 </Grid>
-                <Grid xs={5}>
+                <Grid item xs={5}>
                     {showFailMessage()} 
                 </Grid>
             </Grid>

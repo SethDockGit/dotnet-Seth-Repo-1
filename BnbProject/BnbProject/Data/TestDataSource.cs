@@ -66,7 +66,7 @@ namespace BnbProject.Data
                 Id = 1,
                 GuestId = 1,
                 HostId = 2,
-                Listing = new Listing(),
+                ListingId = 2,
                 Review = new Review(),
                 StartDate = new DateTime(),
                 EndDate = new DateTime()
@@ -76,7 +76,7 @@ namespace BnbProject.Data
                 Id = 2,
                 GuestId = 2,
                 HostId = 1,
-                Listing = new Listing(),
+                ListingId = 1,
                 Review = new Review(),
                 StartDate = new DateTime(),
                 EndDate = new DateTime()
@@ -110,7 +110,7 @@ namespace BnbProject.Data
             //seth owns listing 1, and stayed at listing 2 during stay 1
             TestUsers[0].Listings.Add(TestListings[0]);
             TestUsers[0].Stays.Add(TestStays[0]);
-            TestStays[0].Listing = TestListings[1];
+            //TestStays[0].Listing = TestListings[1];
             TestListings[1].Stays.Add(TestStays[0]);
             TestStays[0].HostId = TestUsers[1].Id;
             TestStays[0].GuestId = TestUsers[0].Id;
@@ -119,7 +119,7 @@ namespace BnbProject.Data
             //Bob owns listing 2, and stayed at listing 1 during stay 2
             TestUsers[1].Listings.Add(TestListings[1]);
             TestUsers[1].Stays.Add(TestStays[1]);
-            TestStays[1].Listing = TestListings[0];
+            //TestStays[1].Listing = TestListings[0];
             TestListings[0].Stays.Add(TestStays[1]);
             TestStays[1].HostId = TestUsers[0].Id;
             TestStays[1].GuestId = TestUsers[0].Id;

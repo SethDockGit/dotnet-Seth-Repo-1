@@ -14,12 +14,12 @@ export default function MyAppBar(){
                 <Toolbar sx={{backgroundColor:"sandybrown"}}>
                   <Grid container sx={{justifyContent: 'center', display: 'flex',
                   alignItems: 'center'}}>
-                    <Grid xs={2}/>
-                    <Grid sx={{justifyContent: 'center', display: 'flex',
+                    <Grid item xs={2}/>
+                    <Grid item sx={{justifyContent: 'center', display: 'flex',
                   alignItems: 'center'}} xs={5}>
                       <Typography variant="h4" sx={{margin:2}}>RareBnbs</Typography>
                     </Grid>
-                    <Grid xs={2}>
+                    <Grid item xs={2}>
                       <Link  style={{ textDecoration: 'none' }} to={'/listings'}>
                         <Button variant="contained" sx={{":hover": {
                         bgcolor: "peachpuff"},justifyContent:'right', marginRight: 3, backgroundColor:"lightsalmon"}}>View Listings</Button>    

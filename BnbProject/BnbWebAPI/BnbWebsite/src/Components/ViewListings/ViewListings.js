@@ -12,7 +12,7 @@ export default function ViewListings(){
 
 const api = `https://localhost:44305`;
 
-const startListings = new Array();
+const startListings = [];
 
 const [checkin, setCheckin] = useState('');
 const [checkout, setCheckout] = useState('');
@@ -26,17 +26,13 @@ const getListings = () => {
     fetch(`${api}/bnb/listings`)
         .then((response) => response.json())
         .then((data) => {
-            setListingsMessage(data.Message);
-            setListings(data.Listings);
 
-            return(
-                {data}
-            )
-
+            setListingsMessage(data.message);
+            setListings(data.listings);
+            console.log(data);
         });
 }
-
-const data = getListings();
+getListings();
 
 const showListings = () => {
 
@@ -44,20 +40,19 @@ const showListings = () => {
 
         return(
 
-            <Grid xs={3} key={index}>
+            <Grid item xs={2} key={index}>
                 <Card sx={{ maxWidth: 300, margin:3}}>
                     <CardContent>
                       <Typography sx={{ fontSize: 14 }}>
-                        {val.Title}
+                        {val.title}
                       </Typography>
                       <Typography variant="body1" color="text.secondary">
-                        {val.Location}
+                        {val.location}
                       </Typography>
                       <Typography sx={{ mb: 1.5 }}>
-                        {val.Price}
+                        {val.price}
                       </Typography>
                       <Typography variant="body2">
-
                       </Typography>
                     </CardContent>
                 </Card>
@@ -75,36 +70,36 @@ const handleCheckoutChange = (newValue) => {
     return(
 
         <div>
-            {getListings()}
-            
             <Grid container sx={{mt:5, ml:4, mb:2}}>
-                <Grid xs={2}>
+                <Grid item xs={2}>
                     <Typography variant="h4">{listingsMessage}</Typography>
                 </Grid>
-                <Grid xs={.5}>
+                <Grid item xs={.5}>
                     <Typography variant="h5" sx={{color:'gray'}}>Filters:</Typography>
                 </Grid>
-                <Grid xs={3.5}>
+                <Grid item xs={3.5}>
                     <DesktopDatePicker
                         label="Check-in"
                         inputFormat="MM/DD/YYYY"
                         value={checkin}
                         onChange={handleCheckinChange}
+                        renderInput={(params) => <TextField {...params} error={false} />}
                         />
                     <DesktopDatePicker
                         label="Check-out"
                         inputFormat="MM/DD/YYYY"
                         value={checkout}
                         onChange={handleCheckoutChange}
+                        renderInput={(params) => <TextField {...params} error={false} />}
                         />
                 </Grid>
-                <Grid xs={2}>
+                <Grid item xs={2}>
                     {/*Price header. Min and max dropdown select textfields. Just try it with the MUI select*/}
                 </Grid>
-                <Grid xs={2}>
+                <Grid item xs={2}>
                     {/*Amenities dropdown with checkmarks*/}
                 </Grid>
-                <Grid xs={2}>
+                <Grid item xs={2}>
                     <Button variant="contained" sx={{":hover": {
                     bgcolor: "peachpuff"}, mt:2, backgroundColor:"lightsalmon"}}>Apply</Button>    
                 </Grid>
