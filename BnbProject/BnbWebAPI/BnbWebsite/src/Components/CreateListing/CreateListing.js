@@ -150,7 +150,7 @@ const showFailMessage = () => {
                     <TextField sx={{mb:2}} placeholder='Enter Title' onChange={handleTitleChange}/>
                 </Grid>
                 <Grid item xs={2}>
-                    <Typography sx={{mt:2}} variant='h6'>$ Nightly Rate</Typography>
+                    <Typography sx={{mt:2}} variant='h6'>Nightly Rate($)</Typography>
                     <TextField sx={{mb:2}} placeholder='Enter Rate' onChange={handleRateChange}/>
                 </Grid>
                 <Grid item xs={2}>

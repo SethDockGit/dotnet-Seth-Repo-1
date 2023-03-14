@@ -17,7 +17,7 @@ export default function MyAppBar(){
                     <Grid item xs={2}/>
                     <Grid item sx={{justifyContent: 'center', display: 'flex',
                   alignItems: 'center'}} xs={5}>
-                      <Typography variant="h4" sx={{margin:2}}>RareBnbs</Typography>
+                      <Typography variant="h4" sx={{margin:2}}>SpotFinder</Typography>
                     </Grid>
                     <Grid item xs={2}>
                       <Link  style={{ textDecoration: 'none' }} to={'/listings'}>

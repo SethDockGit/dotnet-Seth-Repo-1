@@ -18,7 +18,7 @@ var testListing = {
     description: "Come get away from it all in our sunny 2BR cabin on the lake. Paddle in the canoe or take a stroll around the woods. Pet friendly.",
     listingAmenities: ["firepit", "dishwasher", "laundry"] 
 };
-let testAmenities = [
+var testAmenities = [
     "hot tub", "grill", "pool table"
 ];
 

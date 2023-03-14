@@ -68,8 +68,8 @@ namespace BnbProject.Data
                 HostId = 2,
                 ListingId = 2,
                 Review = new Review(),
-                StartDate = new DateTime(),
-                EndDate = new DateTime()
+                StartDate = new DateTime(2023, 3, 25),
+                EndDate = new DateTime(2023, 3, 30)
             },
             new Stay()
             {
@@ -78,8 +78,8 @@ namespace BnbProject.Data
                 HostId = 1,
                 ListingId = 1,
                 Review = new Review(),
-                StartDate = new DateTime(),
-                EndDate = new DateTime()
+                StartDate = new DateTime(2023, 3, 16),
+                EndDate = new DateTime(2023, 3, 18)
             }
         };
         private List<Review> TestReviews = new List<Review>()
