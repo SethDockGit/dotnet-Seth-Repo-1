@@ -2,8 +2,6 @@ import { Divider, Typography } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
 import { useState } from "react";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import dayjs from "dayjs";
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import TextField from "@mui/material/TextField";
@@ -14,72 +12,43 @@ import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
+import ListingsCard from "../ListingsCard/ListingsCard";
+import { ListingsContext } from "../../Contexts/ListingsContext";
+import { useContext } from "react";
+
 
 export default function ViewListings(){
-
-const api = `https://localhost:44305`;
 
 const testAmenities = [
     "hot tub", "grill", "pool table"
 ];
 
-const startListings = [];
-
+const {listings, setListings} = useContext(ListingsContext);
 const [checkin, setCheckin] = useState('');
 const [checkout, setCheckout] = useState('');
 const [minRate, setMinRate] = useState(0);
 const [maxRate, setMaxRate] = useState(Number.MAX_VALUE);
-const [listings, setListings] = useState(startListings);
-const [listingsLoaded, setListingsLoaded] = useState(false);
-const [listingsMessage, setListingsMessage] = useState();
 const [amenities, setAmenities] = useState([]);
 const [failApplyFilters, setFailApplyFilters] = useState(false);
 const [failMessage, setFailMessage] = useState('');
 
 const getListings = () => {
 
-    fetch(`${api}/bnb/listings`)
-        .then((response) => response.json())
-        .then((data) => {
-
-            setListingsMessage(data.message);
-            setListings(data.listings);
-            console.log(data);
-        })
-        .then(() => {
-            setListingsLoaded(true);
-        });
 }
-getListings();
+
+//const stopRerender = () => {
+
+    //!listingsLoaded && getListings();
+//}
+
+//stopRerender();
 
 const showListings = () => {
 
     return listings.map(function(val, index) {
-        debugger;
+        
         return(
-
-            <Grid item xs={2} key={index}>
-                <Card sx={{minWidth:280, margin:3}}>
-                    <CardContent>
-                        {/*pic goes here*/}
-                        <Grid container>
-                            <Grid item xs={8}>
-                                <Typography sx={{ fontSize: 20 }}>
-                                  {val.title}
-                                </Typography>
-                                <Typography variant="body1" color="text.secondary">
-                                  {val.location}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Typography variant="body1" sx={{mt:1}}>
-                                  ${val.rate}/Night
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </CardContent>
-                </Card>
-            </Grid>
+            <ListingsCard listing={val} key={index}/>
         )
     });
 }
@@ -145,6 +114,7 @@ const applyFilters = () => {
             }
         };    
         
+        //needs to filter opposite way, if stays start date and end date is between check-in and checkout date.
         setListings(dateFiltered);
     }
 }
@@ -161,12 +131,13 @@ const showFailMessage = () => {
         </div>
     )
 }
-    return(
 
+    return(
+        
         <div>
             <Grid container sx={{mt:5, ml:4, mb:2, alignItems: 'center'}}>
                 <Grid item xs={1.5}>
-                    <Typography variant="h4">{listingsMessage}</Typography>
+                    <Typography variant="h4">{listings.length} Listings</Typography>
                 </Grid>
                 <Grid item xs={1}>
                     <Typography variant="h4" sx={{color:'gray'}}>Filters:</Typography>

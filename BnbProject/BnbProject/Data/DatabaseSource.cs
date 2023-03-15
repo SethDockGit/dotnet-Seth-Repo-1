@@ -17,6 +17,10 @@ namespace BnbProject.Data
         {
             throw new NotImplementedException();
         }
+        public List<string> GetAmenities()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

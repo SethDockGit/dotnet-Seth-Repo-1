@@ -9,6 +9,7 @@ namespace BnbProject.Models
         public bool Success { get; set; }
         public string Message { get; set; }
         public List<Listing> Listings { get; set; }
+        public List<string> Amenities { get; set; }
         //public List<User> Users { get; set; }
     }
 }

@@ -5,51 +5,26 @@ import Button from "@mui/material/Button";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import { useParams } from "react-router-dom";
 import BookingDrawer from '../BookingDrawer/BookingDrawer';
+import { ListingsContext } from "../../Contexts/ListingsContext";
+import { useContext } from "react";
+import Rating from '@mui/material/Rating';
+import dayjs from "dayjs";
 
 
-export default function EditListing(){
-
-var testListing = {
-    id: 0,
-    title: "Cozy 2BR Cabin Up North",
-    rate: 205,
-    location: "Crosby, MN",
-    description: "Come get away from it all in our sunny 2BR cabin on the lake. Paddle in the canoe or take a stroll around the woods. Pet friendly.",
-    listingAmenities: ["firepit", "dishwasher", "laundry"] 
-};
-var testAmenities = [
-    "hot tub", "grill", "pool table"
-];
+export default function Listing(){
 
 const api = `https://localhost:44305`;
 
-const testReviews = [
-    {
-        id: 0,
-        rating: 5,
-        text: "We had an excellent time here. The host was friendly and the cabin was beautiful."
-    },
-    {
-        id: 1,
-        rating: 5,
-        text: "We had an excellent time here. The host was friendly and the cabin was beautiful."
-    },
-    {
-        id: 2,
-        rating: 4,
-        text: "We enjoyed our stay at the cabin. Would reccomend."
-    }
-];
-
-const [listing, setListing] = useState(testListing);
+const {id} = useParams();
+const {listings, setListings} = useContext(ListingsContext);
+const [listing, setListing] = useState(listings.find(l => l.id == id));
 const [title, setTitle] = useState(listing.title);
 const [rate, setRate] = useState(listing.rate);
 const [location, setLocation] = useState(listing.location);
 const [description, setDescription] = useState(listing.description);
-const [listingAmenities, setListingAmenities] = useState(listing.listingAmenities);
-const [reviews, setReviews] = useState(testReviews);
-
+const [listingAmenities, setListingAmenities] = useState(listing.amenities);
 
 const showListingAmenities = () => {
     
@@ -64,28 +39,29 @@ const showListingAmenities = () => {
 const handleClickFavorite = () => {
     //will add listing to list of user favorites or pop-up with "you need to login to do that"
 }
+
 const showReviews = () => {
     
-    return reviews.map(function(val, index){
-
-        //you should just loop through the array of stays so you have access to the date and the username too
+    return listing.stays.map(function(val, index){
 
         return(
 
-            <Grid item xs={3} key={index}>
+            <Grid item s={4} key={index}>
                 <Card sx={{ maxWidth: 300, margin:3}}>
                     <CardContent>
                       <Typography sx={{ fontSize: 14 }}>
-                        User
+                        {val.review.username}
                       </Typography>
                       <Typography variant="body1" color="text.secondary">
-                        01/02/2022 to /01/03/2022
+                        {dayjs(val.startDate).format('MM/DD/YYYY')} - {dayjs(val.endDate).format('MM/DD/YYYY')}
                       </Typography>
-                      <Typography sx={{ mb: 1.5 }}>
-                        star rating here
-                      </Typography>
+                          <Rating
+                          name="user rating"
+                          value={val.review.rating}
+                          disabled
+                        />
                       <Typography variant="body2">
-                        Great job
+                        "{val.review.text}"
                       </Typography>
                     </CardContent>
                 </Card>
@@ -123,7 +99,7 @@ const showReviews = () => {
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}> 
                 <Grid item xs={5}>
-                    <Typography sx={{mt:2}} variant='h6'>Amenities:</Typography>
+                    <Typography sx={{mt:2}} variant='h6'>Amenities</Typography>
                     {showListingAmenities()}
                 </Grid>
             </Grid>

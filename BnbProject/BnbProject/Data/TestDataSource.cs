@@ -10,7 +10,7 @@ namespace BnbProject.Data
     {
         private List<string> TestAmenities = new List<string>()
         {
-            "hot tub", "fireplace", "pool table", "wifi"
+            "Hot Tub", "Fireplace", "Pool Table", "Wifi", "Dishwasher", "Gas range", "Oven", "Lake access", "Watercraft", "Air conditioning", "Heat"
         };
         private List<User> TestUsers = new List<User>()
         {
@@ -28,7 +28,7 @@ namespace BnbProject.Data
                 Id = 2,
                 Username = "Bob",
                 Password = "Password",
-                Email = "brib@gmail.com",
+                Email = "bob@gmail.com",
                 Listings = new List<Listing>(),
                 Stays = new List<Stay>()
             },
@@ -88,13 +88,15 @@ namespace BnbProject.Data
             {
                 Id = 1,
                 Rating = 5,
-                Text = "We had a wonderful stay."
+                Text = "We had a wonderful stay.",
+                Username = "Seth"
             },
             new Review()
             {
                 Id = 2,
                 Rating = 4,
-                Text = "We enjoyed our stay here. Some problems with the wi-fi"
+                Text = "We enjoyed our stay here. Some problems with the wi-fi",
+                Username = "Bob"
             },
         };
         public TestDataSource()
@@ -107,23 +109,27 @@ namespace BnbProject.Data
             {
                 l.Amenities = TestAmenities;
             }
+            //Add sequentially!!
             //seth owns listing 1, and stayed at listing 2 during stay 1
-            TestUsers[0].Listings.Add(TestListings[0]);
-            TestUsers[0].Stays.Add(TestStays[0]);
-            //TestStays[0].Listing = TestListings[1];
-            TestListings[1].Stays.Add(TestStays[0]);
             TestStays[0].HostId = TestUsers[1].Id;
             TestStays[0].GuestId = TestUsers[0].Id;
             TestStays[0].Review = TestReviews[0];
+            TestListings[1].Stays.Add(TestStays[0]);
+            TestUsers[0].Stays.Add(TestStays[0]);
+            TestUsers[0].Listings.Add(TestListings[0]);
+            //TestStays[0].Listing = TestListings[1];
+
 
             //Bob owns listing 2, and stayed at listing 1 during stay 2
+            TestStays[1].Review = TestReviews[1];
+            TestStays[1].HostId = TestUsers[0].Id;
+            TestStays[1].GuestId = TestUsers[0].Id;
+            TestListings[0].Stays.Add(TestStays[1]);
             TestUsers[1].Listings.Add(TestListings[1]);
             TestUsers[1].Stays.Add(TestStays[1]);
             //TestStays[1].Listing = TestListings[0];
-            TestListings[0].Stays.Add(TestStays[1]);
-            TestStays[1].HostId = TestUsers[0].Id;
-            TestStays[1].GuestId = TestUsers[0].Id;
-            TestStays[0].Review = TestReviews[1];
+
+
         }
         public List<Listing> GetListings()
         {

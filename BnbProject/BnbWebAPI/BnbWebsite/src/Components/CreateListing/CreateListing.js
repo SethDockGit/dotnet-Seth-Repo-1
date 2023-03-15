@@ -10,29 +10,46 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
+import { ListingsContext } from "../../Contexts/ListingsContext";
+import { useContext } from "react";
 
 export default function CreateListing(){
 
-let testAmenities = [
-    "hot tub", "grill", "pool table"
-]
-const startListingAmenities = [];
-
 const api = `https://localhost:44305`;
 
-const hostId = 1; //THIS WILL NEED TO BE SET AND PASSED IN AT LOGIN
+const hostId = 1; //THIS WILL NEED TO BE SET AND PASSED IN AT LOGIN. NEEDED TO FINALIZE LISTING
 
+//const {listings, setListings} = useContext(ListingsContext);
 const [title, setTitle] = useState('');
 const [rate, setRate] = useState();
 const [location, setLocation] = useState('');
 const [description, setDescription] = useState('');
-const [availableAmenities, setAvailableAmenities] = useState(testAmenities);
-const [listingAmenities, setListingAmenities] = useState(startListingAmenities);
+const [availableAmenities, setAvailableAmenities] = useState([]);
+const [amenitiesLoaded, setAmenitiesLoaded] = useState(false);
+const [listingAmenities, setListingAmenities] = useState([]);
 const [customAmenity, setCustomAmenity] = useState('');
 const [failMessage, setFailMessage] = useState('');
 const [failCreateListing, setFailCreateListing] = useState(false);
-const [listing, setListing] = useState(); //do I even need this?
 
+const getAmenities = () => {
+
+    fetch(`${api}/bnb/amenities`)
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        setAvailableAmenities(data.amenities);
+    })
+    .then(() =>{
+        setAmenitiesLoaded(true);
+    });
+}
+
+const stopRerender = () => {
+
+    !amenitiesLoaded && getAmenities();
+}
+
+stopRerender();
 
 const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -98,18 +115,20 @@ const handleListingChange = () => {
     }
     else {
 
-        let stayArray = new Array();
+        let stayArray = [];
 
         //*get hostID thru context or pass down from login? 0 is OK for now but need to change
         var APIRequest = {
             Id: 0,
             HostId: hostId,
             Title: title,
+            Rate: Number(rate),
             Location: location,
             Description: description,
             Amenities: listingAmenities,
-            Stays: stayArray
         };
+
+        //setListings([...listings, APIRequest]);
 
         fetch(`${api}/bnb/addlisting`, {
             method: 'POST',
@@ -141,6 +160,8 @@ const showFailMessage = () => {
     return(
 
         <div>
+            {amenitiesLoaded && 
+            <div>
             <Typography variant="h4" sx={{justifyContent: 'center', display: 'flex', margin:2}}>Create Your Listing</Typography>
             {/*here go the pics*/}
             <Divider sx={{backgroundColor:'peachpuff'}}/>
@@ -221,6 +242,9 @@ const showFailMessage = () => {
                     {showFailMessage()} 
                 </Grid>
             </Grid>
+
+            </div>
+            }
             
         </div>
 

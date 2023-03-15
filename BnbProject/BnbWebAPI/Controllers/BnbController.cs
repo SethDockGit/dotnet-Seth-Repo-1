@@ -28,11 +28,20 @@ namespace BnbWebAPI.Controllers
 
             return response;
         }
+        [HttpGet]
+        [Route("amenities")]
+        public WorkflowResponse GetAmenities()
+        {
+            WorkflowResponse response = Manager.GetAmenities();
+
+            return response;
+        }
         [HttpPost]
         [Route("addlisting")]
-        public WorkflowResponse AddListing([FromBody] Listing listing)
+        public WorkflowResponse AddListing([FromBody] NewListingTransfer transfer)
         {
-            WorkflowResponse response = Manager.AddListing(listing);
+    
+            WorkflowResponse response = Manager.AddListing(transfer);
 
             return response;
         }

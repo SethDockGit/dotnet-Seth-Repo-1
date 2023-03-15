@@ -23,18 +23,9 @@ namespace BnbProject.Logic
             {
                 List<Listing> listings = IDataSource.GetListings();
 
-                if (listings.Count == 0)
-                {
-                    response.Success = true;
-                    response.Message = "There are currently 0 listings.";
-                }
-                else
-                {
-                    response.Success = true;
-                    response.Message = $"{listings.Count} Listings";
-                    response.Listings = listings;
-                }
-                return response;
+                response.Success = true;
+                response.Listings = listings;
+
             }
             catch (Exception e)
             {
@@ -44,11 +35,13 @@ namespace BnbProject.Logic
             return response;
         }
 
-        public WorkflowResponse AddListing(Listing listing)
+        public WorkflowResponse AddListing(NewListingTransfer transfer)
         {
             WorkflowResponse response = new WorkflowResponse();
 
             List<Listing> listings = IDataSource.GetListings();
+
+            Listing listing = new Listing();
 
             if (listings.Count == 0)
             {
@@ -61,11 +54,38 @@ namespace BnbProject.Logic
                 listing.Id = highestID + 1;
             }
 
+            listing.HostId = transfer.HostId;
+            listing.Title = transfer.Title;
+            listing.Rate = transfer.Rate;
+            listing.Location = transfer.Location;
+            listing.Description = transfer.Description;
+            listing.Amenities = transfer.Amenities;
+            listing.Stays = new List<Stay>();
+
             try
             {
                 IDataSource.AddListing(listing);
                 response.Success = true;
                 response.Message = $"Listing '{listing.Title}' ID: {listing.Id} Added successfully.";
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
+            }
+            return response;
+        }
+
+        public WorkflowResponse GetAmenities()
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            try
+            {
+                List<string> amenities = IDataSource.GetAmenities();
+                response.Success = true;
+                response.Amenities = amenities;
+
             }
             catch (Exception e)
             {
