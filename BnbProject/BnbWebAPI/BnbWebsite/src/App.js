@@ -9,8 +9,8 @@ import MyStuff from './Components/MyStuff/MyStuff';
 import ViewListings from "./Components/ViewListings/ViewListings";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { ListingsContext } from "./Contexts/ListingsContext";
 import { useState } from "react";
+import CreateAccount from "./Components/CreateAccount/CreateAccount";
 
 
 
@@ -44,45 +44,24 @@ const router = createBrowserRouter([{
       element: <MyStuff/>
     },
     {
-      path: "/login",
+      path: "/user/login",
       element: <Login/>
     },
+    {
+      path: "/user/create",
+      element: <CreateAccount/>
+    }
   ]
 }]);
 
-const [listingsLoaded, setListingsLoaded] = useState(false);
-const [listings, setListings] = useState();
 
-const getListings = () => {
-  debugger;
-  fetch(`${api}/bnb/listings`)
-  .then((response) => response.json())
-  .then((data) => {
 
-      setListings(data.listings);
-      console.log(data);
-  })
-  .then(() => {
-      setListingsLoaded(true);
-  });
-}
-
-const stopRerender = () => {
-
-    !listingsLoaded && getListings();
-}
-
-stopRerender();
 
   return (
     <div className="App">
-      {listingsLoaded &&
-        <ListingsContext.Provider value={{listings, setListings}}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <RouterProvider router={router}/>
           </LocalizationProvider>
-        </ListingsContext.Provider> 
-      }   
     </div>
   );
 }

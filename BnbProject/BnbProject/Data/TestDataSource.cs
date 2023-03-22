@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Text;
 using BnbProject.Models;
+using System.Linq;
 
 namespace BnbProject.Data
 {
@@ -12,24 +13,26 @@ namespace BnbProject.Data
         {
             "Hot Tub", "Fireplace", "Pool Table", "Wifi", "Dishwasher", "Gas range", "Oven", "Lake access", "Watercraft", "Air conditioning", "Heat"
         };
-        private List<User> TestUsers = new List<User>()
+        private List<UserAccount> TestUsers = new List<UserAccount>()
         {
-            new User()
+            new UserAccount()
             {
                 Id = 1,
                 Username = "Seth",
                 Password = "Password",
                 Email = "seth@gmail.com",
                 Listings = new List<Listing>(),
+                Favorites = new List<Listing>(),
                 Stays = new List<Stay>()
             },
-            new User()
+            new UserAccount()
             {
                 Id = 2,
                 Username = "Bob",
                 Password = "Password",
                 Email = "bob@gmail.com",
                 Listings = new List<Listing>(),
+                Favorites = new List<Listing>(),
                 Stays = new List<Stay>()
             },
         };
@@ -68,8 +71,8 @@ namespace BnbProject.Data
                 HostId = 2,
                 ListingId = 2,
                 Review = new Review(),
-                StartDate = new DateTime(2023, 3, 25),
-                EndDate = new DateTime(2023, 3, 30)
+                StartDate = new DateTime(2023, 3, 10),
+                EndDate = new DateTime(2023, 3, 12)
             },
             new Stay()
             {
@@ -78,8 +81,8 @@ namespace BnbProject.Data
                 HostId = 1,
                 ListingId = 1,
                 Review = new Review(),
-                StartDate = new DateTime(2023, 3, 16),
-                EndDate = new DateTime(2023, 3, 18)
+                StartDate = new DateTime(2023, 3, 25),
+                EndDate = new DateTime(2023, 3, 30)
             }
         };
         private List<Review> TestReviews = new List<Review>()
@@ -113,10 +116,11 @@ namespace BnbProject.Data
             //seth owns listing 1, and stayed at listing 2 during stay 1
             TestStays[0].HostId = TestUsers[1].Id;
             TestStays[0].GuestId = TestUsers[0].Id;
-            TestStays[0].Review = TestReviews[0];
+            //TestStays[0].Review = TestReviews[0];   //comment out to see "leave review" option on MyStuff, uncomment to see "show review" on MyStuff
             TestListings[1].Stays.Add(TestStays[0]);
             TestUsers[0].Stays.Add(TestStays[0]);
             TestUsers[0].Listings.Add(TestListings[0]);
+            TestUsers[0].Favorites.Add(TestListings[1]);
             //TestStays[0].Listing = TestListings[1];
 
 
@@ -127,9 +131,8 @@ namespace BnbProject.Data
             TestListings[0].Stays.Add(TestStays[1]);
             TestUsers[1].Listings.Add(TestListings[1]);
             TestUsers[1].Stays.Add(TestStays[1]);
+            TestUsers[1].Favorites.Add(TestListings[0]);
             //TestStays[1].Listing = TestListings[0];
-
-
         }
         public List<Listing> GetListings()
         {
@@ -143,6 +146,31 @@ namespace BnbProject.Data
         {
             return TestAmenities;
         }
+        public Listing GetListingById(int id)
+        {
+            Listing listing = TestListings.SingleOrDefault(l => l.Id == id);
+            return listing;
+        }
+        public UserAccount GetUserById(int id)
+        {
+            UserAccount user = TestUsers.SingleOrDefault(u => u.Id == id);
+            return user;
+        }
+        public void RemoveListing(Listing listing)
+        {
+            TestListings.Remove(listing);
+        }
+        public void AddStay(Stay stay)
+        {
+            TestStays.Add(stay);
 
+            UserAccount user = TestUsers.SingleOrDefault(u => u.Id == stay.GuestId);
+
+            user.Stays.Add(stay);
+
+            Listing listing = TestListings.SingleOrDefault(l => l.Id == stay.ListingId);
+
+            listing.Stays.Add(stay);
+        }
     }
 }

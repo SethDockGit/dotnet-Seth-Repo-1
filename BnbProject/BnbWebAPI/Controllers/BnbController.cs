@@ -29,6 +29,22 @@ namespace BnbWebAPI.Controllers
             return response;
         }
         [HttpGet]
+        [Route("listing{id}")]
+        public WorkflowResponse GetListings(int id)
+        {
+            WorkflowResponse response = Manager.GetListingById(id);
+
+            return response;
+        }
+        [HttpGet]
+        [Route("user{id}")]
+        public WorkflowResponse GetUser(int id)
+        {
+            WorkflowResponse response = Manager.GetUserById(id);
+
+            return response;
+        }
+        [HttpGet]
         [Route("amenities")]
         public WorkflowResponse GetAmenities()
         {
@@ -38,10 +54,35 @@ namespace BnbWebAPI.Controllers
         }
         [HttpPost]
         [Route("addlisting")]
-        public WorkflowResponse AddListing([FromBody] NewListingTransfer transfer)
+        public WorkflowResponse AddListing([FromBody] ListingTransfer transfer)
         {
     
             WorkflowResponse response = Manager.AddListing(transfer);
+
+            return response;
+        }
+        [HttpPost]
+        [Route("editlisting")]
+        public WorkflowResponse EditListing([FromBody] ListingTransfer transfer)
+        {
+
+            WorkflowResponse response = Manager.EditListing(transfer);
+
+            return response;
+        }
+        [HttpPost]
+        [Route("addstay")]
+        public WorkflowResponse AddStay([FromBody] StayTransfer transfer)
+        {
+            WorkflowResponse response = Manager.AddStay(transfer);
+
+            return response;
+        }
+        [HttpPost]
+        [Route("review")]
+        public WorkflowResponse AddStay([FromBody] Review review)
+        {
+            WorkflowResponse response = Manager.AddReview(review);
 
             return response;
         }

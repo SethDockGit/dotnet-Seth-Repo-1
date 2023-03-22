@@ -21,6 +21,22 @@ namespace BnbProject.Data
         {
             throw new NotImplementedException();
         }
+        public Listing GetListingById(int id)
+        {
+            throw new NotImplementedException();
+        }
+        public UserAccount GetUserById(int id)
+        {
+            throw new NotImplementedException();
+        }
+        public void RemoveListing(Listing listing)
+        {
+            throw new NotImplementedException();
+        }
+        public void AddStay(Stay stay)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

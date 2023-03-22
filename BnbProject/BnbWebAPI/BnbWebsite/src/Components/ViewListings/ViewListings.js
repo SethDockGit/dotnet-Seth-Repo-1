@@ -13,35 +13,63 @@ import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import ListingsCard from "../ListingsCard/ListingsCard";
-import { ListingsContext } from "../../Contexts/ListingsContext";
-import { useContext } from "react";
 
 
 export default function ViewListings(){
 
-const testAmenities = [
-    "hot tub", "grill", "pool table"
-];
+const api = `https://localhost:44305`;
 
-const {listings, setListings} = useContext(ListingsContext);
+const [listingsLoaded, setListingsLoaded] = useState(false);
+const [amenitiesLoaded, setAmenitiesLoaded] = useState(false);
+const [listings, setListings] = useState();
+const [unfiltered, setUnfiltered] = useState([]);
 const [checkin, setCheckin] = useState('');
 const [checkout, setCheckout] = useState('');
 const [minRate, setMinRate] = useState(0);
 const [maxRate, setMaxRate] = useState(Number.MAX_VALUE);
 const [amenities, setAmenities] = useState([]);
-const [failApplyFilters, setFailApplyFilters] = useState(false);
-const [failMessage, setFailMessage] = useState('');
+const [selectedAmenities, setSelectedAmenities] = useState([]);
+const [failRateFilters, setFailRateFilters] = useState(false);
+const [failDateFilters, setFailDateFilters] = useState(false);
+const [rateMessage, setRateMessage] = useState('');
+const [dateMessage, setDateMessage] = useState('');
+
 
 const getListings = () => {
 
+    fetch(`${api}/bnb/listings`)
+    .then((response) => response.json())
+    .then((data) => {
+  
+        setListings(data.listings);
+        setUnfiltered(data.listings);
+        console.log(data);
+    })
+    .then(() => {
+        setListingsLoaded(true);
+    });
 }
 
-//const stopRerender = () => {
+const getAmenities = () => {
 
-    //!listingsLoaded && getListings();
-//}
+    fetch(`${api}/bnb/amenities`)
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        setAmenities(data.amenities);
+    })
+    .then(() =>{
+        setAmenitiesLoaded(true);
+    });
+}
 
-//stopRerender();
+const checkForData = () => {
+
+    !listingsLoaded && getListings();
+    !amenitiesLoaded && getAmenities();
+}
+
+checkForData();
 
 const showListings = () => {
 
@@ -54,11 +82,9 @@ const showListings = () => {
 }
 const handleCheckinChange = (newValue) => {
     setCheckin(newValue);
-    //**add error messages for erroneous date ranges!
 }
 const handleCheckoutChange = (newValue) => {
     setCheckout(newValue);
-        //**add error messages for erroneous date ranges!
 }
 const handleMinRateChange = (e) => {
     setMinRate(e.target.value);
@@ -70,7 +96,7 @@ const handleAmenitiesChange = (e) => {
     const {
         target: {value},
     } = e;
-    setAmenities(
+    setSelectedAmenities(
         typeof value === 'string' ? value.split(',') : value,
     );
 };
@@ -84,48 +110,107 @@ const MenuProps = {
       },
     },
   };
+
 const applyFilters = () => {
+
+    setFailDateFilters(false);
+    setFailRateFilters(false);    
     
     if(isNaN(minRate) || isNaN(maxRate))
     {
-        setFailApplyFilters(true);
-        setFailMessage("Min and Max rates must be numbers or decimals.");
+        setFailRateFilters(true);
+        setRateMessage("Min and Max rates must be numbers or decimals.");
+    }
+    else if(dayjs(checkin).isAfter(dayjs(checkout))){
+
+        setFailDateFilters(true);
+        setDateMessage("Check-in date must be before check-out date.");
+    }
+    else if(dayjs(checkin).isBefore(dayjs()) || dayjs(checkin).isBefore(dayjs())){
+
+        setFailDateFilters(true);
+        setDateMessage("Check-in and check-out dates must be future dates.");
+    }
+    else if((checkin == "" && checkout != "") || (checkin == null && checkout != null)){
+        setFailDateFilters(true);
+        setDateMessage("Please select a check-in date.");
+    }
+    else if((checkout == "" && checkin != "") || (checkout == null && checkin != null)){
+        setFailDateFilters(true);
+        setDateMessage("Please select a check-out date.");
     }
     else{
+        
+        var filtered = unfiltered.filter(l => l.rate < maxRate && l.rate > minRate);
+        //If there are no failures, it starts with the list of unfiltered listings, and filters first for rates.
 
-        setFailApplyFilters(false);
+        for(let i=0; i < listings.length; i++){
 
-        var rateFiltered = listings.filter(l => l.rate < maxRate && l.rate > minRate);
+            for(let j=0; j < selectedAmenities.length, j++;){
 
-        var dateFiltered = rateFiltered;
+                var test = listings[i].amenities.find(selectedAmenities[j]);
 
-        for(let i=0; i <listings.length; i++){
-
-            for(let j=0; j < listings[i].stays.length; j++){
-                 
-                if(dayjs(checkin).isBetween(dayjs(listings[i].stays[j].startDate), dayjs(listings[i].stays[j].endDate), 'day', '[]')){
-                    
-                    dateFiltered = rateFiltered.filter(l => l.id != listings[i].id);
-                }
-                else if(dayjs(checkout).isBetween(dayjs(listings[i].stays[j].startDate), dayjs(listings[i].stays[j].endDate), 'day', '[]')){
-
-                    dateFiltered = rateFiltered.filter(l => l.id != listings[i].id);
+                if(test == undefined)
+                {
+                    filtered = filtered.filter(l => l.id != listings[i].id);
                 }
             }
-        };    
-        
-        //needs to filter opposite way, if stays start date and end date is between check-in and checkout date.
-        setListings(dateFiltered);
+        }
+        //then, it filters for amenities.
+
+        if(checkin != "" && checkin != null && checkout != "" && checkout != null){
+
+            for(let i=0; i <listings.length; i++){
+                
+                for(let j=0; j < listings[i].stays.length; j++){
+                     
+                    if(dayjs(checkin).isBetween(dayjs(listings[i].stays[j].startDate), dayjs(listings[i].stays[j].endDate), 'day', '[]')){
+                        
+                        filtered = filtered.filter(l => l.id != listings[i].id);
+                    }
+                    else if(dayjs(checkout).isBetween(dayjs(listings[i].stays[j].startDate), dayjs(listings[i].stays[j].endDate), 'day', '[]')){
+                        
+                        filtered = filtered.filter(l => l.id != listings[i].id);
+                    }
+                    else if(dayjs(listings[i].stays[j].startDate).isBetween(dayjs(checkin), dayjs(checkout), 'day', '[]')){
+                        
+                        filtered = filtered.filter(l => l.id != listings[i].id);
+                    }
+                    else if(dayjs(listings[i].stays[j].endDate).isBetween(dayjs(checkin), dayjs(checkout), 'day', '[]')){
+                        
+                        filtered = filtered.filter(l => l.id != listings[i].id);
+                    }
+                }
+            };    
+        }
+        //finally, if none of the fields are empty, it filters for dates. If both fields are empty, it does not.
+
+        //make sure to re-test.
+        setListings(filtered);
     }
 }
-const showFailMessage = () => {
+
+const showDateMessage = () => {
 
     return (
         <div>
         {
-        failApplyFilters &&   
+        failDateFilters &&   
             <div style={{margin:'auto'}}>
-                <Typography color="red" variant="caption">{failMessage}</Typography>
+                <Typography color="red" variant="caption">{dateMessage}</Typography>
+            </div>    
+        }
+        </div>
+    )
+}
+const showRateMessage = () => {
+
+    return (
+        <div>
+        {
+        failRateFilters &&   
+            <div style={{margin:'auto'}}>
+                <Typography color="red" variant="caption">{rateMessage}</Typography>
             </div>    
         }
         </div>
@@ -135,6 +220,8 @@ const showFailMessage = () => {
     return(
         
         <div>
+            {listingsLoaded && amenitiesLoaded && 
+            <div>
             <Grid container sx={{mt:5, ml:4, mb:2, alignItems: 'center'}}>
                 <Grid item xs={1.5}>
                     <Typography variant="h4">{listings.length} Listings</Typography>
@@ -156,35 +243,36 @@ const showFailMessage = () => {
                         value={checkout}
                         onChange={handleCheckoutChange}
                         />
+                        {showDateMessage()} 
                 </Grid>
                 <Grid item xs={2.5}>
                     <Typography variant='h6'>Rate($)</Typography>
                     <TextField sx={{maxWidth:150}} placeholder="Min Rate" onChange={handleMinRateChange}/>
                     <TextField sx={{maxWidth:150}} placeholder="Max Rate" onChange={handleMaxRateChange}/>
-                    {showFailMessage()} 
+                    {showRateMessage()} 
                 </Grid>
                 <Grid item xs={2}>
                     <Typography variant='h6'>Amenities</Typography>
                     <FormControl sx={{ width: 300 }}>
-                    <InputLabel id="amenities">Amenities</InputLabel>
+                        <InputLabel id="amenities">Amenities</InputLabel>
                         <Select
                           labelId="amenities-checkbox-label"
                           id="amenities-checkbox"
                           multiple
-                          value={amenities}
+                          value={selectedAmenities}
                           onChange={handleAmenitiesChange}
                           input={<OutlinedInput label="Tag" />}
                           renderValue={(selected) => selected.join(', ')}
                           MenuProps={MenuProps}
                         >
-                          {testAmenities.map((val) => (
+                          {amenities.map((val) => (
                             <MenuItem key={val} value={val}>
-                              <Checkbox checked={amenities.indexOf(val) > -1} />
+                              <Checkbox checked={selectedAmenities.indexOf(val) > -1} />
                               <ListItemText primary={val} />
                             </MenuItem>
                           ))}
                         </Select>
-                </FormControl>
+                    </FormControl>
                 </Grid>
                 <Grid item xs={1.5}>
                     <Button variant="contained" sx={{":hover": {
@@ -197,6 +285,7 @@ const showFailMessage = () => {
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}> 
                 {showListings()}
             </Grid>
+            </div>}
         </div>
     )
 }

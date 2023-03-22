@@ -10,32 +10,69 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
+import { useParams } from "react-router-dom";
+import Modal from '@mui/material/Modal';
+import { Link } from "react-router-dom";
 
 export default function EditListing(){
 
-var testListing = {
-    id: 0,
-    title: "Cozy 2BR Cabin Up North",
-    rate: 205,
-    location: "Crosby, MN",
-    description: "Come get away from it all in our sunny 2BR cabin on the lake. Paddle in the canoe or take a stroll around the woods. Pet friendly.",
-    listingAmenities: ["firepit", "dishwasher", "laundry"] 
-}
-let testAmenities = [
-    "hot tub", "grill", "pool table"
-]
-const api = '';
 
-const [listing, setListing] = useState(testListing);
-const [title, setTitle] = useState(listing.title);
-const [rate, setRate] = useState(listing.rate);
-const [location, setLocation] = useState(listing.location);
-const [description, setDescription] = useState(listing.description);
-const [availableAmenities, setAvailableAmenities] = useState(testAmenities);
-const [listingAmenities, setListingAmenities] = useState(listing.listingAmenities);
+const api = `https://localhost:44305`;
+
+const hostId = 1; //THIS WILL NEED TO BE SET AND PASSED IN AT LOGIN. NEEDED TO FINALIZE LISTING
+
+const {id} = useParams();
+const [listing, setListing] = useState();
+const [title, setTitle] = useState('');
+const [rate, setRate] = useState();
+const [location, setLocation] = useState('');
+const [description, setDescription] = useState('');
+const [availableAmenities, setAvailableAmenities] = useState();
+const [listingAmenities, setListingAmenities] = useState([]);
 const [customAmenity, setCustomAmenity] = useState('');
 const [failSaveListing, setFailSaveListing] = useState(false);
 const [failMessage, setFailMessage] = useState('');
+const [listingLoaded, setListingLoaded] = useState(false);
+const [amenitiesLoaded, setAmenitiesLoaded] = useState(false);
+const [modalOpen, setModalOpen] = useState(false);
+
+const getListing = () => {
+
+    fetch(`${api}/bnb/listing${id}`)
+    .then((response) => response.json())
+    .then((data) => {
+  
+        setListing(data.listing);
+        setTitle(data.listing.title);
+        setRate(data.listing.rate);
+        setLocation(data.listing.location);
+        setDescription(data.listing.description);
+        setListingAmenities(data.listing.amenities);
+        console.log(data);
+    })
+    .then(() => {
+        setListingLoaded(true);
+    });
+}
+const getAmenities = () => {
+
+    fetch(`${api}/bnb/amenities`)
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        setAvailableAmenities(data.amenities);
+    })
+    .then(() =>{
+        setAmenitiesLoaded(true);
+    });
+}
+
+const checkForData = () => {
+
+    !listingLoaded && getListing();
+    !amenitiesLoaded && getAmenities();
+}
+checkForData();
 
 
 const handleTitleChange = (e) => {
@@ -115,20 +152,18 @@ const handleListingChange = () => {
     }
     else {
 
-        let stayArray = new Array();
-
         //*get hostID thru context or pass down from login? 0 is OK for now but need to change
         var APIRequest = {
-            Id: 0,
-            HostId: 0,
+            Id: listing.id,
+            HostId: hostId,  //can get from listing or from context/user
             Title: title,
+            Rate: Number(rate),
             Location: location,
             Description: description,
             Amenities: listingAmenities,
-            Stays: stayArray
         };
 
-        fetch(`${api}/bnb/addlisting`, {
+        fetch(`${api}/bnb/editlisting`, {
             method: 'POST',
             body: JSON.stringify(APIRequest),
             headers: {
@@ -138,8 +173,10 @@ const handleListingChange = () => {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
+
+                setModalOpen(true);
             });
-            //*user will be navigated to MyStuff to see their listing
+            //*A modal will appear saying changes saved, "go to my listing" with a link
         }   
 }
 const cancelEditListing = () => {
@@ -148,89 +185,105 @@ const cancelEditListing = () => {
     return(
 
         <div>
-            <Typography variant="h4" sx={{justifyContent: 'center', display: 'flex', margin:2}}>Edit Your Listing</Typography>
-            {/*here go the pics*/}
-            <Divider sx={{backgroundColor:'peachpuff'}}/>
-            <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <Grid xs={2.5}>
-                    <Typography sx={{mt:2}} variant='h6'>Listing Title: {title}</Typography>
-                    <TextField sx={{mb:2}} placeholder='New Title' onChange={handleTitleChange}/>
+            {listingLoaded && amenitiesLoaded &&
+            <div>
+                <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', margin:2, fontSize:50}}>Edit Listing...</Typography>
+                {/*here go the pics*/}
+                <Divider sx={{backgroundColor:'peachpuff'}}/>
+                <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+                    <Grid xs={2}>
+                        <Typography sx={{mt:2}} variant='h6'>Title: {title}</Typography>
+                        <TextField sx={{mb:2}} placeholder='New Title' onChange={handleTitleChange}/>
+                    </Grid>
+                    <Grid xs={2}>
+                        <Typography sx={{mt:2}} variant='h6'>Nightly Rate: ${rate}</Typography>
+                        <TextField sx={{mb:2}} placeholder='New Rate' onChange={handleRateChange}/>
+                    </Grid>
+                    <Grid xs={2}>
+                        <Typography sx={{mt:2}} variant='h6'>Location: {location}</Typography>
+                        <TextField sx={{mb:2}} placeholder='New Location' onChange={handleLocationChange}/>
+                    </Grid>
                 </Grid>
-                <Grid xs={2}>
-                    <Typography sx={{mt:2}} variant='h6'>Nightly Rate: ${rate}</Typography>
-                    <TextField sx={{mb:2}} placeholder='New Rate' onChange={handleRateChange}/>
+    
+                <Divider sx={{backgroundColor:'peachpuff'}}/>
+    
+                <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+                    <Grid xs={6}>
+                        <Typography sx={{mt:2}} variant='h6'>Description: </Typography>
+                        <Typography variant='body1'>"{description}"</Typography>
+                        <TextField fullWidth multiline rows={6} sx={{justifyContent: 'center', display: 'flex', mb:2}} placeholder='New Description...' onChange={handleDescriptionChange}/>
+                    </Grid>
                 </Grid>
-                <Grid xs={2}>
-                    <Typography sx={{mt:2}} variant='h6'>Location: {location}</Typography>
-                    <TextField sx={{mb:2}} placeholder='New Location' onChange={handleLocationChange}/>
+    
+                <Divider sx={{backgroundColor:'peachpuff'}}/>
+    
+                <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+                    <Grid xs={2}>
+                        <Typography sx={{mt:2}} variant='h6'>Amenities</Typography>
+                        <Box sx={{ maxWidth: 180 }}>
+                            <FormControl fullWidth>
+                                <InputLabel>Amenities</InputLabel>
+                                <Select
+                                    id="amenity-select"
+                                    label="Amenities"
+                                    value={""}
+                                    onChange={handleClickAmenity}
+                                >
+                                    {showAvailableAmenities()}
+                                </Select>
+                            </FormControl>
+                         </Box>
+                    </Grid>
+                    <Grid xs={2}>
+                        <Typography sx={{mt:2}} variant='h6'>Add Custom Amenity</Typography>
+                        <TextField sx={{mb:2}} placeholder='Enter Amenity' onChange={handleCustomAmenityChange}/>
+                        <Button sx={{color:'lightsalmon'}} onClick={addCustomAmenity}>Add</Button>
+                    </Grid>
+                    <Grid xs={2}>
+                        <Typography sx={{mt:2}} variant='h6'>Your Amenities:</Typography>
+                        <List sx={{
+                            width: '100%',
+                            maxWidth: 500,
+                            bgcolor: 'background.white',
+                            position: 'relative',
+                            overflow: 'auto',
+                            maxHeight: 200,
+                            '& ul': { padding: 0 },
+                            }}>
+                            {showListingAmenities()}
+                        </List>
+                    </Grid>
                 </Grid>
-            </Grid>
+    
+                <Divider sx={{backgroundColor:'peachpuff'}}/>
+    
+                <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+                    <Grid xs={5}/>
+                    <Grid xs={1}>
+                        <Button variant="contained" sx={{":hover": {
+                        bgcolor: "gray"}, backgroundColor:'lightgray', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={cancelEditListing}>Cancel</Button>
+                    </Grid>
+                    <Grid xs={1}>
+                        <Button variant="contained" sx={{":hover": {
+                        bgcolor: "peachpuff"}, backgroundColor:'lightsalmon', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={handleListingChange}>Save Changes</Button>
+                    </Grid>
+                    <Grid xs={5}>
+                        {showFailMessage()} 
+                    </Grid>
 
-            <Divider sx={{backgroundColor:'peachpuff'}}/>
+                    <Modal
+                      open={modalOpen}
+                      onClose={() => setModalOpen(false)}
+                    >
+                        <Typography variant="h6">Changes saved!</Typography>
+                        <Link style={{ textDecoration: 'none' }} to={`/listings/${listing.id}`}>
+                            <Button>Go to your listing</Button>
+                        </Link>
+                    </Modal>
+                </Grid>
+            </div>
+            }
 
-            <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <Grid xs={6}>
-                    <Typography sx={{mt:2}} variant='h6'>Your Description: </Typography>
-                    <Typography variant='body1'>"{description}"</Typography>
-                    <TextField fullWidth multiline rows={6} sx={{justifyContent: 'center', display: 'flex', mb:2}} placeholder='New Description...' onChange={handleDescriptionChange}/>
-                </Grid>
-            </Grid>
-
-            <Divider sx={{backgroundColor:'peachpuff'}}/>
-
-            <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <Grid xs={2}>
-                    <Typography sx={{mt:2}} variant='h6'>Amenities</Typography>
-                    <Box sx={{ maxWidth: 180 }}>
-                        <FormControl fullWidth>
-                            <InputLabel>Amenities</InputLabel>
-                            <Select
-                                id="amenity-select"
-                                label="Amenities"
-                                onChange={handleClickAmenity}
-                            >
-                                {showAvailableAmenities()}
-                            </Select>
-                        </FormControl>
-                     </Box>
-                </Grid>
-                <Grid xs={2}>
-                    <Typography sx={{mt:2}} variant='h6'>Add Custom Amenity</Typography>
-                    <TextField sx={{mb:2}} placeholder='Enter Amenity' onChange={handleCustomAmenityChange}/>
-                    <Button sx={{color:'lightsalmon'}} onClick={addCustomAmenity}>Add</Button>
-                </Grid>
-                <Grid xs={2}>
-                    <Typography sx={{mt:2}} variant='h6'>Your Amenities:</Typography>
-                    <List sx={{
-                        width: '100%',
-                        maxWidth: 500,
-                        bgcolor: 'background.white',
-                        position: 'relative',
-                        overflow: 'auto',
-                        maxHeight: 300,
-                        '& ul': { padding: 0 },
-                        }}>
-                        {showListingAmenities()}
-                    </List>
-                </Grid>
-            </Grid>
-
-            <Divider sx={{backgroundColor:'peachpuff'}}/>
-
-            <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <Grid xs={5}/>
-                <Grid xs={1}>
-                    <Button variant="contained" sx={{":hover": {
-                    bgcolor: "gray"}, backgroundColor:'lightgray', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={cancelEditListing}>Cancel</Button>
-                </Grid>
-                <Grid xs={1}>
-                    <Button variant="contained" sx={{":hover": {
-                    bgcolor: "peachpuff"}, backgroundColor:'lightsalmon', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={handleListingChange}>Save Changes</Button>
-                </Grid>
-                <Grid xs={5}>
-                    {showFailMessage()} 
-                </Grid>
-            </Grid>
         </div>
     )
 }

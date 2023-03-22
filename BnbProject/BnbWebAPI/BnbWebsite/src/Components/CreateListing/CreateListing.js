@@ -10,8 +10,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
-import { ListingsContext } from "../../Contexts/ListingsContext";
-import { useContext } from "react";
+import Modal from '@mui/material/Modal';
+import { Link } from "react-router-dom";
 
 export default function CreateListing(){
 
@@ -19,7 +19,6 @@ const api = `https://localhost:44305`;
 
 const hostId = 1; //THIS WILL NEED TO BE SET AND PASSED IN AT LOGIN. NEEDED TO FINALIZE LISTING
 
-//const {listings, setListings} = useContext(ListingsContext);
 const [title, setTitle] = useState('');
 const [rate, setRate] = useState();
 const [location, setLocation] = useState('');
@@ -30,6 +29,8 @@ const [listingAmenities, setListingAmenities] = useState([]);
 const [customAmenity, setCustomAmenity] = useState('');
 const [failMessage, setFailMessage] = useState('');
 const [failCreateListing, setFailCreateListing] = useState(false);
+const [listing, setListing] = useState();
+const [modalOpen, setModalOpen] = useState(false);
 
 const getAmenities = () => {
 
@@ -44,12 +45,12 @@ const getAmenities = () => {
     });
 }
 
-const stopRerender = () => {
+const checkForData = () => {
 
     !amenitiesLoaded && getAmenities();
 }
 
-stopRerender();
+checkForData();
 
 const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -115,9 +116,7 @@ const handleListingChange = () => {
     }
     else {
 
-        let stayArray = [];
-
-        //*get hostID thru context or pass down from login? 0 is OK for now but need to change
+        //*Need to get hostID from login
         var APIRequest = {
             Id: 0,
             HostId: hostId,
@@ -127,8 +126,6 @@ const handleListingChange = () => {
             Description: description,
             Amenities: listingAmenities,
         };
-
-        //setListings([...listings, APIRequest]);
 
         fetch(`${api}/bnb/addlisting`, {
             method: 'POST',
@@ -140,8 +137,9 @@ const handleListingChange = () => {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
+
+                setListing(data.listing);
             });
-            //user will be navigated to MyStuff to see their listing
         }   
 }
 const showFailMessage = () => {
@@ -162,7 +160,7 @@ const showFailMessage = () => {
         <div>
             {amenitiesLoaded && 
             <div>
-            <Typography variant="h4" sx={{justifyContent: 'center', display: 'flex', margin:2}}>Create Your Listing</Typography>
+            <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', margin:2, fontSize:50}}>New Listing...</Typography>
             {/*here go the pics*/}
             <Divider sx={{backgroundColor:'peachpuff'}}/>
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
@@ -222,7 +220,7 @@ const showFailMessage = () => {
                         bgcolor: 'background.white',
                         position: 'relative',
                         overflow: 'auto',
-                        maxHeight: 300,
+                        maxHeight: 200,
                         '& ul': { padding: 0 },
                         }}>
                         {showListingAmenities()}
@@ -242,6 +240,15 @@ const showFailMessage = () => {
                     {showFailMessage()} 
                 </Grid>
             </Grid>
+            <Modal
+              open={modalOpen}
+              onClose={() => setModalOpen(false)}
+            >
+                <Typography variant="h6">Listing saved!</Typography>
+                <Link style={{ textDecoration: 'none' }} to={`/listings/${listing.id}`}>
+                    <Button>Go to your listing</Button>
+                </Link>
+            </Modal>
 
             </div>
             }
