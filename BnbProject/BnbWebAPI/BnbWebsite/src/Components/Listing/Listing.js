@@ -13,6 +13,7 @@ import List from "@mui/material/List";
 import Drawer from "@mui/material/Drawer";
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
 
 
 export default function Listing(){
@@ -20,6 +21,18 @@ export default function Listing(){
 const api = `https://localhost:44305`;
 
 const userId = 1; //change once user login setup is configured!!****** check references too
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    borderRadius:3,
+    boxShadow: 24,
+    p: 4,
+  };
 
 const {id} = useParams();
 const [listingLoaded, setListingLoaded] = useState(false);
@@ -105,6 +118,7 @@ const showBookingDrawer = () => {
                     onChange={handleCheckoutChange}
                     />
                 {showBookingMessage()}
+                <br/>
                 <Button variant="contained" sx={{":hover": {
                 bgcolor: "peachpuff"}, mt:3, mr:2, backgroundColor:"lightsalmon"}} 
                 onClick={confirmBooking}>Confirm
@@ -126,7 +140,7 @@ const showBookingMessage = () => {
 
     return(
         failBooking &&
-        <Typography variant="caption">{failBookingMessage}</Typography>
+        <Typography variant="caption" color="red">{failBookingMessage}</Typography>
     )
 }
 const confirmBooking = () => {
@@ -139,7 +153,7 @@ const confirmBooking = () => {
     else if(dayjs(checkin).isBefore(dayjs()) || dayjs(checkin).isBefore(dayjs())){
 
         setFailBooking(true);
-        setFailBookingMessage("Check-in and check-out dates must be future dates.");
+        setFailBookingMessage("Check-in and check-out must be future dates.");
     }
     else if((checkin == "" && checkout != "") || (checkin == null && checkout != null)){
         setFailBooking(true);
@@ -154,7 +168,7 @@ const confirmBooking = () => {
         const APIRequest = {
             GuestId: userId,
             HostId: listing.hostId,
-            ListingId: id,
+            ListingId: Number(id),
             StartDate: checkin,
             EndDate: checkout,
         }
@@ -169,6 +183,7 @@ const confirmBooking = () => {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
+                setDrawerOpen(false);
                 setModalOpen(true);
             });
     }
@@ -269,12 +284,13 @@ const showReviews = () => {
                 <Grid item xs={12}/>
                 {showReviews()}
             </Grid>
-
             <Modal
               open={modalOpen}
               onClose={() => setModalOpen(false)}
             >
-                <Typography variant="h6">Booking confirmed! Enjoy your stay</Typography>
+                <Box sx={style}>
+                    <Typography variant="h5">Booking confirmed! Enjoy your stay</Typography>
+                </Box>
             </Modal>
 
             </div>}

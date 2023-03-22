@@ -8,18 +8,31 @@ import dayjs from "dayjs";
 import Rating from '@mui/material/Rating';
 import Drawer from "@mui/material/Drawer";
 import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
 
 export default function MyStuff(){
 
 
 const api = `https://localhost:44305`;
 
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    borderRadius:3,
+    boxShadow: 24,
+    p: 4,
+  };
+
 const [user, setUser] = useState();
 const [userLoaded, setUserLoaded] = useState(false);
 const [listings, setListings] = useState();
 const [listingsLoaded, setListingsLoaded] = useState(false);
 const [drawerOpen, setDrawerOpen] = useState(false);
-const [rating, setRating] = useState();
+const [rating, setRating] = useState(5);
 const [reviewText, setReviewText] = useState('');
 const [failSubmitReview, setFailSubmitReview] = useState(false); //this isn't actually used anywhere
 const [failReviewMessage, setFailReviewMessage] = useState('');
@@ -173,10 +186,11 @@ const showReviewDrawer = (listing, stay) => {
                 <Typography vairant="h6" sx={{mt:4}}>How was your stay?</Typography>
                 <TextField multiline minRows={5} maxRows={8} placeholder="..." 
                 sx={{width:300}} inputProps={{maxLength: 300}} onChange={handleChangeReviewText}/>
-                <Typography variant="caption">{failReviewMessage}</Typography>
+                <br/>
+                <Typography variant="caption" color="red">{failReviewMessage}</Typography>
                 <Button variant="contained" sx={{":hover": {
                 bgcolor: "peachpuff"}, mt:3, mr:2, backgroundColor:"lightsalmon"}} 
-                onClick={submitReview(stay)}>Submit
+                onClick={() => submitReview(stay)}>Submit
                 </Button>
                 <Button variant="contained" sx={{":hover": {
                 bgcolor: "gray"}, mt:3, backgroundColor:'lightgray'}} 
@@ -191,19 +205,20 @@ const handleChangeReviewText = (e) => {
 }
 const submitReview = (stay) => {
 
-    if (rating == undefined || reviewText == ""){
-        //fail review somehow without breaking.
-        
+    if (reviewText == ""){
+        setFailReviewMessage("You must enter text for the review.");
     }
     else{
+        
+        setFailReviewMessage("");
 
         if (rating == null){
             setRating(0);
         }
 
-        //need the user here to satisfy this request. remember the id it passes is the stayID.
         var APIRequest = {
-            Id: stay.id,
+
+            StayId: stay.id,
             Rating: rating,
             Text: reviewText,
             Username: user.username,
@@ -219,14 +234,16 @@ const submitReview = (stay) => {
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
-
+            setDrawerOpen(false);
             setModalOpen(true);
         });
     }
     
 }
 const cancelReview = () => {
-    
+    setRating(undefined);
+    setReviewText("");
+    setDrawerOpen(false);
 }
 
     return(
@@ -259,6 +276,14 @@ const cancelReview = () => {
                     <Grid container sx={{mb:2}}>
                     {showPastStays()}
                     </Grid>
+                    <Modal
+                      open={modalOpen}
+                      onClose={() => setModalOpen(false)}
+                    >
+                        <Box sx={style}>
+                            <Typography variant="h5">Added Review!</Typography>
+                        </Box>
+                    </Modal>
                 </div>
             }
         </div>

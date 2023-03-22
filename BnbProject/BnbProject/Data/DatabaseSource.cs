@@ -37,6 +37,11 @@ namespace BnbProject.Data
         {
             throw new NotImplementedException();
         }
+        public void AddReview(Review review)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 
 

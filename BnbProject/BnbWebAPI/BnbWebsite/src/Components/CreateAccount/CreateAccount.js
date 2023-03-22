@@ -20,6 +20,7 @@ const [passwordTwo, setPasswordTwo] = useState('');
 const [email, setEmail] = useState('');
 const [showPasswordOne, setShowPasswordOne] = useState(false);
 const [showPasswordTwo, setShowPasswordTwo] = useState(false);
+const [message, setMessage] = useState('');
 
 const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -48,9 +49,22 @@ const handleMouseDownPasswordTwo = (event) => {
 
 const displayMessage = () => {
 
+  <Typography variant="caption" color="red">{message}</Typography>
+}
+const meetsCriteria = () => {
+
 }
 const attemptCreateUser = () => {
 
+  if(username == "" || email == "" || passwordOne == "" || passwordTwo == ""){
+    setMessage("One or more fields were left blank.");
+  }
+  else if(passwordOne != passwordTwo){
+    setMessage("Passwords must match.");
+  }
+  else if(!meetsCriteria()){
+    setMessage("Password must include...");
+  }
 }
     return(
         <div>

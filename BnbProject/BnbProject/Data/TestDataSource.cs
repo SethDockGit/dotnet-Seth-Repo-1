@@ -89,14 +89,14 @@ namespace BnbProject.Data
         {
             new Review()
             {
-                Id = 1,
+                StayId = 1,
                 Rating = 5,
                 Text = "We had a wonderful stay.",
                 Username = "Seth"
             },
             new Review()
             {
-                Id = 2,
+                StayId = 2, 
                 Rating = 4,
                 Text = "We enjoyed our stay here. Some problems with the wi-fi",
                 Username = "Bob"
@@ -148,13 +148,13 @@ namespace BnbProject.Data
         }
         public Listing GetListingById(int id)
         {
-            Listing listing = TestListings.SingleOrDefault(l => l.Id == id);
-            return listing;
+            return TestListings.SingleOrDefault(l => l.Id == id);
+           
         }
         public UserAccount GetUserById(int id)
         {
-            UserAccount user = TestUsers.SingleOrDefault(u => u.Id == id);
-            return user;
+            return TestUsers.SingleOrDefault(u => u.Id == id);
+            
         }
         public void RemoveListing(Listing listing)
         {
@@ -171,6 +171,12 @@ namespace BnbProject.Data
             Listing listing = TestListings.SingleOrDefault(l => l.Id == stay.ListingId);
 
             listing.Stays.Add(stay);
+        }
+        public void AddReview(Review review)
+        {
+            Stay stay = TestStays.SingleOrDefault(s => s.Id == review.StayId);
+
+            stay.Review = review;
         }
     }
 }

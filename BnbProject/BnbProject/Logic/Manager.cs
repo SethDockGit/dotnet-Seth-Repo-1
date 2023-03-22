@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using BnbProject.Data;
 using BnbProject.Models;
@@ -209,7 +210,21 @@ namespace BnbProject.Logic
 
         public WorkflowResponse AddReview(Review review)
         {
-            throw new NotImplementedException();
+            WorkflowResponse response = new WorkflowResponse();
+
+            try
+            {
+                IDataSource.AddReview(review);
+                response.Success = true;
+                response.Message = $"Review successfully added to stay {review.StayId}.";
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
+            }
+            return response;
+
         }
     }
 }
