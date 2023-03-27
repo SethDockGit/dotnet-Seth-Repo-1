@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "ezMMxbDi/zS/vEWYxC4thQrZN3CyBbd27cr+QUeV/G/YPPFKvM0FdulmE+i5QZbxjWuAz17VHi7h5HKdgyw16w==",
+  "dgSpecHash": "FDJGG4CpgQZM2P4x0VL6cXPl1a3RQN/UReOA85VMejM7I5CSE/v81w5XVx3VPcB0bXoOaeg30Xi4ZHi0cGhG4g==",
   "success": true,
   "projectFilePath": "C:\\repos\\Seth repo share\\dotnet-Seth-Repo-1\\BnbProject\\BnbProject\\BnbProject.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Seth\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Seth\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.2.0\\microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",
     "C:\\Users\\Seth\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
     "C:\\Users\\Seth\\.nuget\\packages\\microsoft.aspnetcore.authentication.cookies\\2.2.0\\microsoft.aspnetcore.authentication.cookies.2.2.0.nupkg.sha512",

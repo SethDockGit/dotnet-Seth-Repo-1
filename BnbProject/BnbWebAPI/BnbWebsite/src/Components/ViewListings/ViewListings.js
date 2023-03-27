@@ -60,7 +60,7 @@ const getAmenities = () => {
     })
     .then(() =>{
         setAmenitiesLoaded(true);
-    });
+    });   //Q: why the extra then?
 }
 
 const checkForData = () => {

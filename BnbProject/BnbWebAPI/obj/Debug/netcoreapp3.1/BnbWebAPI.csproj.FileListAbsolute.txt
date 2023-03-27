@@ -41,3 +41,4 @@ C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbWebAPI\obj\Debug\netco
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbWebAPI\obj\Debug\netcoreapp3.1\BnbWebAPI.dll
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbWebAPI\obj\Debug\netcoreapp3.1\BnbWebAPI.pdb
 C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbWebAPI\obj\Debug\netcoreapp3.1\BnbWebAPI.genruntimeconfig.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\BnbProject\BnbWebAPI\bin\Debug\netcoreapp3.1\BCrypt.Net-Next.dll

@@ -12,13 +12,29 @@ import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
 import Modal from '@mui/material/Modal';
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
+import { UserContext } from "../../Contexts/UserContext/UserContext";
+import { useContext } from "react";
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateListing(){
 
 const api = `https://localhost:44305`;
 
-const hostId = 1; //THIS WILL NEED TO BE SET AND PASSED IN AT LOGIN. NEEDED TO FINALIZE LISTING
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    borderRadius:3,
+    boxShadow: 24,
+    p: 4,
+  };
 
+
+const {user, setUser} = useContext(UserContext);
 const [title, setTitle] = useState('');
 const [rate, setRate] = useState();
 const [location, setLocation] = useState('');
@@ -31,6 +47,15 @@ const [failMessage, setFailMessage] = useState('');
 const [failCreateListing, setFailCreateListing] = useState(false);
 const [listing, setListing] = useState();
 const [modalOpen, setModalOpen] = useState(false);
+const navigate = useNavigate();
+
+
+const reRoute = () => {
+    navigate("/user/login");
+}
+if(user == null || dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
+    reRoute();
+}
 
 const getAmenities = () => {
 
@@ -116,10 +141,9 @@ const handleListingChange = () => {
     }
     else {
 
-        //*Need to get hostID from login
         var APIRequest = {
             Id: 0,
-            HostId: hostId,
+            HostId: user.id,
             Title: title,
             Rate: Number(rate),
             Location: location,
@@ -139,6 +163,7 @@ const handleListingChange = () => {
                 console.log(data);
 
                 setListing(data.listing);
+                setModalOpen(true);
             });
         }   
 }
@@ -240,15 +265,20 @@ const showFailMessage = () => {
                     {showFailMessage()} 
                 </Grid>
             </Grid>
-            <Modal
-              open={modalOpen}
-              onClose={() => setModalOpen(false)}
-            >
-                <Typography variant="h6">Listing saved!</Typography>
-                <Link style={{ textDecoration: 'none' }} to={`/listings/${listing.id}`}>
-                    <Button>Go to your listing</Button>
-                </Link>
-            </Modal>
+            {modalOpen &&
+            
+                <Modal
+                  open={modalOpen}
+                  onClose={() => setModalOpen(false)}
+                >
+                    <Box sx={style}>
+                        <Typography variant="h6">Listing saved!</Typography>
+                        <Link style={{ textDecoration: 'none' }} to={`/listings/${listing.id}`}>
+                            <Button>Go to your listing</Button>
+                        </Link>
+                    </Box>
+                </Modal>
+            }
 
             </div>
             }

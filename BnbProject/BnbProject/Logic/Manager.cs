@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using BnbProject.Data;
 using BnbProject.Models;
+using BC = BCrypt.Net.BCrypt;
 
 namespace BnbProject.Logic
 {
@@ -225,6 +226,111 @@ namespace BnbProject.Logic
             }
             return response;
 
+        }
+
+        public WorkflowResponse CreateAccount(CreateAccountRequest request)
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            //first check username. if duplicate return false and setmessage duplicate username found
+
+            bool isDuplicate = IDataSource.CheckUsername(request.Username);
+
+            if(isDuplicate)
+            {
+                response.Success = false;
+                response.Message = "Duplicate username found.";
+                return response;
+            }
+
+            string hashedPass = BC.HashPassword(request.Password);
+
+            List<UserAccount> users = IDataSource.GetUsers();
+
+            int newId = 0;
+
+            if (users.Count == 0)
+            {
+                newId = 1;
+            }
+            else
+            {
+                var highestID = users.Max(u => u.Id);
+
+                newId = highestID + 1;
+            }
+
+            UserAccount user = new UserAccount()
+            {
+                Id = newId,
+                Username = request.Username,
+                Password = hashedPass,
+                Email = request.Email,
+                Listings = new List<Listing>(),
+                Favorites = new List<int>(),   
+                                                   //you can def just have it as a list of ids. However, the API call on the front end
+                                                   //should actually just get the user's listings as well as the listings for their stays and faves
+                                                   //IF you wanna redo it to improve that is. Obv it's more work but it is a more real-world
+                                                   //reflective solution....
+                Stays = new List<Stay>()
+            };
+
+            try
+            {
+                IDataSource.AddUser(user);
+                response.Success = true;
+                response.Message = $"User {user.Id} added successfully.";
+                response.User = user;
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
+            }
+
+            return response;
+        }
+
+        public WorkflowResponse Authenticate(AuthenticationRequest request)
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            UserAccount user = IDataSource.GetUserByUsername(request.Username);
+
+            if (user == null)
+            {
+                response.Success = false;
+                response.Message = $"User {request.Username} not found.";
+                return response;
+            }
+            else
+            {  
+                //fix invalid, need hashed data!!
+                bool verifyPass = BC.Verify(request.Password, user.Password);
+                response.Success = true;
+                response.Message = $"Success. User {request.Username} verified.";
+                response.User = user;
+                return response;
+            }
+        }
+
+        public WorkflowResponse AddFavorite(UserListing ul)
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            try
+            {
+                IDataSource.AddFavorite(ul);
+                response.Success = true;
+                response.Message = $"Listing {ul.ListingId} added to user {ul.UserId} favorites.";
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
+            }
+
+            return response;
         }
     }
 }

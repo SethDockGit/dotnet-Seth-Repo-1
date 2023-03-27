@@ -3,6 +3,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import IconButton from '@mui/material/IconButton';
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { useParams } from "react-router-dom";
@@ -14,13 +15,13 @@ import Drawer from "@mui/material/Drawer";
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
+import { UserContext } from "../../Contexts/UserContext/UserContext";
+import { useContext } from "react";
 
 
 export default function Listing(){
 
 const api = `https://localhost:44305`;
-
-const userId = 1; //change once user login setup is configured!!****** check references too
 
 const style = {
     position: 'absolute',
@@ -36,6 +37,7 @@ const style = {
 
 const {id} = useParams();
 const [listingLoaded, setListingLoaded] = useState(false);
+const {user, setUser} = useContext(UserContext);
 const [listing, setListing] = useState();
 const [drawerOpen, setDrawerOpen] = useState(false);
 const [checkin, setCheckin] = useState('');
@@ -43,6 +45,11 @@ const [checkout, setCheckout] = useState('');
 const [failBooking, setFailBooking] = useState(false);
 const [failBookingMessage, setFailBookingMessage] = useState('');
 const [modalOpen, setModalOpen] = useState(false);
+const [requiresLogin, setRequiresLogin] = useState(false);
+const [loginErrorMessage, setLoginErrorMessage] = useState('');
+const [isLoggedIn, setIsLoggedIn] = useState(false);
+const [loginChecked, setLoginChecked] = useState(false);
+const [addToFavorites, setAddtoFavorites] = useState(false);
 
 const getListing = () => {
 
@@ -58,12 +65,23 @@ const getListing = () => {
     });
   }
 
-const checkForData = () => {
-
-    !listingLoaded && getListing();
+if(!listingLoaded){
+    getListing();
 }
 
-checkForData();
+const checkLogin = () => {
+
+    if(!loginChecked){
+
+        if(user != null && dayjs().isBefore(dayjs(user.logTime).add(6, 'hour'))){
+            setIsLoggedIn(true);
+        }
+        setLoginChecked(true);
+    }
+}
+checkLogin();
+
+
 
 const showListingAmenities = () => {
     
@@ -74,9 +92,6 @@ const showListingAmenities = () => {
             </ListItem>           
         )        
     })
-}
-const handleClickFavorite = () => {
-    //will add listing to list of user favorites or pop-up with "you need to login to do that"
 }
 const showBookingDrawer = () => {
 
@@ -101,7 +116,7 @@ const showBookingDrawer = () => {
 
                 <Typography vairant="h6" sx={{mt:4, mb:1}}>When would you like to stay?</Typography>
 
-                <Typography vairant="caption" sx={{mt:3, mb:1}}>Check-in</Typography>
+                <Typography sx={{mt:3, mb:1}}>Check-in</Typography>
                 <DesktopDatePicker
                     label="Check-in"
                     inputFormat="MM/DD/YYYY"
@@ -109,7 +124,7 @@ const showBookingDrawer = () => {
                     shouldDisableDate={isDisabled}
                     onChange={handleCheckinChange}
                     />
-                <Typography vairant="caption" sx={{mt:3, mb:1}}>Check-out</Typography>
+                <Typography sx={{mt:3, mb:1}}>Check-out</Typography>
                 <DesktopDatePicker
                     label="Check-out"
                     inputFormat="MM/DD/YYYY"
@@ -166,7 +181,7 @@ const confirmBooking = () => {
     else{
 
         const APIRequest = {
-            GuestId: userId,
+            GuestId: user.id,
             HostId: listing.hostId,
             ListingId: Number(id),
             StartDate: checkin,
@@ -194,7 +209,7 @@ const showReviews = () => {
 
         return(
 
-            val.review.username != null &&
+            val.review != null &&
             <Grid item s={4} key={index}>
                 <Card sx={{ maxWidth: 300, margin:3}}>
                     <CardContent>
@@ -219,6 +234,82 @@ const showReviews = () => {
         )
     })
 }
+const handleClickBooking = () => {
+
+    if(!isLoggedIn){
+        setRequiresLogin(true);
+        setLoginErrorMessage("You must log in to book a stay.");
+    }
+    else{
+        setDrawerOpen(true);
+    }
+    //before changing it, onClick for booking button was {() => setDrawerOpen(true)}
+}
+const showLoginError = () => {
+    return(
+        requiresLogin &&
+        <Typography variant="caption" color="red">{loginErrorMessage}</Typography>
+    )
+}
+const handleClickFavorite = () => {
+
+    if(!isLoggedIn){
+        setRequiresLogin(true);
+        setLoginErrorMessage("You must log in to add to favorites.");
+    }
+    else{
+
+        var APIRequest = {
+            UserId: user.id,
+            ListingId: listing.id
+        };
+
+        fetch(`${api}/bnb/favorite`, {
+            method: 'POST',
+            body: JSON.stringify(APIRequest),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                
+                if(data.success){
+                    setAddtoFavorites(true);
+                }
+            });
+
+    }
+}
+const displayFavoriteIcon = () => {
+
+    var isFavorite = false;
+
+    if(isLoggedIn){
+
+        for(let i = 0; i < user.favorites.length; i++){
+
+            if(user.favorites[i] == id || addToFavorites){
+                isFavorite = true;
+            }
+        }
+    }
+
+    return(
+        isFavorite 
+        ?   <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+                <IconButton>
+                    <FavoriteIcon sx={{m:2, color:"pink"}}/>
+                </IconButton>
+            </Grid>
+        :   <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+                <IconButton onClick={handleClickFavorite}>
+                    <FavoriteIcon sx={{m:2}}/>
+                </IconButton>
+            </Grid>
+    )
+}
     return(
 
         <div>
@@ -226,19 +317,20 @@ const showReviews = () => {
             {/*here go the pics*/}
             {listingLoaded && 
             <div>
-            <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <FavoriteIcon sx={{m:2}}onClick={handleClickFavorite}/>
-            </Grid>
+            {displayFavoriteIcon()}
 
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+                <Grid item xs={12} sx={{justifyContent: 'center', display: 'flex'}}>
+                    {showLoginError()}
+                </Grid>
                 <Grid item xs={3}>
                     <Typography sx={{mt:1}} variant='h6'>{listing.title}</Typography>
                     <Typography variant='subtitle1'>{listing.location}</Typography>
                     <Button variant="contained" sx={{":hover": {
                         bgcolor: "peachpuff"}, mt:2, backgroundColor:"lightsalmon"}}
-                        onClick={() => setDrawerOpen(true)}>
+                        onClick={handleClickBooking}>
                         Book A Stay
                     </Button>    
 
@@ -246,12 +338,12 @@ const showReviews = () => {
                         {showBookingDrawer()}
                     </Drawer>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1}>
                     <Typography sx={{mt:1}} variant='h6'>${listing.rate}/Night</Typography>
                 </Grid>
             </Grid>
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <Grid item xs={5}>
+                <Grid item xs={4}>
                     <Typography variant='body1'>"{listing.description}"</Typography>           
                 </Grid>
             </Grid>
@@ -259,7 +351,7 @@ const showReviews = () => {
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}> 
-                <Grid item xs={5}>
+                <Grid item xs={4}>
                     <Typography sx={{mt:2}} variant='h6'>Amenities</Typography>
                     <List sx={{
                         width: '100%',
@@ -278,7 +370,7 @@ const showReviews = () => {
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}> 
-                <Grid item xs={5}>
+                <Grid item xs={4}>
                     <Typography sx={{mt:2}} variant='h6'>Reviews</Typography>
                 </Grid>
                 <Grid item xs={12}/>

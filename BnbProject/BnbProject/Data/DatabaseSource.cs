@@ -41,7 +41,26 @@ namespace BnbProject.Data
         {
             throw new NotImplementedException();
         }
-
+        public bool CheckUsername(string username)
+        {
+            throw new NotImplementedException();
+        }
+        public List<UserAccount> GetUsers()
+        {
+            throw new NotImplementedException();
+        }
+        public void AddUser(UserAccount user)
+        {
+            throw new NotImplementedException();
+        }
+        public UserAccount GetUserByUsername(string username)
+        {
+            throw new NotImplementedException();
+        }
+        public void AddFavorite(UserListing ul)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

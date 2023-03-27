@@ -11,7 +11,7 @@ namespace BnbProject.Models
         public string Password { get; set; }
         public string Email { get; set; }
         public List<Listing> Listings { get; set; }
-        public List<Listing> Favorites { get; set; }
+        public List<int> Favorites { get; set; }
         public List<Stay> Stays { get; set; }
 
     }

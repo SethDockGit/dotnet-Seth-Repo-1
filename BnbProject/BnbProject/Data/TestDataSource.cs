@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using BnbProject.Models;
 using System.Linq;
+using BC = BCrypt.Net.BCrypt;
 
 namespace BnbProject.Data
 {
@@ -19,20 +20,20 @@ namespace BnbProject.Data
             {
                 Id = 1,
                 Username = "Seth",
-                Password = "Password",
+                Password = BC.HashPassword("Password1!"),
                 Email = "seth@gmail.com",
                 Listings = new List<Listing>(),
-                Favorites = new List<Listing>(),
+                Favorites = new List<int>(),
                 Stays = new List<Stay>()
             },
             new UserAccount()
             {
                 Id = 2,
                 Username = "Bob",
-                Password = "Password",
+                Password = BC.HashPassword("Bobby1!"),
                 Email = "bob@gmail.com",
                 Listings = new List<Listing>(),
-                Favorites = new List<Listing>(),
+                Favorites = new List<int>(),
                 Stays = new List<Stay>()
             },
         };
@@ -70,7 +71,7 @@ namespace BnbProject.Data
                 GuestId = 1,
                 HostId = 2,
                 ListingId = 2,
-                Review = new Review(),
+                //Review = new Review(),
                 StartDate = new DateTime(2023, 3, 10),
                 EndDate = new DateTime(2023, 3, 12)
             },
@@ -80,7 +81,7 @@ namespace BnbProject.Data
                 GuestId = 2,
                 HostId = 1,
                 ListingId = 1,
-                Review = new Review(),
+                //Review = new Review(),
                 StartDate = new DateTime(2023, 3, 25),
                 EndDate = new DateTime(2023, 3, 30)
             }
@@ -120,7 +121,7 @@ namespace BnbProject.Data
             TestListings[1].Stays.Add(TestStays[0]);
             TestUsers[0].Stays.Add(TestStays[0]);
             TestUsers[0].Listings.Add(TestListings[0]);
-            TestUsers[0].Favorites.Add(TestListings[1]);
+            TestUsers[0].Favorites.Add(TestListings[1].Id);
             //TestStays[0].Listing = TestListings[1];
 
 
@@ -131,7 +132,7 @@ namespace BnbProject.Data
             TestListings[0].Stays.Add(TestStays[1]);
             TestUsers[1].Listings.Add(TestListings[1]);
             TestUsers[1].Stays.Add(TestStays[1]);
-            TestUsers[1].Favorites.Add(TestListings[0]);
+            TestUsers[1].Favorites.Add(TestListings[0].Id);
             //TestStays[1].Listing = TestListings[0];
         }
         public List<Listing> GetListings()
@@ -177,6 +178,30 @@ namespace BnbProject.Data
             Stay stay = TestStays.SingleOrDefault(s => s.Id == review.StayId);
 
             stay.Review = review;
+        }
+        public bool CheckUsername(string username)
+        {
+            bool isDuplicate = TestUsers.Any(u => u.Username == username);
+
+            return isDuplicate;
+        }
+        public List<UserAccount> GetUsers()
+        {
+            return TestUsers;
+        }
+        public void AddUser(UserAccount user)
+        {
+            TestUsers.Add(user);
+        }
+        public UserAccount GetUserByUsername(string username)
+        {
+            return TestUsers.SingleOrDefault(u => u.Username == username);
+        }
+        public void AddFavorite(UserListing ul)
+        {
+            UserAccount user = TestUsers.SingleOrDefault(u => u.Id == ul.UserId);
+
+            user.Favorites.Add(ul.ListingId);
         }
     }
 }

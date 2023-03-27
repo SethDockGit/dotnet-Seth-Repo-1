@@ -9,9 +9,9 @@ import MyStuff from './Components/MyStuff/MyStuff';
 import ViewListings from "./Components/ViewListings/ViewListings";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { useState } from "react";
 import CreateAccount from "./Components/CreateAccount/CreateAccount";
-
+import { UserContext } from "./Contexts/UserContext/UserContext";
+import { useState } from "react";
 
 
 function App() {
@@ -54,14 +54,15 @@ const router = createBrowserRouter([{
   ]
 }]);
 
-
-
+const [user, setUser] = useState(null);
 
   return (
     <div className="App">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <RouterProvider router={router}/>
-          </LocalizationProvider>
+      <UserContext.Provider value={{user, setUser}}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <RouterProvider router={router}/>
+        </LocalizationProvider>
+      </UserContext.Provider>
     </div>
   );
 }

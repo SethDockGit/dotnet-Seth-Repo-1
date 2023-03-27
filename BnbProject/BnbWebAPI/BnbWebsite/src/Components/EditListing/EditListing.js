@@ -13,14 +13,28 @@ import List from "@mui/material/List";
 import { useParams } from "react-router-dom";
 import Modal from '@mui/material/Modal';
 import { Link } from "react-router-dom";
+import { UserContext } from "../../Contexts/UserContext/UserContext";
+import { useContext } from "react";
+import { useNavigate } from 'react-router-dom';
+import dayjs from "dayjs";
 
 export default function EditListing(){
 
-
 const api = `https://localhost:44305`;
 
-const hostId = 1; //THIS WILL NEED TO BE SET AND PASSED IN AT LOGIN. NEEDED TO FINALIZE LISTING
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    borderRadius:3,
+    boxShadow: 24,
+    p: 4,
+  };
 
+const {user, setUser} = useContext(UserContext);
 const {id} = useParams();
 const [listing, setListing] = useState();
 const [title, setTitle] = useState('');
@@ -35,6 +49,7 @@ const [failMessage, setFailMessage] = useState('');
 const [listingLoaded, setListingLoaded] = useState(false);
 const [amenitiesLoaded, setAmenitiesLoaded] = useState(false);
 const [modalOpen, setModalOpen] = useState(false);
+const navigate = useNavigate();
 
 const getListing = () => {
 
@@ -49,6 +64,10 @@ const getListing = () => {
         setDescription(data.listing.description);
         setListingAmenities(data.listing.amenities);
         console.log(data);
+
+        if(user.id != data.listing.hostId){
+            navigate("/listings"); //I think this is causing my error. How to fix?
+        }
     })
     .then(() => {
         setListingLoaded(true);
@@ -67,12 +86,18 @@ const getAmenities = () => {
     });
 }
 
-const checkForData = () => {
-
-    !listingLoaded && getListing();
-    !amenitiesLoaded && getAmenities();
+if(!listingLoaded){
+    getListing();
 }
-checkForData();
+if(!amenitiesLoaded){
+    getAmenities();
+}
+const reRoute = () => {
+    navigate("/user/login");
+}
+if(user == null || dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
+    reRoute();
+}
 
 
 const handleTitleChange = (e) => {
@@ -155,7 +180,7 @@ const handleListingChange = () => {
         //*get hostID thru context or pass down from login? 0 is OK for now but need to change
         var APIRequest = {
             Id: listing.id,
-            HostId: hostId,  //can get from listing or from context/user
+            HostId: user.id,  //can get from listing or from context/user
             Title: title,
             Rate: Number(rate),
             Location: location,
@@ -176,7 +201,6 @@ const handleListingChange = () => {
 
                 setModalOpen(true);
             });
-            //*A modal will appear saying changes saved, "go to my listing" with a link
         }   
 }
 const cancelEditListing = () => {
@@ -275,10 +299,12 @@ const cancelEditListing = () => {
                       open={modalOpen}
                       onClose={() => setModalOpen(false)}
                     >
-                        <Typography variant="h6">Changes saved!</Typography>
-                        <Link style={{ textDecoration: 'none' }} to={`/listings/${listing.id}`}>
-                            <Button>Go to your listing</Button>
-                        </Link>
+                        <Box sx={style}>
+                            <Typography variant="h6">Changes saved!</Typography>
+                            <Link style={{ textDecoration: 'none' }} to={`/listings/${listing.id}`}>
+                                <Button>Go to your listing</Button>
+                            </Link>
+                        </Box>
                     </Modal>
                 </Grid>
             </div>

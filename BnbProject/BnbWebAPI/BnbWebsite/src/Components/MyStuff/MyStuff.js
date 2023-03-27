@@ -9,6 +9,10 @@ import Rating from '@mui/material/Rating';
 import Drawer from "@mui/material/Drawer";
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
+import { UserContext } from "../../Contexts/UserContext/UserContext";
+import { useContext } from "react";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function MyStuff(){
 
@@ -27,8 +31,9 @@ const style = {
     p: 4,
   };
 
-const [user, setUser] = useState();
-const [userLoaded, setUserLoaded] = useState(false);
+
+const {user, setUser} = useContext(UserContext);
+//const [userLoaded, setUserLoaded] = useState(false);
 const [listings, setListings] = useState();
 const [listingsLoaded, setListingsLoaded] = useState(false);
 const [drawerOpen, setDrawerOpen] = useState(false);
@@ -37,21 +42,34 @@ const [reviewText, setReviewText] = useState('');
 const [failSubmitReview, setFailSubmitReview] = useState(false); //this isn't actually used anywhere
 const [failReviewMessage, setFailReviewMessage] = useState('');
 const [modalOpen, setModalOpen] = useState(false);
+const navigate = useNavigate();
 
-
-const id = 1;   ///will change later when login stuff is hooked up.
-
-const getUser = () => {
-
-    fetch(`${api}/bnb/user${id}`)
-    .then((response) => response.json())
-    .then((data) => {
-        setUser(data.user);
-    })
-    .then(() => {
-        setUserLoaded(true);
-    });
+const reRoute = () => {
+    navigate("/user/login");
 }
+
+const verifyLogin = () => {
+
+    if(user == null){
+        reRoute();
+    }
+    else if(dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
+        reRoute();
+    }
+}
+verifyLogin();
+
+//const getUser = () => {
+//
+//    fetch(`${api}/bnb/user${id}`)
+//    .then((response) => response.json())
+//    .then((data) => {
+//        setUser(data.user);
+//    })
+//    .then(() => {
+//        setUserLoaded(true);
+//    });
+//}
 const getListings = () => {
 
     fetch(`${api}/bnb/listings`)
@@ -67,7 +85,7 @@ const getListings = () => {
 }
 const checkForData = () => {
 
-    !userLoaded && getUser();
+    //!userLoaded && getUser();
     !listingsLoaded && getListings();
 }
 checkForData();
@@ -89,7 +107,14 @@ const showMyListings = () => {
 }
 const showFavorites = () => {
 
-    return user.favorites.map(function(val, index) {
+    var favorites = user.favorites.map(function(val, index) {
+
+        return(
+            listings.find(l => l.id == val)
+        )
+    })
+
+    return favorites.map(function(val, index) {
 
         return(
             <div key={index}>
@@ -102,7 +127,7 @@ const showUpcomingStays = () => {
 
     var upcomingStays = user.stays.filter(s => dayjs(s.endDate).isAfter(dayjs()));
 
-    var stayListings = upcomingStays.map(function(val, index) {
+    var stayListings = upcomingStays.map(function(val) {
         return(
             listings.find(l => l.id == val.listingId)
         )
@@ -144,7 +169,7 @@ const showReview = (stay) => {
 
     var reviewExists = false;
 
-    if(stay.review.username != null){
+    if(stay.review != null){
         reviewExists = true;
     }
     //the mechanism here checks for a username associated with the review, and if there is none, assumes the review to be blank
@@ -188,6 +213,7 @@ const showReviewDrawer = (listing, stay) => {
                 sx={{width:300}} inputProps={{maxLength: 300}} onChange={handleChangeReviewText}/>
                 <br/>
                 <Typography variant="caption" color="red">{failReviewMessage}</Typography>
+                <br/>
                 <Button variant="contained" sx={{":hover": {
                 bgcolor: "peachpuff"}, mt:3, mr:2, backgroundColor:"lightsalmon"}} 
                 onClick={() => submitReview(stay)}>Submit
@@ -248,10 +274,21 @@ const cancelReview = () => {
 
     return(
         <div>
-            {userLoaded && listingsLoaded &&
+            {//userLoaded && 
+            listingsLoaded && 
                 <div>
-                    <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', m:3}}>My Stuff</Typography>
-                    <Typography variant="h5" sx={{ml:3}}>Listings</Typography>
+                    <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', m:3}}>Welcome {user.username}</Typography>
+
+                    <Grid container sx={{mb:2}}>
+                        <Typography variant="h5" sx={{ml:3}}>Your Listings</Typography>
+                        <Link style={{ textDecoration: 'none' }} to={`/listings/create`}>
+                            <Button variant="contained" sx={{":hover": {
+                            bgcolor: "peachpuff"}, ml: 3, backgroundColor:"lightsalmon"}} 
+                            >Create New
+                            </Button>
+                        </Link>
+                    </Grid>
+
                     <Grid container sx={{mb:2}}>
                     {showMyListings()}
                     </Grid>
@@ -285,6 +322,7 @@ const cancelReview = () => {
                         </Box>
                     </Modal>
                 </div>
+
             }
         </div>
     )
