@@ -17,24 +17,9 @@ import { useNavigate } from 'react-router-dom';
 export default function MyAppBar(){
 
 const {user, setUser} = useContext(UserContext);
-const [isLoggedIn, setIsLoggedIn] = useState(false); 
+//const [isLoggedIn, setIsLoggedIn] = useState(false); 
 const [loginChecked, setLoginChecked] = useState(false);
 const navigate = useNavigate();
-
-const checkLogin = () => {
-
-  if(!loginChecked){
-
-      if(user != null && dayjs().isBefore(dayjs(user.logTime).add(6, 'hour'))){
-          setIsLoggedIn(true);
-      }
-      setLoginChecked(true);
-
-  }
-}
-checkLogin();
-
-
 
 
 const [anchorEl, setAnchorEl] = useState(null);
@@ -54,6 +39,11 @@ const handleClickLogout = () => {
 }
 const displayButton = () => {
 
+  var isLoggedIn = false;
+
+  if(user != null && dayjs().isBefore(dayjs(user.logTime).add(6, 'hour'))){
+    isLoggedIn = true;
+  }
   return(
     <div>
       {isLoggedIn ?
