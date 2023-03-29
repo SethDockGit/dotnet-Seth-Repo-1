@@ -32,6 +32,11 @@ const style = {
   };
 
 
+var elements = document.cookie.split('=');
+var id = Number(elements[1]);
+debugger;
+
+
 const {user, setUser} = useContext(UserContext);
 //const [userLoaded, setUserLoaded] = useState(false);
 const [listings, setListings] = useState();
@@ -150,6 +155,8 @@ const showUpcomingStays = () => {
 }
 const showPastStays = () => {
 
+    //add to div in return -- <Typography variant="h6">{dayjs(val.startDate)} - {dayjs(val.endDate)}</Typography>
+
     var past = user.stays.filter(s => dayjs(s.endDate).isBefore(dayjs()));
 
     var stayListings = past.map(function(val) {
@@ -166,7 +173,7 @@ const showPastStays = () => {
 
         return(
             <div key={index}>
-                <Typography variant="h6">{dayjs(val.startDate)} - {dayjs(val.endDate)}</Typography>
+                
                 <ListingsCard listing={val.listing}/>
                 {showReview(past[index])}
                 <Drawer open={drawerOpen} anchor={"left"} onClose={() => setDrawerOpen(false)}>

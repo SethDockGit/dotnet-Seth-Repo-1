@@ -289,6 +289,7 @@ namespace BnbProject.Logic
         {
             WorkflowResponse response = new WorkflowResponse();
 
+            //wrap in Try/Catch!!
             UserAccount user = IDataSource.GetUserByUsername(request.Username);
 
             if (user == null)

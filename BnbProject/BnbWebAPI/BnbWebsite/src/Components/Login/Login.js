@@ -79,6 +79,11 @@ const attemptLogin = () => {
       
                 setUser(user);
 
+                let expireTime = String(dayjs().add(6,'hour'));
+                //let now = String(dayjs());
+
+                document.cookie = `id=${data.user.id};expires=${expireTime}UTC;path=/`;
+
                 navigate("/mystuff");
             }
         });
