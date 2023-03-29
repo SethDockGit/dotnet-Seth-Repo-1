@@ -18,7 +18,7 @@ namespace BnbProject.Data
         public List<Listing> GetListings();
         public UserAccount GetUserById(int id);
         public UserAccount GetUserByUsername(string username);
-        public List<UserAccount> GetUsers();
+        public List<int> GetUserIds();
         public void RemoveListing(Listing listing);
     }
 

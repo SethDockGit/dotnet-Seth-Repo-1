@@ -232,8 +232,6 @@ namespace BnbProject.Logic
         {
             WorkflowResponse response = new WorkflowResponse();
 
-            //first check username. if duplicate return false and setmessage duplicate username found
-
             bool isDuplicate = IDataSource.CheckUsername(request.Username);
 
             if(isDuplicate)
@@ -245,17 +243,17 @@ namespace BnbProject.Logic
 
             string hashedPass = BC.HashPassword(request.Password);
 
-            List<UserAccount> users = IDataSource.GetUsers();
+            List<int> userIds = IDataSource.GetUserIds();
 
             int newId = 0;
 
-            if (users.Count == 0)
+            if (userIds.Count == 0)
             {
                 newId = 1;
             }
             else
             {
-                var highestID = users.Max(u => u.Id);
+                var highestID = userIds.Max(u => u);
 
                 newId = highestID + 1;
             }
@@ -267,11 +265,7 @@ namespace BnbProject.Logic
                 Password = hashedPass,
                 Email = request.Email,
                 Listings = new List<Listing>(),
-                Favorites = new List<int>(),   
-                                                   //you can def just have it as a list of ids. However, the API call on the front end
-                                                   //should actually just get the user's listings as well as the listings for their stays and faves
-                                                   //IF you wanna redo it to improve that is. Obv it's more work but it is a more real-world
-                                                   //reflective solution....
+                Favorites = new List<int>(),                                                  
                 Stays = new List<Stay>()
             };
 

@@ -185,9 +185,14 @@ namespace BnbProject.Data
 
             return isDuplicate;
         }
-        public List<UserAccount> GetUsers()
+        public List<int> GetUserIds()
         {
-            return TestUsers;
+            List<int> userIds = new List<int>();
+            foreach (var user in TestUsers)
+            {
+                userIds.Add(user.Id);
+            }
+            return userIds;
         }
         public void AddUser(UserAccount user)
         {

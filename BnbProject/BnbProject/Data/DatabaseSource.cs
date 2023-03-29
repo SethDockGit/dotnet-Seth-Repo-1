@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Reflection;
 using System.Text;
 using BnbProject.Models;
 
@@ -20,21 +21,25 @@ namespace BnbProject.Data
             {
                 conn.ConnectionString = ConnectionString;
 
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = conn;
-                cmd.CommandText = "SELECT * FROM LISTING";
+                SqlCommand cmd = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = "SELECT * FROM Listing"
+                };
 
                 conn.Open();
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     while (dr.Read())
                     {
-                        var listing = new Listing();
-                        listing.Id = (int)dr["ListingId"];
-                        listing.Title = (string)dr["Title"];
-                        listing.Description = (string)dr["Description"];
-                        listing.Location = (string)dr["Location"];
-                        listing.Rate = (decimal)dr["Rate"];
+                        var listing = new Listing
+                        {
+                            Id = (int)dr["ListingId"],
+                            Title = (string)dr["Title"],
+                            Description = (string)dr["Description"],
+                            Location = (string)dr["Location"],
+                            Rate = (decimal)dr["Rate"]
+                        };
 
                         listings.Add(listing);
                     }
@@ -49,9 +54,11 @@ namespace BnbProject.Data
             {
                 conn.ConnectionString = ConnectionString;
 
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = conn;
-                cmd.CommandText = "INSERT INTO Listing VALUES (@ListingId, @HostId, @Title, @Description, @Location, @Rate)";
+                SqlCommand cmd = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = "INSERT INTO Listing VALUES (@ListingId, @HostId, @Title, @Description, @Location, @Rate)"
+                };
 
                 cmd.Parameters.AddWithValue("@ListingId", listing.Id);
                 cmd.Parameters.AddWithValue("@HostId", listing.HostId);
@@ -73,9 +80,11 @@ namespace BnbProject.Data
             {
                 conn.ConnectionString = ConnectionString;
 
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = conn;
-                cmd.CommandText = "SELECT * FROM Amenity";
+                SqlCommand cmd = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = "SELECT * FROM Amenity"
+                };
 
                 conn.Open();
                 using (SqlDataReader dr = cmd.ExecuteReader())
@@ -98,9 +107,16 @@ namespace BnbProject.Data
             {
                 conn.ConnectionString = ConnectionString;
 
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = conn;
-                cmd.CommandText = $"SELECT * FROM Listing WHERE ListingId={id}";
+                SqlCommand cmd = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = $"SELECT * FROM Listing WHERE ListingId=@ListingId" +
+                    $"INNER JOIN Stay on Stay.ListingId = Listing.ListingId" +
+                    $"INNER JOIN Review on Review.ReviewId = Stay.StayId" +
+                    $"INNER JOIN ListingAmenity on ListingAmenity.ListingId = Listing.ListingId;"
+                };
+
+                cmd.Parameters.AddWithValue("@ListingId", listing.Id);
 
                 conn.Open();
                 using (SqlDataReader dr = cmd.ExecuteReader())
@@ -116,19 +132,27 @@ namespace BnbProject.Data
                     }
                 }
 
-                SqlCommand cmd2 = new SqlCommand();
-                cmd2.Connection = conn;
-                cmd2.CommandText = $"SELECT * FROM Stay WHERE ListingId={listing.Id}";
+                SqlCommand cmd2 = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = $"SELECT * FROM Stay WHERE ListingId=@ListingId"
+                };
+
+                cmd.Parameters.AddWithValue("@ListingId", listing.Id);
 
                 conn.Open();
                 using (SqlDataReader dr = cmd2.ExecuteReader())
                 {
                     while (dr.Read())
                     {
-                        Stay stay = new Stay();
-                        stay.Id = (int)dr["StayId"];
-                        stay.ListingId = (int)dr["ListingId"];
-                        stay.GuestId = (int)dr["GuestId"];
+                        Stay stay = new Stay
+                        {
+                            Id = (int)dr["StayId"],
+                            ListingId = (int)dr["ListingId"],
+                            GuestId = (int)dr["GuestId"],
+                            StartDate = (DateTime)dr["StartDate"],
+                            EndDate = (DateTime)dr["EndDate"]
+                        };
 
                         listing.Stays.Add(stay);
                     }
@@ -136,9 +160,12 @@ namespace BnbProject.Data
 
                 foreach (Stay s in listing.Stays)
                 {
-                    SqlCommand cmd3 = new SqlCommand();
-                    cmd3.Connection = conn;
-                    cmd3.CommandText = $"SELECT * FROM Review WHERE ReviewId={s.Id}";  //save review accordingly!!!
+                    SqlCommand cmd3 = new SqlCommand
+                    {
+                        Connection = conn,
+                        CommandText = $"SELECT * FROM Review WHERE ReviewId=@ReviewId"  //save review accordingly!!!
+                    };
+                    cmd.Parameters.AddWithValue("@ReviewId", s.Id);
 
                     conn.Open();
                 
@@ -146,42 +173,212 @@ namespace BnbProject.Data
                     {
                         while (dr.Read())
                         {
-                            Review review = new Review();
-                            review.StayId = s.Id;
-                            review.Rating = (int)dr["Rating"];
-                            review.Text = (string)dr["text"];
+                            Review review = new Review
+                            {
+                                StayId = s.Id,
+                                Rating = (int)dr["Rating"],
+                                Text = (string)dr["text"]
+                            };
 
                             s.Review = review;
                         }
                     }
                 }
 
-                //now you need to do one more with the ListingAmenity bridge table.
+                List<int> amenityIds = new List<int>();
+                listing.Amenities = new List<string>();
 
+                SqlCommand cmd4 = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = $"SELECT * FROM AmenityListing WHERE ListingId=@ListingId"
+                };
+                cmd.Parameters.AddWithValue("@ListingId", listing.Id);
+
+                conn.Open();
+                using (SqlDataReader dr = cmd4.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        var amenityId = (int)dr["AmenityId"];
+                        amenityIds.Add(amenityId);
+                    }
+                }
+
+                foreach(var a in amenityIds)
+                {
+                    SqlCommand cmd5 = new SqlCommand
+                    {
+                        Connection = conn,
+                        CommandText = $"SELECT * FROM Amenity WHERE AmenityId=@AmenityId"
+                    };
+                    cmd.Parameters.AddWithValue("@AmenityId", a);
+
+                    conn.Open();
+                    using (SqlDataReader dr = cmd4.ExecuteReader())
+                    {
+                        var amenity = (string)dr["AmenityName"];
+                        listing.Amenities.Add(amenity);
+                    }
+                }
             }
+
             return listing;
         }
         public UserAccount GetUserById(int id)
         {
-            throw new NotImplementedException();
+            UserAccount user = new UserAccount();
+
+            using (SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = ConnectionString;
+
+                SqlCommand cmd = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = $"SELECT * FROM UserAccount WHERE UserId=@UserId"
+                };
+                cmd.Parameters.AddWithValue("@UserId", id);
+
+                conn.Open();
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        user.Id = (int)dr["UserId"];
+                        user.Email = (string)dr["Email"];
+                        user.Password = (string)dr["Password"];
+                    }
+                }
+
+                user.Listings = new List<Listing>();
+
+                SqlCommand cmd2 = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = $"SELECT * FROM Listing WHERE HostId=@HostId"
+                };
+                cmd.Parameters.AddWithValue("@HostId", id);
+
+                conn.Open();
+                using (SqlDataReader dr = cmd2.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        var listing = new Listing
+                        {
+                            Id = (int)dr["ListingId"],
+                            Title = (string)dr["Title"],
+                            Description = (string)dr["Description"],
+                            Location = (string)dr["Location"],
+                            Rate = (decimal)dr["Rate"]
+                        };
+
+                        user.Listings.Add(listing);
+                    }
+                }
+
+                user.Favorites = new List<int>();
+
+                SqlCommand cmd3 = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = $"SELECT * FROM UserListing WHERE UserId=@UserId"
+                };
+                cmd.Parameters.AddWithValue("@UserId", id);
+
+                conn.Open();
+                using (SqlDataReader dr = cmd3.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        var favorite = (int)dr["ListingId"];
+                        user.Favorites.Add(favorite);
+                    }
+                }
+
+                SqlCommand cmd4 = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = $"SELECT * FROM Stay WHERE GuestId=@GuestId"
+                };
+                cmd.Parameters.AddWithValue("@GuestId", id);
+
+                conn.Open();
+                using (SqlDataReader dr = cmd4.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        Stay stay = new Stay
+                        {
+                            Id = (int)dr["StayId"],
+                            ListingId = (int)dr["ListingId"],
+                            GuestId = (int)dr["GuestId"],
+                            StartDate = (DateTime)dr["StartDate"],
+                            EndDate = (DateTime)dr["EndDate"]
+                        };
+
+                        user.Stays.Add(stay);
+                    }
+                }
+                //NEED TO ADD REVIEWS AS WELL.
+            }
+
+            return user;
         }
         public void RemoveListing(Listing listing)
         {
-            throw new NotImplementedException();
+
+            using (SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = ConnectionString;
+                SqlCommand cmd = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = $"DELETE FROM AmenityListing WHERE ListingId=@ListingId; " +
+                $"DELETE FROM UserListing WHERE ListingId=@ListingId; DELETE FROM Listing WHERE ListingId=@ListingId"
+                };
+                cmd.Parameters.AddWithValue("@ListingId", listing.Id);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
         }
         public void AddStay(Stay stay)
         {
-            throw new NotImplementedException();
+            //simplify using?? Might wanna test before and after...
+
+            using (SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = ConnectionString;
+
+                SqlCommand cmd = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = "INSERT INTO Stay VALUES (@StayId, @ListingId, @GuestId, @ReviewId, @StartDate, @EndDate)"
+                };
+
+                cmd.Parameters.AddWithValue("@StayId", stay.Id);
+                cmd.Parameters.AddWithValue("@ListingId", stay.ListingId);
+                cmd.Parameters.AddWithValue("@GuestId", stay.GuestId);
+                cmd.Parameters.AddWithValue("@ReviewId", null);
+                cmd.Parameters.AddWithValue("@StartDate", stay.StartDate);
+                cmd.Parameters.AddWithValue("@EndDate", stay.EndDate);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
         }
         public void AddReview(Review review)
         {
             throw new NotImplementedException();
+            //review id will be same as stay id, which is what this object has
         }
         public bool CheckUsername(string username)
         {
             throw new NotImplementedException();
         }
-        public List<UserAccount> GetUsers()
+        public List<int> GetUserIds()
         {
             throw new NotImplementedException();
         }

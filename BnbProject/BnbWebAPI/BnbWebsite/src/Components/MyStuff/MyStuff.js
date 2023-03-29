@@ -129,15 +129,21 @@ const showUpcomingStays = () => {
 
     var stayListings = upcomingStays.map(function(val) {
         return(
-            listings.find(l => l.id == val.listingId)
+            {
+                listing: listings.find(l => l.id == val.listingId),
+                startDate: val.startDate,
+                endDate: val.endDate
+            }
         )
     });
 
     return stayListings.map(function(val, index){
 
         return(
+
             <div key={index}>
-                <ListingsCard listing={val}/>
+                <Typography variant="h6">{dayjs(val.startDate)} - {dayjs(val.endDate)}</Typography>
+                <ListingsCard listing={val.listing}/>
             </div>
         )
     });
@@ -146,9 +152,13 @@ const showPastStays = () => {
 
     var past = user.stays.filter(s => dayjs(s.endDate).isBefore(dayjs()));
 
-    var stayListings = past.map(function(val, index) {
+    var stayListings = past.map(function(val) {
         return(
-            listings.find(l => l.id == val.listingId)
+            {
+                listing: listings.find(l => l.id == val.listingId),
+                startDate: val.startDate,
+                endDate: val.endDate
+            }
         )
     });
 
@@ -156,10 +166,11 @@ const showPastStays = () => {
 
         return(
             <div key={index}>
-                <ListingsCard listing={val}/>
+                <Typography variant="h6">{dayjs(val.startDate)} - {dayjs(val.endDate)}</Typography>
+                <ListingsCard listing={val.listing}/>
                 {showReview(past[index])}
                 <Drawer open={drawerOpen} anchor={"left"} onClose={() => setDrawerOpen(false)}>
-                    {showReviewDrawer(val, past[index])} {/*double-check that this is solid logic. If not there must be some way to save the stay id*/}
+                    {showReviewDrawer(val.listing, past[index])} {/*double-check that this is solid logic. If not there must be some way to save the stay id*/}
                 </Drawer>
             </div>
         )
@@ -172,9 +183,7 @@ const showReview = (stay) => {
     if(stay.review != null){
         reviewExists = true;
     }
-    //the mechanism here checks for a username associated with the review, and if there is none, assumes the review to be blank
-    //**just make sure a stay with no review still comes up here with username null. Stay.review should be instantiated
-    //with a new blank review by the manager after pulling from DB.
+
     return(
         <div>
             {!reviewExists    
