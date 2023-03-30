@@ -99,21 +99,17 @@ CREATE TABLE UserStay (
 GO
 
 
-Get Listing by Id query:
+--Get Listing by Id query:
 
 
-SELECT * FROM Listing
-INNER JOIN Stay on Stay.ListingId = Listing.ListingId
-INNER JOIN Review on Review.ReviewId = Stay.StayId
-INNER JOIN AmenityListing on AmenityListing.ListingId = Listing.ListingId
-WHERE Listing.ListingId=1;
+--SELECT * FROM Listing
+---INNER JOIN Stay on Stay.ListingId = Listing.ListingId
+---INNER JOIN Review on Review.ReviewId = Stay.StayId
+---INNER JOIN AmenityListing on AmenityListing.ListingId = Listing.ListingId
+---WHERE Listing.ListingId=1;
 
 
-
-
-
-INITIAL TESTING DATA----------------------
-
+---INITIAL TESTING DATA
 
 
 INSERT INTO UserAccount
@@ -128,6 +124,12 @@ VALUES
 (2, 2, 'Downtown loft', 'Great place to stay to catch a game.', 'Minneapolis, MN', 180);
 
 
+INSERT INTO Review
+VALUES
+(1, 5, 'We had a wonderful stay.', 'Seth'),
+(2, 4, 'We enjoyed our stay. Some wi-fi issues', 'Bob');
+
+
 INSERT INTO Stay
 VALUES
 (1, 2, 1, 1, GETDATE(), GETDATE()),
@@ -135,13 +137,8 @@ VALUES
 (3, 1, 1, null, GETDATE(), GETDATE()); ***
 
 
-**(stay 3 where listing 1 is stayed at by guest 1 (seth, his own listing), no review yet
+--(stay 3 where listing 1 is stayed at by guest 1 (seth, his own listing), no review yet
 
-
-INSERT INTO Review
-VALUES
-(1, 5, 'We had a wonderful stay.', 'Seth'),
-(2, 4, 'We enjoyed our stay. Some wi-fi issues', 'Bob');
 
 INSERT INTO Amenity
 VALUES
