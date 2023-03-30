@@ -54,15 +54,28 @@ const router = createBrowserRouter([{
   ]
 }]);
 
-const [user, setUser] = useState(null);
+
+const Provider = props => {
+
+  const [user, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  return (
+    <UserContext.Provider
+      value={{ user, setUser, isLoggedIn, setIsLoggedIn}}>
+        {props.children}
+      </UserContext.Provider>
+  )
+};
+
 
   return (
     <div className="App">
-      <UserContext.Provider value={{user, setUser}}>
+      <Provider>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <RouterProvider router={router}/>
         </LocalizationProvider>
-      </UserContext.Provider>
+      </Provider>
     </div>
   );
 }

@@ -32,49 +32,61 @@ const style = {
   };
 
 
-var elements = document.cookie.split('=');
-var id = Number(elements[1]);
-debugger;
 
-
-const {user, setUser} = useContext(UserContext);
+const {user, setUser, isLoggedIn, setIsLoggedIn} = useContext(UserContext);
 //const [userLoaded, setUserLoaded] = useState(false);
 const [listings, setListings] = useState();
 const [listingsLoaded, setListingsLoaded] = useState(false);
 const [drawerOpen, setDrawerOpen] = useState(false);
 const [rating, setRating] = useState(5);
 const [reviewText, setReviewText] = useState('');
-const [failSubmitReview, setFailSubmitReview] = useState(false); //this isn't actually used anywhere
+//const [failSubmitReview, setFailSubmitReview] = useState(false); 
 const [failReviewMessage, setFailReviewMessage] = useState('');
 const [modalOpen, setModalOpen] = useState(false);
 const navigate = useNavigate();
 
 const reRoute = () => {
     navigate("/user/login");
+    //delete cookies.
+}
+
+const getUser = (id) => {
+
+    fetch(`${api}/bnb/user${id}`)
+    .then((response) => response.json())
+    .then((data) => {
+        setUser(data.user);
+        setIsLoggedIn(true);
+    })
+    .then(() => {
+        //setUserLoaded(true);
+    });
 }
 
 const verifyLogin = () => {
 
     if(user == null){
-        reRoute();
+
+        var elements = document.cookie.split('=');
+        var id = Number(elements[1]);
+
+        if(!isNaN(id)){
+            getUser(id);
+        }
+        else{
+            reRoute();
+        }
     }
-    else if(dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
-        reRoute();
+    else{
+        if(dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
+            reRoute();
+        }
     }
+    
 }
 verifyLogin();
 
-//const getUser = () => {
-//
-//    fetch(`${api}/bnb/user${id}`)
-//    .then((response) => response.json())
-//    .then((data) => {
-//        setUser(data.user);
-//    })
-//    .then(() => {
-//        setUserLoaded(true);
-//    });
-//}
+
 const getListings = () => {
 
     fetch(`${api}/bnb/listings`)
@@ -88,12 +100,16 @@ const getListings = () => {
         setListingsLoaded(true);
     });
 }
+
+
 const checkForData = () => {
 
     //!userLoaded && getUser();
     !listingsLoaded && getListings();
 }
 checkForData();
+
+
 
 const showMyListings = () => {
 

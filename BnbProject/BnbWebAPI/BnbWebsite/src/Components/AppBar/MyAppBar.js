@@ -16,8 +16,8 @@ import { useNavigate } from 'react-router-dom';
 
 export default function MyAppBar(){
 
-const {user, setUser} = useContext(UserContext);
-//const [isLoggedIn, setIsLoggedIn] = useState(false); 
+const {user, setUser, isLoggedIn, setIsLoggedIn} = useContext(UserContext);
+ 
 const [loginChecked, setLoginChecked] = useState(false);
 const navigate = useNavigate();
 
@@ -31,19 +31,20 @@ const handleClose = () => {
   setAnchorEl(null);
 };
 
-//could we do this just once on the app bar and pass it down somehow? through outlet?
 
 const handleClickLogout = () => {
   setUser(null);
+  //delete cookies.
   navigate("/user/login");
 }
 const displayButton = () => {
 
-  var isLoggedIn = false;
+  //var isLoggedIn = false;
+//
+  //if(user != null && dayjs().isBefore(dayjs(user.logTime).add(6, 'hour'))){
+  //  isLoggedIn = true;
+  //}
 
-  if(user != null && dayjs().isBefore(dayjs(user.logTime).add(6, 'hour'))){
-    isLoggedIn = true;
-  }
   return(
     <div>
       {isLoggedIn ?
