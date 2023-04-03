@@ -12,7 +12,7 @@ namespace BnbProject.Data
     {
 
         private string ConnectionString =
-        "Server=localhost;Database=StudentManagement;User Id=sa;Password=L'audace1!";
+        "Server=localhost;Database=Bnb;User Id=sa;Password=L'audace1!";
 
         public List<Listing> GetListings()
         {
@@ -46,7 +46,7 @@ namespace BnbProject.Data
                     }
                 }
             }
-            var a = 1;
+
             return listings;
         }
         public void AddListing(Listing listing)
@@ -115,10 +115,13 @@ namespace BnbProject.Data
                 SqlCommand cmd = new SqlCommand
                 {
                     Connection = conn,
-                    CommandText = $"SELECT * FROM Listing WHERE ListingId=@ListingId" +
-                    $"INNER JOIN Stay on Stay.ListingId = Listing.ListingId" +
-                    $"INNER JOIN Review on Review.ReviewId = Stay.StayId" +
-                    $"INNER JOIN ListingAmenity on ListingAmenity.ListingId = Listing.ListingId;"
+                    CommandText = $"SELECT * FROM Listing" +
+                    $"LEFT JOIN Stay on Stay.ListingId = Listing.ListingId" +
+                    $"LEFT JOIN Review on Review.ReviewId = Stay.StayId" +
+                    $"LEFT JOIN ListingAmenity on ListingAmenity.ListingId = Listing.ListingId" +
+                    $"LEFT JOIN Amenity on Amenity.AmenityId = ListingAmenity.AmenityId" +
+                    $"WHERE Listing.ListingId=@ListingId;"
+                    //should these all be left joins?
                 };
 
                 cmd.Parameters.AddWithValue("@ListingId", listing.Id);
@@ -135,126 +138,130 @@ namespace BnbProject.Data
                         listing.Location = (string)dr["Location"];
                         listing.Rate = (decimal)dr["Rate"];
 
-                        Stay stay = new Stay();
-
-                        stay.Id = (int)dr["StayId"];
-                        stay.ListingId = (int)dr["ListingId"];
-                        stay.GuestId = (int)dr["GuestId"];
-                        stay.StartDate = (DateTime)dr["StartDate"];
-                        stay.EndDate = (DateTime)dr["EndDate"];
-
-                        if (dr["ReviewId"] != null)
+                        if (!listing.Stays.Any(s => (int)dr["StayId"] == s.Id))
                         {
-                            Review review = new Review();
+                            Stay stay = new Stay();
 
-                            review.StayId = (int)dr["StayId"];
-                            review.Rating = (int)dr["Rating"];
-                            review.Text = (string)dr["ReviewText"];
+                            stay.Id = (int)dr["StayId"];
+                            stay.ListingId = (int)dr["ListingId"];
+                            stay.GuestId = (int)dr["GuestId"];
+                            stay.StartDate = (DateTime)dr["StartDate"];
+                            stay.EndDate = (DateTime)dr["EndDate"];
 
-                            stay.Review = review;
-                        }
-
-                        if(listing.Stays.Any(s => s.Id == (int)dr["StayId"]))
-                        {
-
-                        }
-
-                        //listing.Amenities.Add
-                    }
-                }
-
-                SqlCommand cmd2 = new SqlCommand
-                {
-                    Connection = conn,
-                    CommandText = $"SELECT * FROM Stay WHERE ListingId=@ListingId"
-                };
-
-                cmd.Parameters.AddWithValue("@ListingId", listing.Id);
-
-                conn.Open();
-                using (SqlDataReader dr = cmd2.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        Stay stay = new Stay
-                        {
-                            Id = (int)dr["StayId"],
-                            ListingId = (int)dr["ListingId"],
-                            GuestId = (int)dr["GuestId"],
-                            StartDate = (DateTime)dr["StartDate"],
-                            EndDate = (DateTime)dr["EndDate"]
-                        };
-
-                        listing.Stays.Add(stay);
-                    }
-                }
-
-                foreach (Stay s in listing.Stays)
-                {
-                    SqlCommand cmd3 = new SqlCommand
-                    {
-                        Connection = conn,
-                        CommandText = $"SELECT * FROM Review WHERE ReviewId=@ReviewId"  //save review accordingly!!!
-                    };
-                    cmd.Parameters.AddWithValue("@ReviewId", s.Id);
-
-                    conn.Open();
-                
-                    using (SqlDataReader dr = cmd3.ExecuteReader())
-                    {
-                        while (dr.Read())
-                        {
-                            Review review = new Review
+                            if (dr["ReviewId"] != null)
                             {
-                                StayId = s.Id,
-                                Rating = (int)dr["Rating"],
-                                Text = (string)dr["text"]
-                            };
+                                Review review = new Review();
 
-                            s.Review = review;
+                                review.StayId = (int)dr["StayId"];
+                                review.Rating = (int)dr["Rating"];
+                                review.Text = (string)dr["ReviewText"];
+
+                                stay.Review = review;
+                            }
+                            listing.Stays.Add(stay);
                         }
+                    } 
+
+                    if(!listing.Amenities.Any(a => a == (string)dr["AmenityName"]))
+                    {
+                        listing.Amenities.Add((string)dr["AmenityName"]);
                     }
                 }
 
-                List<int> amenityIds = new List<int>();
-                listing.Amenities = new List<string>();
-
-                SqlCommand cmd4 = new SqlCommand
-                {
-                    Connection = conn,
-                    CommandText = $"SELECT * FROM AmenityListing WHERE ListingId=@ListingId"
-                };
-                cmd.Parameters.AddWithValue("@ListingId", listing.Id);
-
-                conn.Open();
-                using (SqlDataReader dr = cmd4.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        var amenityId = (int)dr["AmenityId"];
-                        amenityIds.Add(amenityId);
-                    }
-                }
-
-                foreach(var a in amenityIds)
-                {
-                    SqlCommand cmd5 = new SqlCommand
-                    {
-                        Connection = conn,
-                        CommandText = $"SELECT * FROM Amenity WHERE AmenityId=@AmenityId"
-                    };
-                    cmd.Parameters.AddWithValue("@AmenityId", a);
-
-                    conn.Open();
-                    using (SqlDataReader dr = cmd4.ExecuteReader())
-                    {
-                        var amenity = (string)dr["AmenityName"];
-                        listing.Amenities.Add(amenity);
-                    }
-                }
+                //SqlCommand cmd2 = new SqlCommand
+                //{
+                //    Connection = conn,
+                //    CommandText = $"SELECT * FROM Stay WHERE ListingId=@ListingId"
+                //};
+                //
+                //cmd.Parameters.AddWithValue("@ListingId", listing.Id);
+                //
+                //conn.Open();
+                //using (SqlDataReader dr2 = cmd2.ExecuteReader())
+                //{
+                //    while (dr.Read())
+                //    {
+                //        Stay stay = new Stay
+                //        {
+                //            Id = (int)dr["StayId"],
+                //            ListingId = (int)dr["ListingId"],
+                //            GuestId = (int)dr["GuestId"],
+                //            StartDate = (DateTime)dr["StartDate"],
+                //            EndDate = (DateTime)dr["EndDate"]
+                //        };
+                //
+                //        listing.Stays.Add(stay);
+                //    }
+                //}
+                //
+                //foreach (Stay s in listing.Stays)
+                //{
+                //    SqlCommand cmd3 = new SqlCommand
+                //    {
+                //        Connection = conn,
+                //        CommandText = $"SELECT * FROM Review WHERE ReviewId=@ReviewId"  //save review accordingly!!!
+                //    };
+                //    cmd.Parameters.AddWithValue("@ReviewId", s.Id);
+                //
+                //    conn.Open();
+                //
+                //    using (SqlDataReader dr = cmd3.ExecuteReader())
+                //    {
+                //        while (dr.Read())
+                //        {
+                //            Review review = new Review
+                //            {
+                //                StayId = s.Id,
+                //                Rating = (int)dr["Rating"],
+                //                Text = (string)dr["text"]
+                //            };
+                //
+                //            s.Review = review;
+                //        }
+                //    }
+                //}
+                //
+                //List<int> amenityIds = new List<int>();
+                //listing.Amenities = new List<string>();
+                //
+                //SqlCommand cmd4 = new SqlCommand
+                //{
+                //    Connection = conn,
+                //    CommandText = $"SELECT * FROM AmenityListing WHERE ListingId=@ListingId"
+                //};
+                //cmd.Parameters.AddWithValue("@ListingId", listing.Id);
+                //
+                //conn.Open();
+                //using (SqlDataReader dr3 = cmd4.ExecuteReader())
+                //{
+                //    while (dr.Read())
+                //    {
+                //        var amenityId = (int)dr["AmenityId"];
+                //        amenityIds.Add(amenityId);
+                //    }
+                //}
+                //
+                //foreach(var a in amenityIds)
+                //{
+                //    SqlCommand cmd5 = new SqlCommand
+                //    {
+                //        Connection = conn,
+                //        CommandText = $"SELECT * FROM Amenity WHERE AmenityId=@AmenityId"
+                //    };
+                //    cmd.Parameters.AddWithValue("@AmenityId", a);
+                //
+                //    conn.Open();
+                //    using (SqlDataReader dr4 = cmd4.ExecuteReader())
+                //    {
+                //        var amenity = (string)dr["AmenityName"];
+                //        listing.Amenities.Add(amenity);
+                //    }
+                //}
             }
-
+            //can check this after user is supplied.
+            var a = 1;
             return listing;
+
         }
         public UserAccount GetUserById(int id)
         {
@@ -269,7 +276,12 @@ namespace BnbProject.Data
                 SqlCommand cmd = new SqlCommand
                 {
                     Connection = conn,
-                    CommandText = $"SELECT * FROM UserAccount WHERE UserId=@UserId"
+                    CommandText = $"SELECT * FROM UserAccount" +
+                    $"LEFT JOIN Listing on Listing.HostId = UserAccount.UserId" +
+                    $"LEFT JOIN Stay on Stay.GuestId = UserAccount.UserId" +
+                    $"LEFT JOIN Review on Review.ReviewId = Stay.StayId" +
+                    $"LEFT JOIN UserListing on UserListing.UserId = UserAccount.UserId" +
+                    $"WHERE UserAccount.UserId=@UserId"
                 };
                 cmd.Parameters.AddWithValue("@UserId", id);
 
@@ -501,6 +513,9 @@ namespace BnbProject.Data
         public UserAccount GetUserByUsername(string username)
         {
             UserAccount user = new UserAccount();
+            user.Listings = new List<Listing>();
+            user.Stays = new List<Stay>();
+            user.Favorites = new List<int>();
 
             using (SqlConnection conn = new SqlConnection())
             {
@@ -509,7 +524,7 @@ namespace BnbProject.Data
                 SqlCommand cmd = new SqlCommand
                 {
                     Connection = conn,
-                    CommandText = "SELECT * from UserAccount WHERE Username = @Username"
+                    CommandText = "SELECT * FROM UserAccount LEFT JOIN Listing on Listing.HostId = UserAccount.UserId LEFT JOIN Stay on Stay.GuestId = UserAccount.UserId LEFT JOIN Review on Review.ReviewId = Stay.StayId LEFT JOIN UserListing on UserListing.UserId = UserAccount.UserId WHERE UserAccount.Username=@Username;"
                 };
                 cmd.Parameters.AddWithValue("@Username", username);
 
@@ -522,83 +537,129 @@ namespace BnbProject.Data
                         user.Username = (string)dr["Username"];
                         user.Password = (string)dr["UserPassword"];
                         user.Email = (string)dr["Email"];
-                    }
-                }
 
-                user.Listings = new List<Listing>();
-
-                SqlCommand cmd2 = new SqlCommand
-                {
-                    Connection = conn,
-                    CommandText = $"SELECT * FROM Listing WHERE HostId=@HostId"
-                };
-                cmd.Parameters.AddWithValue("@HostId", user.Id);
-
-                conn.Open();
-                using (SqlDataReader dr = cmd2.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        var listing = new Listing
+                        if(!user.Listings.Any(l => l.Id == (int)dr["ListingId"]))
                         {
-                            Id = (int)dr["ListingId"],
-                            Title = (string)dr["Title"],
-                            Description = (string)dr["Description"],
-                            Location = (string)dr["Location"],
-                            Rate = (decimal)dr["Rate"]
-                        };
+                            var listing = new Listing
+                            {
+                                Id = (int)dr["ListingId"],
+                                HostId = (int)dr["HostId"],
+                                Title = (string)dr["Title"],
+                                Description = (string)dr["Description"],
+                                Location = (string)dr["Location"],
+                                Rate = (decimal)dr["Rate"]
+                            };
 
-                        user.Listings.Add(listing);
-                    }
-                }
+                            user.Listings.Add(listing);
 
-                user.Favorites = new List<int>();
-
-                SqlCommand cmd3 = new SqlCommand
-                {
-                    Connection = conn,
-                    CommandText = $"SELECT * FROM UserListing WHERE UserId=@UserId"
-                };
-                cmd.Parameters.AddWithValue("@UserId", user.Id);
-
-                conn.Open();
-                using (SqlDataReader dr = cmd3.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        var favorite = (int)dr["ListingId"];
-                        user.Favorites.Add(favorite);
-                    }
-                }
-
-                SqlCommand cmd4 = new SqlCommand
-                {
-                    Connection = conn,
-                    CommandText = $"SELECT * FROM Stay WHERE GuestId=@GuestId"
-                };
-                cmd.Parameters.AddWithValue("@GuestId", user.Id);
-
-                conn.Open();
-                using (SqlDataReader dr = cmd4.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        Stay stay = new Stay
+                        }
+                        if (!user.Stays.Any(s => s.Id == (int)dr["StayId"]))
                         {
-                            Id = (int)dr["StayId"],
-                            ListingId = (int)dr["ListingId"],
-                            GuestId = (int)dr["GuestId"],
-                            StartDate = (DateTime)dr["StartDate"],
-                            EndDate = (DateTime)dr["EndDate"]
-                        };
+                            var stay = new Stay
+                            {
+                                Id = (int)dr["StayId"],
+                                ListingId = (int)dr["ListingId"],
+                                GuestId = (int)dr["GuestId"],                            
+                                StartDate = (DateTime)dr["StartDate"],
+                                EndDate = (DateTime)dr["EndDate"]
+                            };
 
-                        user.Stays.Add(stay);
+                            //if (dr["ReviewId"] != null)
+                            //{
+                            //    Review review = new Review();
+                            //
+                            //    review.StayId = (int)dr["ReviewId"];
+                            //    review.Rating = (int)dr["Rating"];
+                            //    review.Text = (string)dr["ReviewText"];
+                            //    review.Username = (string)dr["Username"];
+                            //
+                            //    stay.Review = review;
+                            //}
+                            user.Stays.Add(stay);
+                        }
+                        
+                        if (!user.Favorites.Any(f => f == (int)dr["ListingId"]))
+                        {
+                            user.Favorites.Add((int)dr["ListingId"]);
+                        }
                     }
                 }
+                var a = 1;
+                return user;
+
+                //
+                //user.Listings = new List<Listing>();
+                //
+                //SqlCommand cmd2 = new SqlCommand
+                //{
+                //    Connection = conn,
+                //    CommandText = $"SELECT * FROM Listing WHERE HostId=@HostId"
+                //};
+                //cmd.Parameters.AddWithValue("@HostId", user.Id);
+                //
+                //conn.Open();
+                //using (SqlDataReader dr = cmd2.ExecuteReader())
+                //{
+                //    while (dr.Read())
+                //    {
+                //        var listing = new Listing
+                //        {
+                //            Id = (int)dr["ListingId"],
+                //            Title = (string)dr["Title"],
+                //            Description = (string)dr["Description"],
+                //            Location = (string)dr["Location"],
+                //            Rate = (decimal)dr["Rate"]
+                //        };
+                //
+                //        user.Listings.Add(listing);
+                //    }
+                //}
+                //
+                //user.Favorites = new List<int>();
+                //
+                //SqlCommand cmd3 = new SqlCommand
+                //{
+                //    Connection = conn,
+                //    CommandText = $"SELECT * FROM UserListing WHERE UserId=@UserId"
+                //};
+                //cmd.Parameters.AddWithValue("@UserId", user.Id);
+                //
+                //conn.Open();
+                //using (SqlDataReader dr = cmd3.ExecuteReader())
+                //{
+                //    while (dr.Read())
+                //    {
+                //        var favorite = (int)dr["ListingId"];
+                //        user.Favorites.Add(favorite);
+                //    }
+                //}
+                //
+                //SqlCommand cmd4 = new SqlCommand
+                //{
+                //    Connection = conn,
+                //    CommandText = $"SELECT * FROM Stay WHERE GuestId=@GuestId"
+                //};
+                //cmd.Parameters.AddWithValue("@GuestId", user.Id);
+                //
+                //conn.Open();
+                //using (SqlDataReader dr = cmd4.ExecuteReader())
+                //{
+                //    while (dr.Read())
+                //    {
+                //        Stay stay = new Stay
+                //        {
+                //            Id = (int)dr["StayId"],
+                //            ListingId = (int)dr["ListingId"],
+                //            GuestId = (int)dr["GuestId"],
+                //            StartDate = (DateTime)dr["StartDate"],
+                //            EndDate = (DateTime)dr["EndDate"]
+                //        };
+                //
+                //        user.Stays.Add(stay);
+                //    }
+                //}
                 //need the stay review as well
             }
-            var a = 1;
-            return user;
         }
         public void AddFavorite(UserListing ul)
         {

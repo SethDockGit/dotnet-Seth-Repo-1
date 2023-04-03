@@ -48,13 +48,12 @@ const verifyLogin = () => {
           setIsLoggedIn(true);
       }
       else{
-          reRoute();
+        setIsLoggedIn(false);
       }
   }
   else{
       if(dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
         setIsLoggedIn(false);
-        reRoute();
       }
   } 
 }

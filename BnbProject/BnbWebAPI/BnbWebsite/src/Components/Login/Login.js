@@ -82,7 +82,7 @@ const attemptLogin = () => {
                     stays: data.user.stays,
                     logTime: dayjs()
                   };
-      
+                  debugger;
                 setUser(user);
                 setIsLoggedIn(true);
 

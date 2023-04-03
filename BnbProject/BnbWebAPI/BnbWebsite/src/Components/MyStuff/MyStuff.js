@@ -79,12 +79,13 @@ const getUser = (id) => {
 }
 
 const verifyLogin = () => {
-
+    debugger;
     if(!user){
+        //user is coming in null from my login using the database...
         //if user is null, parse the cookie. If there's no cookie, id will be NaN. So, either get user by Id if Id has value, or reroute to login.
         var elements = document.cookie.split('=');
         var id = Number(elements[1]);
-
+        debugger;
         if(!isNaN(id)){
             getUser(id);
         }
@@ -97,6 +98,7 @@ const verifyLogin = () => {
             reRoute();
         }
         else{ 
+            debugger;
             setUserLoaded(true); 
         }
     } 
@@ -213,7 +215,7 @@ const cancelReview = () => {
 
     return(
         <div>
-            {userLoaded && listingsLoaded && 
+            {(userLoaded && listingsLoaded && !!user) && 
                 <div>
                     <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', m:3}}>Welcome {user.username}</Typography>
 

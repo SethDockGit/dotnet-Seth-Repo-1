@@ -289,17 +289,23 @@ namespace BnbProject.Logic
             {
                 response.Success = false;
                 response.Message = $"User {request.Username} not found.";
-                return response;
             }
             else
             {  
                 //fix invalid, need hashed data!!
-                bool verifyPass = BC.Verify(request.Password, user.Password);
-                response.Success = true;
-                response.Message = $"Success. User {request.Username} verified.";
-                response.User = user;
-                return response;
+                //bool verifyPass = BC.Verify(request.Password, user.Password);
+
+                //if (verifyPass)
+                //{
+                    response.Success = true;
+                    response.Message = $"Success. User {request.Username} verified.";
+                    response.User = user;
+                //}
+                //response.Success = false;
+                //response.Message = $"Error: Incorrect Password";
             }
+
+            return response;
         }
         public WorkflowResponse AddFavorite(UserListing ul)
         {
