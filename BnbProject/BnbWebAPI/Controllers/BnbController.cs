@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BnbProject.Logic;
@@ -29,15 +30,15 @@ namespace BnbWebAPI.Controllers
             return response;
         }
         [HttpGet]
-        [Route("listing{id}")]
-        public WorkflowResponse GetListings(int id)
+        [Route("listing/{id}")]
+        public WorkflowResponse GetListing(int id)
         {
             WorkflowResponse response = Manager.GetListingById(id);
 
             return response;
         }
         [HttpGet]
-        [Route("user{id}")]     //you might end up not needing this method. User is accessed at login or create account, then provided via context elsewhere.
+        [Route("user/{id}")]     //you might end up not needing this method. User is accessed at login or create account, then provided via context elsewhere.
         public WorkflowResponse GetUser(int id)
         {
             WorkflowResponse response = Manager.GetUserById(id);
@@ -56,7 +57,7 @@ namespace BnbWebAPI.Controllers
         [Route("addlisting")]
         public WorkflowResponse AddListing([FromBody] ListingTransfer transfer)
         {
-    
+
             WorkflowResponse response = Manager.AddListing(transfer);
 
             return response;

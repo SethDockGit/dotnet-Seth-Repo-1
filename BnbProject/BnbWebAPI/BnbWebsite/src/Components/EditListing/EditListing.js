@@ -1,7 +1,7 @@
 import { Divider, Typography } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -36,6 +36,7 @@ const style = {
 
 const {user, setUser} = useContext(UserContext);
 const {id} = useParams();
+const [userLoaded, setUserLoaded] = useState(false);  //do I want to use this or isLoggedIn?
 const [listing, setListing] = useState();
 const [title, setTitle] = useState('');
 const [rate, setRate] = useState();
@@ -49,30 +50,55 @@ const [failMessage, setFailMessage] = useState('');
 const [listingLoaded, setListingLoaded] = useState(false);
 const [amenitiesLoaded, setAmenitiesLoaded] = useState(false);
 const [modalOpen, setModalOpen] = useState(false);
+const [files, setFiles] = useState([]);
 const navigate = useNavigate();
 
-const getListing = () => {
+const reRoute = () => {
+    let now = String(dayjs());
+    document.cookie = `id=;expires=${now}UTC;path=/`;
+    //this should overwrite any cookie so that it expires.
+    navigate("/user/login");
+}
 
-    fetch(`${api}/bnb/listing${id}`)
+const getUser = (id) => {
+
+    fetch(`${api}/bnb/user/${id}`)
     .then((response) => response.json())
     .then((data) => {
-  
-        setListing(data.listing);
-        setTitle(data.listing.title);
-        setRate(data.listing.rate);
-        setLocation(data.listing.location);
-        setDescription(data.listing.description);
-        setListingAmenities(data.listing.amenities);
-        console.log(data);
-
-        if(user.id != data.listing.hostId){
-            navigate("/listings"); //I think this is causing my error. How to fix?
-        }
+        setUser(data.user);
     })
     .then(() => {
-        setListingLoaded(true);
+        setUserLoaded(true);
     });
 }
+
+const verifyLogin = () => {
+
+    if(!user){
+        //if user is null, parse the cookie. If there's no cookie, id will be NaN. So, either get user by Id if Id has value, or reroute to login.
+        var elements = document.cookie.split('=');
+        var id = Number(elements[1]);
+
+        if(!isNaN(id)){
+            getUser(id);
+        }
+        else{
+            reRoute();
+        }
+    }
+    else{
+        if(dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
+            reRoute();
+        }
+        else{ 
+            setUserLoaded(true); 
+        }
+    } 
+}
+useEffect(() => {
+    verifyLogin();
+}, []);
+
 const getAmenities = () => {
 
     fetch(`${api}/bnb/amenities`)
@@ -85,20 +111,35 @@ const getAmenities = () => {
         setAmenitiesLoaded(true);
     });
 }
-
-if(!listingLoaded){
-    getListing();
-}
-if(!amenitiesLoaded){
+useEffect(() => {
     getAmenities();
-}
-const reRoute = () => {
-    navigate("/user/login");
-}
-if(user == null || dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
-    reRoute();
-}
+}, []);
 
+const getListing = () => {
+
+    fetch(`${api}/bnb/listing/${id}`)
+    .then((response) => response.json())
+    .then((data) => {
+  
+        setListing(data.listing);
+        setTitle(data.listing.title);
+        setRate(data.listing.rate);
+        setLocation(data.listing.location);
+        setDescription(data.listing.description);
+        setListingAmenities(data.listing.amenities);
+        console.log(data);
+
+        //if(user.id != data.listing.hostId){
+        //    navigate("/listings"); //This is so one user can't edit the listing of another. Flawed: needs fixed.
+        //}
+    })
+    .then(() => {
+        setListingLoaded(true);
+    });
+}
+useEffect(() => {
+    getListing();
+}, []);
 
 const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -177,10 +218,9 @@ const handleListingChange = () => {
     }
     else {
 
-        //*get hostID thru context or pass down from login? 0 is OK for now but need to change
         var APIRequest = {
             Id: listing.id,
-            HostId: user.id,  //can get from listing or from context/user
+            HostId: user.id,  
             Title: title,
             Rate: Number(rate),
             Location: location,
@@ -204,26 +244,40 @@ const handleListingChange = () => {
         }   
 }
 const cancelEditListing = () => {
-    //*will navigate back to MyStuff
+    navigate("/mystuff");
+}
+
+const fileSelectedHandler = (e) => {
+    setFiles([...files, ...e.target.files]);
 }
     return(
 
         <div>
-            {listingLoaded && amenitiesLoaded &&
+            {listingLoaded && amenitiesLoaded && userLoaded &&
             <div>
                 <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', margin:2, fontSize:50}}>Edit Listing...</Typography>
                 {/*here go the pics*/}
                 <Divider sx={{backgroundColor:'peachpuff'}}/>
+
                 <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                    <Grid xs={2}>
+                    <form>
+                      <div><Typography variant="h6" sx={{mb:1}}>Upload Images</Typography></div>
+                      <input type="file" multiple onChange={fileSelectedHandler} />
+                    </form>
+                </Grid>
+
+                <Divider sx={{backgroundColor:'peachpuff'}}/>
+
+                <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+                    <Grid item xs={2}>
                         <Typography sx={{mt:2}} variant='h6'>Title: {title}</Typography>
                         <TextField sx={{mb:2}} placeholder='New Title' onChange={handleTitleChange}/>
                     </Grid>
-                    <Grid xs={2}>
+                    <Grid item xs={2}>
                         <Typography sx={{mt:2}} variant='h6'>Nightly Rate: ${rate}</Typography>
                         <TextField sx={{mb:2}} placeholder='New Rate' onChange={handleRateChange}/>
                     </Grid>
-                    <Grid xs={2}>
+                    <Grid item xs={2}>
                         <Typography sx={{mt:2}} variant='h6'>Location: {location}</Typography>
                         <TextField sx={{mb:2}} placeholder='New Location' onChange={handleLocationChange}/>
                     </Grid>
@@ -232,7 +286,7 @@ const cancelEditListing = () => {
                 <Divider sx={{backgroundColor:'peachpuff'}}/>
     
                 <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                    <Grid xs={6}>
+                    <Grid item xs={6}>
                         <Typography sx={{mt:2}} variant='h6'>Description: </Typography>
                         <Typography variant='body1'>"{description}"</Typography>
                         <TextField fullWidth multiline rows={6} sx={{justifyContent: 'center', display: 'flex', mb:2}} placeholder='New Description...' onChange={handleDescriptionChange}/>
@@ -242,7 +296,7 @@ const cancelEditListing = () => {
                 <Divider sx={{backgroundColor:'peachpuff'}}/>
     
                 <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                    <Grid xs={2}>
+                    <Grid item xs={2}>
                         <Typography sx={{mt:2}} variant='h6'>Amenities</Typography>
                         <Box sx={{ maxWidth: 180 }}>
                             <FormControl fullWidth>
@@ -258,12 +312,12 @@ const cancelEditListing = () => {
                             </FormControl>
                          </Box>
                     </Grid>
-                    <Grid xs={2}>
+                    <Grid item xs={2}>
                         <Typography sx={{mt:2}} variant='h6'>Add Custom Amenity</Typography>
                         <TextField sx={{mb:2}} placeholder='Enter Amenity' onChange={handleCustomAmenityChange}/>
                         <Button sx={{color:'lightsalmon'}} onClick={addCustomAmenity}>Add</Button>
                     </Grid>
-                    <Grid xs={2}>
+                    <Grid item xs={2}>
                         <Typography sx={{mt:2}} variant='h6'>Your Amenities:</Typography>
                         <List sx={{
                             width: '100%',
@@ -282,22 +336,22 @@ const cancelEditListing = () => {
                 <Divider sx={{backgroundColor:'peachpuff'}}/>
     
                 <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                    <Grid xs={5}/>
-                    <Grid xs={1}>
+                    <Grid item xs={5}/>
+                    <Grid item xs={1}>
                         <Button variant="contained" sx={{":hover": {
                         bgcolor: "gray"}, backgroundColor:'lightgray', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={cancelEditListing}>Cancel</Button>
                     </Grid>
-                    <Grid xs={1}>
+                    <Grid item xs={1}>
                         <Button variant="contained" sx={{":hover": {
                         bgcolor: "peachpuff"}, backgroundColor:'lightsalmon', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={handleListingChange}>Save Changes</Button>
                     </Grid>
-                    <Grid xs={5}>
+                    <Grid item xs={5}>
                         {showFailMessage()} 
                     </Grid>
 
                     <Modal
                       open={modalOpen}
-                      onClose={() => setModalOpen(false)}
+                      onClose={() => navigate(`/listings/${listing.id}`)}
                     >
                         <Box sx={style}>
                             <Typography variant="h6">Changes saved!</Typography>

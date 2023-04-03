@@ -14,18 +14,25 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from "../../Contexts/UserContext/UserContext";
 import dayjs from "dayjs";
-import MyStuff from '../MyStuff/MyStuff';
 
 export default function Login(){
 
 const api = `https://localhost:44305`;
 
-const {user, setUser} = useContext(UserContext);
+const {user, setUser, isLoggedIn, setIsLoggedIn} = useContext(UserContext);
 const [username, setUsername] = useState('');
 const [password, setPassword] = useState('');
 const [errorMessage, setErrorMessage] = useState('');
 const [showPassword, setShowPassword] = useState(false);
 const navigate = useNavigate();
+
+//if(isLoggedIn){
+//    navigate("/mystuff");
+//}
+//The logic here is that if the user manually navigates to login page while logged in, they are re-directed.
+//However, with impersistent test data, they are redirected to a page that can't find their data, 
+//since the App Bar reads the locally stored cookie and sets isLoggedIn to true, so error.
+//with persistent database data, try bringing this method back and testing it out.
 
 const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -73,14 +80,13 @@ const attemptLogin = () => {
                     listings: data.user.listings,
                     favorites: data.user.favorites,
                     stays: data.user.stays,
-                    isLoggedIn: true,
                     logTime: dayjs()
                   };
       
                 setUser(user);
+                setIsLoggedIn(true);
 
                 let expireTime = String(dayjs().add(6,'hour'));
-                //let now = String(dayjs());
 
                 document.cookie = `id=${data.user.id};expires=${expireTime}UTC;path=/`;
 

@@ -36,7 +36,6 @@ namespace BnbProject.Logic
             }
             return response;
         }
-
         public WorkflowResponse AddListing(ListingTransfer transfer)
         {
             WorkflowResponse response = new WorkflowResponse();
@@ -125,7 +124,6 @@ namespace BnbProject.Logic
             }
             return response;
         }
-
         public WorkflowResponse GetListingById(int id)
         {
             WorkflowResponse response = new WorkflowResponse();
@@ -144,7 +142,6 @@ namespace BnbProject.Logic
             return response;
 
         }
-
         public WorkflowResponse GetUserById(int id)
         {
             WorkflowResponse response = new WorkflowResponse();
@@ -162,7 +159,6 @@ namespace BnbProject.Logic
             }
             return response;
         }
-
         public WorkflowResponse AddStay(StayTransfer transfer)
         {
             WorkflowResponse response = new WorkflowResponse();
@@ -208,7 +204,6 @@ namespace BnbProject.Logic
             }
             return response;
         }
-
         public WorkflowResponse AddReview(Review review)
         {
             WorkflowResponse response = new WorkflowResponse();
@@ -227,7 +222,6 @@ namespace BnbProject.Logic
             return response;
 
         }
-
         public WorkflowResponse CreateAccount(CreateAccountRequest request)
         {
             WorkflowResponse response = new WorkflowResponse();
@@ -284,7 +278,6 @@ namespace BnbProject.Logic
 
             return response;
         }
-
         public WorkflowResponse Authenticate(AuthenticationRequest request)
         {
             WorkflowResponse response = new WorkflowResponse();
@@ -308,7 +301,6 @@ namespace BnbProject.Logic
                 return response;
             }
         }
-
         public WorkflowResponse AddFavorite(UserListing ul)
         {
             WorkflowResponse response = new WorkflowResponse();

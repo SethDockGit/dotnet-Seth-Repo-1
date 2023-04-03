@@ -16,6 +16,8 @@ import dayjs from "dayjs";
 import { UserContext } from "../../Contexts/UserContext/UserContext";
 import { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
+import ImageUpload from "../ImageUpload/ImageUpload";
 
 export default function CreateListing(){
 
@@ -33,8 +35,8 @@ const style = {
     p: 4,
   };
 
-
 const {user, setUser} = useContext(UserContext);
+const [userLoaded, setUserLoaded] = useState(false); 
 const [title, setTitle] = useState('');
 const [rate, setRate] = useState();
 const [location, setLocation] = useState('');
@@ -47,15 +49,55 @@ const [failMessage, setFailMessage] = useState('');
 const [failCreateListing, setFailCreateListing] = useState(false);
 const [listing, setListing] = useState();
 const [modalOpen, setModalOpen] = useState(false);
+const [files, setFiles] = useState([]);
 const navigate = useNavigate();
 
 
 const reRoute = () => {
+    let now = String(dayjs());
+    document.cookie = `id=;expires=${now}UTC;path=/`;
+    //this should overwrite any cookie so that it expires.
     navigate("/user/login");
 }
-if(user == null || dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
-    reRoute();
+
+const getUser = (id) => {
+
+    fetch(`${api}/bnb/user/${id}`)
+    .then((response) => response.json())
+    .then((data) => {
+        setUser(data.user);
+    })
+    .then(() => {
+        setUserLoaded(true);
+    });
 }
+
+const verifyLogin = () => {
+
+    if(!user){
+        //if user is null, parse the cookie. If there's no cookie, id will be NaN. So, either get user by Id if Id has value, or reroute to login.
+        var elements = document.cookie.split('=');
+        var id = Number(elements[1]);
+
+        if(!isNaN(id)){
+            getUser(id);
+        }
+        else{
+            reRoute();
+        }
+    }
+    else{
+        if(dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
+            reRoute();
+        }
+        else{ 
+            setUserLoaded(true); 
+        }
+    } 
+}
+useEffect(() => {
+    verifyLogin();
+}, []);
 
 const getAmenities = () => {
 
@@ -69,13 +111,10 @@ const getAmenities = () => {
         setAmenitiesLoaded(true);
     });
 }
+useEffect(() => {
+    getAmenities();
+}, []);
 
-const checkForData = () => {
-
-    !amenitiesLoaded && getAmenities();
-}
-
-checkForData();
 
 const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -149,8 +188,9 @@ const handleListingChange = () => {
             Location: location,
             Description: description,
             Amenities: listingAmenities,
+            Files: files 
         };
-
+        
         fetch(`${api}/bnb/addlisting`, {
             method: 'POST',
             body: JSON.stringify(APIRequest),
@@ -180,14 +220,31 @@ const showFailMessage = () => {
         </div>
     )
 }
+const cancelCreateListing = () => {
+    navigate("/mystuff");
+}
+const fileSelectedHandler = (e) => {
+    setFiles([...files, ...e.target.files]);
+}
+
     return(
 
         <div>
             {amenitiesLoaded && 
             <div>
             <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', margin:2, fontSize:50}}>New Listing...</Typography>
-            {/*here go the pics*/}
+
             <Divider sx={{backgroundColor:'peachpuff'}}/>
+
+            <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+                <form>
+                  <div><Typography variant="h6" sx={{mb:1}}>Upload Images</Typography></div>
+                  <input type="file" multiple onChange={fileSelectedHandler} />
+                </form>
+            </Grid>
+
+            <Divider sx={{backgroundColor:'peachpuff'}}/>
+
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
                 <Grid item xs={2}>
                     <Typography sx={{mt:2}} variant='h6'>Listing Title</Typography>
@@ -257,32 +314,33 @@ const showFailMessage = () => {
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
                 <Grid item xs={5}/>
-                <Grid item xs={2}>
+                <Grid item xs={.75}>
                     <Button variant="contained" sx={{":hover": {
-                    bgcolor: "peachpuff"}, backgroundColor:'lightsalmon', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={handleListingChange}>Save</Button>
+                    bgcolor: "gray"}, backgroundColor:'lightgray', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={cancelCreateListing}>Cancel</Button>
+                </Grid>
+                <Grid item xs={.75}>
+                    <Button variant="contained" sx={{":hover": {
+                    bgcolor: "peachpuff"}, backgroundColor:'lightsalmon', m:'auto', justifyContent: 'center', display: 'flex'}} onClick={handleListingChange}>Save</Button>
                 </Grid>
                 <Grid item xs={5}>
                     {showFailMessage()} 
                 </Grid>
+                {modalOpen &&
+                    <Modal
+                      open={modalOpen}
+                      onClose={() => setModalOpen(false)}
+                    >
+                        <Box sx={style}>
+                            <Typography variant="h6">Listing saved!</Typography>
+                            <Link style={{ textDecoration: 'none' }} to={`/listings/${listing.id}`}>
+                                <Button>Go to your listing</Button>
+                            </Link>
+                        </Box>
+                    </Modal>
+                }
             </Grid>
-            {modalOpen &&
-            
-                <Modal
-                  open={modalOpen}
-                  onClose={() => setModalOpen(false)}
-                >
-                    <Box sx={style}>
-                        <Typography variant="h6">Listing saved!</Typography>
-                        <Link style={{ textDecoration: 'none' }} to={`/listings/${listing.id}`}>
-                            <Button>Go to your listing</Button>
-                        </Link>
-                    </Box>
-                </Modal>
-            }
-
             </div>
-            }
-            
+            } 
         </div>
 
     )

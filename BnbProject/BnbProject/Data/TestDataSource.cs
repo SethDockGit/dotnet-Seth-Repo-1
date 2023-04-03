@@ -10,11 +10,11 @@ namespace BnbProject.Data
 {
     public class TestDataSource : IDataSource
     {
-        private List<string> TestAmenities = new List<string>()
+        public List<string> TestAmenities = new List<string>()
         {
             "Hot Tub", "Fireplace", "Pool Table", "Wifi", "Dishwasher", "Gas range", "Oven", "Lake access", "Watercraft", "Air conditioning", "Heat"
         };
-        private List<UserAccount> TestUsers = new List<UserAccount>()
+        public List<UserAccount> TestUsers = new List<UserAccount>()
         {
             new UserAccount()
             {
@@ -38,7 +38,7 @@ namespace BnbProject.Data
             },
         };
 
-        private List<Listing> TestListings = new List<Listing>()
+        public List<Listing> TestListings = new List<Listing>()
         {
             new Listing()
             {
@@ -63,7 +63,7 @@ namespace BnbProject.Data
                 Stays = new List<Stay>()
             }
         };
-        private List<Stay> TestStays = new List<Stay>()
+        public List<Stay> TestStays = new List<Stay>()
         {
             new Stay()
             {
@@ -86,7 +86,7 @@ namespace BnbProject.Data
                 EndDate = new DateTime(2023, 3, 30)
             }
         };
-        private List<Review> TestReviews = new List<Review>()
+        public List<Review> TestReviews = new List<Review>()
         {
             new Review()
             {
@@ -107,7 +107,7 @@ namespace BnbProject.Data
         {
             BuildRelationships();
         }
-        private void BuildRelationships()
+        public void BuildRelationships()
         {
             foreach (Listing l in TestListings)
             {
@@ -117,12 +117,12 @@ namespace BnbProject.Data
             //seth owns listing 1, and stayed at listing 2 during stay 1
             TestStays[0].HostId = TestUsers[1].Id;
             TestStays[0].GuestId = TestUsers[0].Id;
-            //TestStays[0].Review = TestReviews[0];   //comment out to see "leave review" option on MyStuff, uncomment to see "show review" on MyStuff
+            TestStays[0].Review = TestReviews[0];   //comment out to see "leave review" option on MyStuff, uncomment to see "show review" on MyStuff
             TestListings[1].Stays.Add(TestStays[0]);
             TestUsers[0].Stays.Add(TestStays[0]);
             TestUsers[0].Listings.Add(TestListings[0]);
             TestUsers[0].Favorites.Add(TestListings[1].Id);
-            //TestStays[0].Listing = TestListings[1];
+
 
 
             //Bob owns listing 2, and stayed at listing 1 during stay 2
@@ -133,7 +133,7 @@ namespace BnbProject.Data
             TestUsers[1].Listings.Add(TestListings[1]);
             TestUsers[1].Stays.Add(TestStays[1]);
             TestUsers[1].Favorites.Add(TestListings[0].Id);
-            //TestStays[1].Listing = TestListings[0];
+
         }
         public List<Listing> GetListings()
         {

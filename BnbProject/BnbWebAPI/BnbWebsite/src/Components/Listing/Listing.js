@@ -17,6 +17,7 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { UserContext } from "../../Contexts/UserContext/UserContext";
 import { useContext } from "react";
+import { useEffect } from "react";
 
 
 export default function Listing(){
@@ -37,7 +38,7 @@ const style = {
 
 const {id} = useParams();
 const [listingLoaded, setListingLoaded] = useState(false);
-const {user, setUser} = useContext(UserContext);
+const {user, setUser, isLoggedIn, setIsLoggedIn} = useContext(UserContext);
 const [listing, setListing] = useState();
 const [drawerOpen, setDrawerOpen] = useState(false);
 const [checkin, setCheckin] = useState('');
@@ -47,13 +48,53 @@ const [failBookingMessage, setFailBookingMessage] = useState('');
 const [modalOpen, setModalOpen] = useState(false);
 const [requiresLogin, setRequiresLogin] = useState(false);
 const [loginErrorMessage, setLoginErrorMessage] = useState('');
-const [isLoggedIn, setIsLoggedIn] = useState(false);
-const [loginChecked, setLoginChecked] = useState(false);
 const [addToFavorites, setAddtoFavorites] = useState(false);
+
+//whereas some pages rely on user existing to render at all, this page relies on isloggedin to render conditionally.
+//That's why the verify login method is different. No re-routing occurs, just setting of isloggedin.
+
+const getUser = (id) => {
+
+    fetch(`${api}/bnb/user/${id}`)
+    .then((response) => response.json())
+    .then((data) => {
+        setUser(data.user);
+    })
+    .then(() => {
+        setIsLoggedIn(true);
+    });
+}
+
+const verifyLogin = () => {
+
+    if(!user){
+        //if user is null, parse the cookie. If there's no cookie, id will be NaN. So, either get user by Id if Id has value, or reroute to login.
+        var elements = document.cookie.split('=');
+        var id = Number(elements[1]);
+
+        if(!isNaN(id)){
+            getUser(id);
+        }
+        else{
+            setIsLoggedIn(false);
+        }
+    }
+    else{
+        if(dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
+            setIsLoggedIn(false);
+        }
+        else{ 
+            setIsLoggedIn(true);
+        }
+    } 
+}
+useEffect(() => {
+    verifyLogin();
+}, []);
 
 const getListing = () => {
 
-    fetch(`${api}/bnb/listing${id}`)
+    fetch(`${api}/bnb/listing/${id}`)
     .then((response) => response.json())
     .then((data) => {
   
@@ -63,24 +104,10 @@ const getListing = () => {
     .then(() => {
         setListingLoaded(true);
     });
-  }
-
-if(!listingLoaded){
+}
+  useEffect(() => {
     getListing();
-}
-
-const checkLogin = () => {
-
-    if(!loginChecked){
-
-        if(user != null && dayjs().isBefore(dayjs(user.logTime).add(6, 'hour'))){
-            setIsLoggedIn(true);
-        }
-        setLoginChecked(true);
-    }
-}
-checkLogin();
-
+}, []);
 
 
 const showListingAmenities = () => {
@@ -279,14 +306,13 @@ const handleClickFavorite = () => {
                     setAddtoFavorites(true);
                 }
             });
-
     }
 }
 const displayFavoriteIcon = () => {
 
     var isFavorite = false;
 
-    if(isLoggedIn){
+    if(isLoggedIn && !!user){
 
         for(let i = 0; i < user.favorites.length; i++){
 
@@ -386,7 +412,6 @@ const displayFavoriteIcon = () => {
             </Modal>
 
             </div>}
-
         </div>
     )
 }

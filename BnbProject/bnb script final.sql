@@ -134,7 +134,7 @@ INSERT INTO Stay
 VALUES
 (1, 2, 1, 1, GETDATE(), GETDATE()),
 (2, 1, 2, 2, GETDATE(), GETDATE()),
-(3, 1, 1, null, GETDATE(), GETDATE()); ***
+(3, 1, 1, null, GETDATE(), GETDATE()); 
 
 
 --(stay 3 where listing 1 is stayed at by guest 1 (seth, his own listing), no review yet

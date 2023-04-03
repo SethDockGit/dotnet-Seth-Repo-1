@@ -1,17 +1,19 @@
 import { Divider, TextField, Typography } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
-import ListingsCard from "../ListingsCard/ListingsCard";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import Rating from '@mui/material/Rating';
-import Drawer from "@mui/material/Drawer";
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { UserContext } from "../../Contexts/UserContext/UserContext";
 import { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
+import MyListings from "../Subcomponents/MyListings/MyListings";
+import UpcomingStays from "../Subcomponents/UpcomingStays/UpcomingStays";
+import PastStays from "../Subcomponents/PastStays/PastStays";
+import Favorites from "../Subcomponents/Favorites/Favorites";
 
 
 export default function MyStuff(){
@@ -31,42 +33,55 @@ const style = {
     p: 4,
   };
 
-
-
-const {user, setUser, isLoggedIn, setIsLoggedIn} = useContext(UserContext);
-//const [userLoaded, setUserLoaded] = useState(false);
+const {user, setUser} = useContext(UserContext);
+const [userLoaded, setUserLoaded] = useState(false);
 const [listings, setListings] = useState();
 const [listingsLoaded, setListingsLoaded] = useState(false);
 const [drawerOpen, setDrawerOpen] = useState(false);
 const [rating, setRating] = useState(5);
 const [reviewText, setReviewText] = useState('');
-//const [failSubmitReview, setFailSubmitReview] = useState(false); 
 const [failReviewMessage, setFailReviewMessage] = useState('');
 const [modalOpen, setModalOpen] = useState(false);
 const navigate = useNavigate();
 
 const reRoute = () => {
+    let now = String(dayjs());
+    document.cookie = `id=;expires=${now}UTC;path=/`;
+    //this should overwrite any cookie so that it expires.
     navigate("/user/login");
-    //delete cookies.
 }
+
+useEffect(() => {
+
+    fetch(`${api}/bnb/listings`)
+    .then((response) => response.json())
+    .then((data) => {
+    
+        setListings(data.listings);
+        console.log(data);
+    })
+    .then(() => {
+        setListingsLoaded(true);
+    });
+
+}, [])
 
 const getUser = (id) => {
 
-    fetch(`${api}/bnb/user${id}`)
+    fetch(`${api}/bnb/user/${id}`)
     .then((response) => response.json())
     .then((data) => {
         setUser(data.user);
-        setIsLoggedIn(true);
     })
     .then(() => {
-        //setUserLoaded(true);
+        setUserLoaded(true);
     });
 }
 
 const verifyLogin = () => {
 
-    if(user == null){
-
+    if(!user){
+        //if user is null, parse the cookie. If there's no cookie, id will be NaN. So, either get user by Id if Id has value, or reroute to login.
         var elements = document.cookie.split('=');
         var id = Number(elements[1]);
 
@@ -81,124 +96,16 @@ const verifyLogin = () => {
         if(dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
             reRoute();
         }
-    }
-    
+        else{ 
+            setUserLoaded(true); 
+        }
+    } 
 }
-verifyLogin();
+useEffect(() => {
+    verifyLogin();
+}, [])
 
 
-const getListings = () => {
-
-    fetch(`${api}/bnb/listings`)
-    .then((response) => response.json())
-    .then((data) => {
-  
-        setListings(data.listings);
-        console.log(data);
-    })
-    .then(() => {
-        setListingsLoaded(true);
-    });
-}
-
-
-const checkForData = () => {
-
-    //!userLoaded && getUser();
-    !listingsLoaded && getListings();
-}
-checkForData();
-
-
-
-const showMyListings = () => {
-
-    return user.listings.map(function(val, index) {
-
-        return(
-            <div key={index}>
-                <ListingsCard listing={val}/>
-                <Link  style={{ textDecoration: 'none' }} to={`/listings/edit/${val.id}`}>
-                    <Button variant="contained" sx={{":hover": {
-                    bgcolor: "peachpuff"}, justifyContent:'right', backgroundColor:"lightsalmon", ml:3}}>Edit</Button>
-                </Link>
-            </div>
-        )
-    });
-}
-const showFavorites = () => {
-
-    var favorites = user.favorites.map(function(val, index) {
-
-        return(
-            listings.find(l => l.id == val)
-        )
-    })
-
-    return favorites.map(function(val, index) {
-
-        return(
-            <div key={index}>
-                <ListingsCard listing={val}/>
-            </div>
-        )
-    });
-}
-const showUpcomingStays = () => {
-
-    var upcomingStays = user.stays.filter(s => dayjs(s.endDate).isAfter(dayjs()));
-
-    var stayListings = upcomingStays.map(function(val) {
-        return(
-            {
-                listing: listings.find(l => l.id == val.listingId),
-                startDate: val.startDate,
-                endDate: val.endDate
-            }
-        )
-    });
-
-    return stayListings.map(function(val, index){
-
-        return(
-
-            <div key={index}>
-                <Typography variant="h6">{dayjs(val.startDate)} - {dayjs(val.endDate)}</Typography>
-                <ListingsCard listing={val.listing}/>
-            </div>
-        )
-    });
-}
-const showPastStays = () => {
-
-    //add to div in return -- <Typography variant="h6">{dayjs(val.startDate)} - {dayjs(val.endDate)}</Typography>
-
-    var past = user.stays.filter(s => dayjs(s.endDate).isBefore(dayjs()));
-
-    var stayListings = past.map(function(val) {
-        return(
-            {
-                listing: listings.find(l => l.id == val.listingId),
-                startDate: val.startDate,
-                endDate: val.endDate
-            }
-        )
-    });
-
-    return stayListings.map(function(val, index){
-
-        return(
-            <div key={index}>
-                
-                <ListingsCard listing={val.listing}/>
-                {showReview(past[index])}
-                <Drawer open={drawerOpen} anchor={"left"} onClose={() => setDrawerOpen(false)}>
-                    {showReviewDrawer(val.listing, past[index])} {/*double-check that this is solid logic. If not there must be some way to save the stay id*/}
-                </Drawer>
-            </div>
-        )
-    });
-}
 const showReview = (stay) => {
 
     var reviewExists = false;
@@ -306,8 +213,7 @@ const cancelReview = () => {
 
     return(
         <div>
-            {//userLoaded && 
-            listingsLoaded && 
+            {userLoaded && listingsLoaded && 
                 <div>
                     <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', m:3}}>Welcome {user.username}</Typography>
 
@@ -322,28 +228,38 @@ const cancelReview = () => {
                     </Grid>
 
                     <Grid container sx={{mb:2}}>
-                    {showMyListings()}
+                        <MyListings listings={user.listings}/>
                     </Grid>
                     {/*show list of booked stays as well?*/}
                     <Divider sx={{backgroundColor:'peachpuff'}}/>
 
                     <Typography variant="h5" sx={{ml:3, mt:2}}>Favorites</Typography>
                     <Grid container sx={{mb:2}}>
-                    {showFavorites()}
+                        <Favorites favorites={user.favorites} listings={listings}/>
                     </Grid>
 
                     <Divider sx={{backgroundColor:'peachpuff'}}/>
 
                     <Typography variant="h5" sx={{ml:3, mt:2}}>Coming Up</Typography>
                     <Grid container sx={{mb:2}}>
-                    {showUpcomingStays()}
+                        <UpcomingStays stays={user.stays} listings={listings}/>
                     </Grid>
 
                     <Divider sx={{backgroundColor:'peachpuff'}}/>
 
                     <Typography variant="h5" sx={{ml:3, mt:2}}>Past Stays</Typography>
-                    <Grid container sx={{mb:2}}>
-                    {showPastStays()}
+                    <Grid container>
+                        <PastStays
+                        stays={user.stays}
+                        listings={listings}
+                        showReview={showReview}
+                        drawerOpen={drawerOpen}
+                        setDrawerOpen={setDrawerOpen}
+                        showReviewDrawer={showReviewDrawer}
+                        handleChangeReviewText={handleChangeReviewText}
+                        submitReview={submitReview}
+                        cancelReview={cancelReview}
+                        />
                     </Grid>
                     <Modal
                       open={modalOpen}
@@ -354,7 +270,6 @@ const cancelReview = () => {
                         </Box>
                     </Modal>
                 </div>
-
             }
         </div>
     )

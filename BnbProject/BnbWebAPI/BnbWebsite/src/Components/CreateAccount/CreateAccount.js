@@ -16,6 +16,8 @@ import { Link } from "react-router-dom";
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import dayjs from "dayjs";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function CreateAccount(){
 
@@ -33,7 +35,7 @@ const style = {
   p: 4,
 };
 
-const {user, setUser} = useContext(UserContext);
+const {user, setUser, isLoggedIn, setIsLoggedIn} = useContext(UserContext);
 const [username, setUsername] = useState('');
 const [passwordOne, setPasswordOne] = useState('');
 const [passwordTwo, setPasswordTwo] = useState('');
@@ -44,6 +46,15 @@ const [errorMessage, setErrorMessage] = useState('');
 const [valid, setValid] = useState(false);
 const [modalOpen, setModalOpen] = useState(false);
 const [fail, setFail] = useState(false);
+const navigate = useNavigate();
+
+//if(isLoggedIn){
+//    navigate("/mystuff");
+//}
+//The logic here is that if the user manually navigates to login page while logged in, they are re-directed.
+//However, with impersistent test data, they are redirected to a page that can't find their data, 
+//since the App Bar reads the locally stored cookie and sets isLoggedIn to true, so error.
+//with persistent database data, try bringing this method back and testing it out.
 
 const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -107,10 +118,6 @@ const attemptCreateUser = () => {
       .then((data) => {
           console.log(data);
 
-          //deal with username exists (.then?)
-          //if success, load user into context
-          //setmodal open. navigate to mystuff
-
           if(!data.success){
             setErrorMessage(data.message);
           }
@@ -122,13 +129,18 @@ const attemptCreateUser = () => {
               listings: data.user.listings,
               favorites: data.user.favorites,
               stays: data.user.stays,
-              isLoggedIn: true,
               logTime: dayjs()
             };
 
             setUser(user);
+            setIsLoggedIn(true);
+
+            let expireTime = String(dayjs().add(6,'hour'));
+
+            document.cookie = `id=${data.user.id};expires=${expireTime}UTC;path=/`;
 
             setModalOpen(true);
+
           }
       });
   }
@@ -209,7 +221,7 @@ const attemptCreateUser = () => {
                 <Grid item xs={5}/>
                 <Modal
                   open={modalOpen}
-                  onClose={() => setModalOpen(false)}
+                  onClose={() => navigate("/mystuff")}
                   >
                   <Box sx={style}>
                       <Typography variant="h5">Success!</Typography>

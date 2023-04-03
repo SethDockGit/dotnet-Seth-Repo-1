@@ -12,17 +12,16 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
 
 
 export default function MyAppBar(){
 
 const {user, setUser, isLoggedIn, setIsLoggedIn} = useContext(UserContext);
  
-const [loginChecked, setLoginChecked] = useState(false);
 const navigate = useNavigate();
-
-
 const [anchorEl, setAnchorEl] = useState(null);
+
 const open = Boolean(anchorEl);
 const handleClick = (event) => {
   setAnchorEl(event.currentTarget);
@@ -31,23 +30,58 @@ const handleClose = () => {
   setAnchorEl(null);
 };
 
+const reRoute = () => {
+  let now = String(dayjs());
+  document.cookie = `id=;expires=${now}UTC;path=/`;
+  //this should overwrite any cookie so that it expires.
+  navigate("/user/login");
+}
+
+const verifyLogin = () => {
+
+  if(!user){
+      //if user is null, parse the cookie. If there's no cookie, id will be NaN. So, either get user by Id if Id has value, or reroute to login.
+      var elements = document.cookie.split('=');
+      var id = Number(elements[1]);
+
+      if(!isNaN(id)){
+          setIsLoggedIn(true);
+      }
+      else{
+          reRoute();
+      }
+  }
+  else{
+      if(dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
+        setIsLoggedIn(false);
+        reRoute();
+      }
+  } 
+}
+useEffect(() => {
+  verifyLogin();
+}, [])
 
 const handleClickLogout = () => {
   setUser(null);
-  //delete cookies.
+  setIsLoggedIn(false);
+  let now = String(dayjs());
+  document.cookie = `id=;expires=${now}UTC;path=/`;
+  //this should overwrite any cookie so that it expires.
+
   navigate("/user/login");
 }
 const displayButton = () => {
 
-  //var isLoggedIn = false;
-//
-  //if(user != null && dayjs().isBefore(dayjs(user.logTime).add(6, 'hour'))){
-  //  isLoggedIn = true;
-  //}
+  if(user != null && dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
+    setIsLoggedIn(false);
+  }
 
   return(
+
+    //first, only renders if isLoggedIn has value (default is null), then renders conditionally dependent on value of isLoggedIn
     <div>
-      {isLoggedIn ?
+      {!!isLoggedIn && isLoggedIn ?
       <div>
         <IconButton
           onClick={handleClick}
@@ -55,7 +89,6 @@ const displayButton = () => {
           <AccountCircleIcon fontSize="large"/>
         </IconButton>
         <Menu
-          id="basic-menu"
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
@@ -101,5 +134,4 @@ const displayButton = () => {
             </AppBar>
         </div>
     )
-
 }
