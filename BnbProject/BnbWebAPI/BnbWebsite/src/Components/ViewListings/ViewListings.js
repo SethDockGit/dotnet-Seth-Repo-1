@@ -1,6 +1,6 @@
 import { Divider, Typography } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import dayjs from "dayjs";
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -19,8 +19,6 @@ export default function ViewListings(){
 
 const api = `https://localhost:44305`;
 
-const [listingsLoaded, setListingsLoaded] = useState(false);
-const [amenitiesLoaded, setAmenitiesLoaded] = useState(false);
 const [listings, setListings] = useState();
 const [unfiltered, setUnfiltered] = useState([]);
 const [checkin, setCheckin] = useState('');
@@ -35,22 +33,20 @@ const [rateMessage, setRateMessage] = useState('');
 const [dateMessage, setDateMessage] = useState('');
 
 
-const getListings = () => {
+useEffect(() => {
 
     fetch(`${api}/bnb/listings`)
     .then((response) => response.json())
     .then((data) => {
-  
+    
         setListings(data.listings);
         setUnfiltered(data.listings);
         console.log(data);
     })
-    .then(() => {
-        setListingsLoaded(true);
-    });
-}
+}, []);
 
-const getAmenities = () => {
+
+useEffect(() => {
 
     fetch(`${api}/bnb/amenities`)
     .then((response) => response.json())
@@ -58,18 +54,8 @@ const getAmenities = () => {
         console.log(data);
         setAmenities(data.amenities);
     })
-    .then(() =>{
-        setAmenitiesLoaded(true);
-    });   //Q: why the extra then?
-}
+}, []);
 
-const checkForData = () => {
-
-    !listingsLoaded && getListings();
-    !amenitiesLoaded && getAmenities();
-}
-
-checkForData();
 
 const showListings = () => {
 
@@ -144,6 +130,11 @@ const applyFilters = () => {
         var filtered = unfiltered.filter(l => l.rate < maxRate && l.rate > minRate);
         //If there are no failures, it starts with the list of unfiltered listings, and filters first for rates.
 
+
+        //wait a minute. Shouldn't every reference to "listings" in these loops use "filtered" instead? Or does changing
+        //an array while looping through it cause some sort of problem?
+        //I guess it still works the same, but that way you'd be filtering from a smaller array, thus more efficient.
+        
         for(let i=0; i < listings.length; i++){
 
             for(let j=0; j < selectedAmenities.length, j++;){
@@ -217,10 +208,12 @@ const showRateMessage = () => {
     )
 }
 
+//so what you can do here, is double bang listings and amenities, skip the bool, and use effect
+//on the API calls and that shooouuulldd do it.
     return(
         
         <div>
-            {listingsLoaded && amenitiesLoaded && 
+            {(!!listings && !!amenities) && 
             <div>
             <Grid container sx={{mt:5, ml:4, mb:2, alignItems: 'center'}}>
                 <Grid item xs={1.5}>

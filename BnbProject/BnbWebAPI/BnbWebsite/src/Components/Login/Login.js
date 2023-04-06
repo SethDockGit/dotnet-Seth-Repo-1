@@ -74,7 +74,7 @@ const attemptLogin = () => {
             }
             else{
 
-                var user = {
+                var userObject = {
                     id: data.user.id,
                     username: data.user.username,
                     listings: data.user.listings,
@@ -82,8 +82,8 @@ const attemptLogin = () => {
                     stays: data.user.stays,
                     logTime: dayjs()
                   };
-                  debugger;
-                setUser(user);
+
+                setUser(userObject);
                 setIsLoggedIn(true);
 
                 let expireTime = String(dayjs().add(6,'hour'));

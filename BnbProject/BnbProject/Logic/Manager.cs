@@ -62,6 +62,7 @@ namespace BnbProject.Logic
             listing.Description = transfer.Description;
             listing.Amenities = transfer.Amenities;
             listing.Stays = new List<Stay>();
+            listing.Files = transfer.Files;
 
             try
             {
@@ -167,7 +168,7 @@ namespace BnbProject.Logic
 
             int newId = 0;
 
-            if (listing.Stays.Count == 0)
+            if (listing.Stays.Count == 0) //this is wrong, you will need to get all stays. Unless you wanna do that auto-PK thing
             {
                 newId = 1;
             }
@@ -282,28 +283,39 @@ namespace BnbProject.Logic
         {
             WorkflowResponse response = new WorkflowResponse();
 
-            //wrap in Try/Catch!!
-            UserAccount user = IDataSource.GetUserByUsername(request.Username);
+            try
+            {
+                UserAccount user = IDataSource.GetUserByUsername(request.Username);
 
-            if (user == null)
+                if (user == null)
+                {
+                    response.Success = false;
+                    response.Message = $"User {request.Username} not found.";
+                }
+                else
+                {  
+                    
+                    bool verifyPass = BC.Verify(request.Password, user.Password);
+
+                    if (verifyPass)
+                    {
+                        response.Success = true;
+                        response.Message = $"Success. User {request.Username} verified.";
+                        response.User = user;
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.Message = $"Error: Incorrect Password";
+                    }
+                }
+            }
+            catch (Exception e)
             {
                 response.Success = false;
-                response.Message = $"User {request.Username} not found.";
+                response.Message = e.Message;
             }
-            else
-            {  
-                //fix invalid, need hashed data!!
-                //bool verifyPass = BC.Verify(request.Password, user.Password);
 
-                //if (verifyPass)
-                //{
-                    response.Success = true;
-                    response.Message = $"Success. User {request.Username} verified.";
-                    response.User = user;
-                //}
-                //response.Success = false;
-                //response.Message = $"Error: Incorrect Password";
-            }
 
             return response;
         }
@@ -325,5 +337,6 @@ namespace BnbProject.Logic
 
             return response;
         }
+
     }
 }

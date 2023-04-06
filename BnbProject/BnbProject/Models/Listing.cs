@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace BnbProject.Models
 {
@@ -14,6 +15,6 @@ namespace BnbProject.Models
         public string Description { get; set; }
         public List<string> Amenities { get; set; }
         public List<Stay> Stays { get; set; }
-        public List<FileModel> Files { get; set; }
+        public List<IFormFile> Files { get; set; }
     }
 }

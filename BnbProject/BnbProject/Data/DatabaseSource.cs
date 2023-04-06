@@ -51,6 +51,7 @@ namespace BnbProject.Data
         }
         public void AddListing(Listing listing)
         {
+            var a = 1;
 
             using (SqlConnection conn = new SqlConnection())
             {
@@ -60,7 +61,10 @@ namespace BnbProject.Data
                 {
                     Connection = conn,
                     CommandText = "INSERT INTO Listing VALUES (@ListingId, @HostId, @Title, @Description, @Location, @Rate)"
+                    //"INSERT INTO ListingImage VALUES (@ListingId, @Picture)"
                 };
+
+                //need to add amenities here as well.
 
                 cmd.Parameters.AddWithValue("@ListingId", listing.Id);
                 cmd.Parameters.AddWithValue("@HostId", listing.HostId);
@@ -68,6 +72,8 @@ namespace BnbProject.Data
                 cmd.Parameters.AddWithValue("@Description", listing.Description);
                 cmd.Parameters.AddWithValue("@Location", listing.Location);
                 cmd.Parameters.AddWithValue("@Rate", listing.Rate);
+
+
 
                 conn.Open();
                 cmd.ExecuteNonQuery();
@@ -99,7 +105,7 @@ namespace BnbProject.Data
                     }
                 }
             }
-            var a = 1;
+
             return amenities;
         }
         public Listing GetListingById(int id)
@@ -115,13 +121,17 @@ namespace BnbProject.Data
                 SqlCommand cmd = new SqlCommand
                 {
                     Connection = conn,
-                    CommandText = $"SELECT * FROM Listing" +
-                    $"LEFT JOIN Stay on Stay.ListingId = Listing.ListingId" +
-                    $"LEFT JOIN Review on Review.ReviewId = Stay.StayId" +
-                    $"LEFT JOIN ListingAmenity on ListingAmenity.ListingId = Listing.ListingId" +
-                    $"LEFT JOIN Amenity on Amenity.AmenityId = ListingAmenity.AmenityId" +
-                    $"WHERE Listing.ListingId=@ListingId;"
-                    //should these all be left joins?
+                    CommandText = $"SELECT Listing.ListingId, Listing.HostId, Listing.Title," +
+                    $" Listing.Description, Listing.Location, Listing.Rate,\r\n" +
+                    $"Stay.StayId, Stay.GuestId, Stay.ReviewId, Stay.StartDate, " +
+                    $"Stay.EndDate, Review.Rating, Review.ReviewText, Review.Username,\r\n" +
+                    $"AmenityListing.AmenityId, Amenity.AmenityName FROM Listing" +
+                    "LEFT JOIN Stay on Stay.ListingId = Listing.ListingId" +
+                    "LEFT JOIN Review on Review.ReviewId = Stay.StayId" +
+                    "LEFT JOIN AmenityListing on AmenityListing.ListingId = Listing.ListingId" +
+                    "LEFT JOIN Amenity on Amenity.AmenityId = AmenityListing.AmenityId" +
+                    "WHERE Listing.ListingId=@ListingId;"
+                    
                 };
 
                 cmd.Parameters.AddWithValue("@ListingId", listing.Id);
@@ -131,6 +141,7 @@ namespace BnbProject.Data
                 {
                     while (dr.Read())
                     {
+
                         listing.Id = (int)dr["ListingId"];
                         listing.HostId = (int)dr["HostId"];
                         listing.Title = (string)dr["Title"];
@@ -142,8 +153,7 @@ namespace BnbProject.Data
                         {
                             Stay stay = new Stay();
 
-                            stay.Id = (int)dr["StayId"];
-                            stay.ListingId = (int)dr["ListingId"];
+                            //stay.Id = (int)dr["StayId"];
                             stay.GuestId = (int)dr["GuestId"];
                             stay.StartDate = (DateTime)dr["StartDate"];
                             stay.EndDate = (DateTime)dr["EndDate"];
@@ -266,8 +276,10 @@ namespace BnbProject.Data
         public UserAccount GetUserById(int id)
         {
 
-            //this method is superfluous and should be deleted
             UserAccount user = new UserAccount();
+            user.Listings = new List<Listing>();
+            user.Stays = new List<Stay>();
+            user.Favorites = new List<int>();
 
             using (SqlConnection conn = new SqlConnection())
             {
@@ -276,12 +288,14 @@ namespace BnbProject.Data
                 SqlCommand cmd = new SqlCommand
                 {
                     Connection = conn,
-                    CommandText = $"SELECT * FROM UserAccount" +
-                    $"LEFT JOIN Listing on Listing.HostId = UserAccount.UserId" +
-                    $"LEFT JOIN Stay on Stay.GuestId = UserAccount.UserId" +
-                    $"LEFT JOIN Review on Review.ReviewId = Stay.StayId" +
-                    $"LEFT JOIN UserListing on UserListing.UserId = UserAccount.UserId" +
-                    $"WHERE UserAccount.UserId=@UserId"
+                    CommandText = "SELECT UserAccount.Username, UserAccount.UserPassword, UserAccount.Email," +
+                    "Listing.ListingId, Listing.HostId, Listing.Title, Listing.Description, Listing.Location," +
+                    "Listing.Rate, Stay.StayId, Stay.GuestId, Stay.ReviewId, Stay.StartDate, Stay.EndDate," +
+                    "Review.Rating, Review.ReviewText, Review.Username FROM UserAccount " +
+                    "LEFT JOIN Listing on Listing.HostId = UserAccount.UserId " +
+                    "LEFT JOIN Stay on Stay.GuestId = UserAccount.UserId " +
+                    "LEFT JOIN Review on Review.ReviewId = Stay.StayId " +
+                    "WHERE UserAccount.UserId=@UserId;"
                 };
                 cmd.Parameters.AddWithValue("@UserId", id);
 
@@ -290,86 +304,62 @@ namespace BnbProject.Data
                 {
                     while (dr.Read())
                     {
-                        user.Id = (int)dr["UserId"];
+                        user.Id = id;
+                        user.Username = (string)dr["Username"];
+                        user.Password = (string)dr["UserPassword"];
                         user.Email = (string)dr["Email"];
-                        user.Password = (string)dr["Password"];
-                    }
-                }
 
-                user.Listings = new List<Listing>();
-
-                SqlCommand cmd2 = new SqlCommand
-                {
-                    Connection = conn,
-                    CommandText = $"SELECT * FROM Listing WHERE HostId=@HostId"
-                };
-                cmd.Parameters.AddWithValue("@HostId", id);
-
-                conn.Open();
-                using (SqlDataReader dr = cmd2.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        var listing = new Listing
+                        if (!user.Listings.Any(l => l.Id == (int)dr["ListingId"]) && !Convert.IsDBNull(dr["ListingId"]))
                         {
-                            Id = (int)dr["ListingId"],
-                            Title = (string)dr["Title"],
-                            Description = (string)dr["Description"],
-                            Location = (string)dr["Location"],
-                            Rate = (decimal)dr["Rate"]
-                        };
+                            var listing = new Listing
+                            {
+                                Id = (int)dr["ListingId"],
+                                HostId = (int)dr["HostId"],
+                                Title = (string)dr["Title"],
+                                Description = (string)dr["Description"],
+                                Location = (string)dr["Location"],
+                                Rate = (decimal)dr["Rate"]
+                            };
 
-                        user.Listings.Add(listing);
-                    }
-                }
+                            user.Listings.Add(listing);
 
-                user.Favorites = new List<int>();
-
-                SqlCommand cmd3 = new SqlCommand
-                {
-                    Connection = conn,
-                    CommandText = $"SELECT * FROM UserListing WHERE UserId=@UserId"
-                };
-                cmd.Parameters.AddWithValue("@UserId", id);
-
-                conn.Open();
-                using (SqlDataReader dr = cmd3.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        var favorite = (int)dr["ListingId"];
-                        user.Favorites.Add(favorite);
-                    }
-                }
-
-                SqlCommand cmd4 = new SqlCommand
-                {
-                    Connection = conn,
-                    CommandText = $"SELECT * FROM Stay WHERE GuestId=@GuestId"
-                };
-                cmd.Parameters.AddWithValue("@GuestId", id);
-
-                conn.Open();
-                using (SqlDataReader dr = cmd4.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        Stay stay = new Stay
+                        }
+                        if (!user.Stays.Any(s => s.Id == (int)dr["StayId"]) && !Convert.IsDBNull(dr["StayId"]))
                         {
-                            Id = (int)dr["StayId"],
-                            ListingId = (int)dr["ListingId"],
-                            GuestId = (int)dr["GuestId"],
-                            StartDate = (DateTime)dr["StartDate"],
-                            EndDate = (DateTime)dr["EndDate"]
-                        };
+                            var stay = new Stay
+                            {
+                                Id = (int)dr["StayId"],
+                                //ListingId = (int)dr["ListingId"], if you made this propertyId you could read it. Each stay on the user needs a listingID for the front end.
+                                GuestId = (int)dr["GuestId"],
+                                StartDate = (DateTime)dr["StartDate"],
+                                EndDate = (DateTime)dr["EndDate"]
+                            };
 
-                        user.Stays.Add(stay);
+                            if (!Convert.IsDBNull(dr["ReviewId"]))
+                            {
+
+                                Review review = new Review();
+
+                                //review.StayId = (int)dr["ReviewId"]; review.reviewId not needed for front end.
+                                review.Rating = (int)dr["Rating"];
+                                review.Text = (string)dr["ReviewText"];
+                                review.Username = (string)dr["Username"];
+
+                                stay.Review = review;
+                            }
+                            user.Stays.Add(stay);
+                        }
+
+                        //new query for favorites.
+                        //if (!user.Favorites.Any(f => f == (int)dr["ListingId"]))
+                        //{
+                        //    user.Favorites.Add((int)dr["ListingId"]);
+                        //}
                     }
                 }
-                //NEED TO ADD REVIEWS AS WELL.
+
+                return user;
             }
-
-            return user;
         }
         public void RemoveListing(Listing listing)
         {
@@ -524,7 +514,14 @@ namespace BnbProject.Data
                 SqlCommand cmd = new SqlCommand
                 {
                     Connection = conn,
-                    CommandText = "SELECT * FROM UserAccount LEFT JOIN Listing on Listing.HostId = UserAccount.UserId LEFT JOIN Stay on Stay.GuestId = UserAccount.UserId LEFT JOIN Review on Review.ReviewId = Stay.StayId LEFT JOIN UserListing on UserListing.UserId = UserAccount.UserId WHERE UserAccount.Username=@Username;"
+                    CommandText = "SELECT UserAccount.UserId, UserAccount.Email, UserAccount.Username, UserAccount.UserPassword,\r\n" +
+                    "Listing.ListingId, Listing.HostId, Listing.Title, Listing.Description, Listing.Location,\r\n" +
+                    "Listing.Rate, Stay.StayId, Stay.GuestId, Stay.ReviewId, Stay.StartDate, Stay.EndDate,\r\n" +
+                    "Review.Rating, Review.ReviewText, Review.Username FROM UserAccount " +
+                    "LEFT JOIN Listing on Listing.HostId = UserAccount.UserId " +
+                    "LEFT JOIN Stay on Stay.GuestId = UserAccount.UserId " +
+                    "LEFT JOIN Review on Review.ReviewId = Stay.StayId " +
+                    "WHERE UserAccount.Username=@Username;"
                 };
                 cmd.Parameters.AddWithValue("@Username", username);
 
@@ -564,27 +561,29 @@ namespace BnbProject.Data
                                 EndDate = (DateTime)dr["EndDate"]
                             };
 
-                            //if (dr["ReviewId"] != null)
-                            //{
-                            //    Review review = new Review();
-                            //
-                            //    review.StayId = (int)dr["ReviewId"];
-                            //    review.Rating = (int)dr["Rating"];
-                            //    review.Text = (string)dr["ReviewText"];
-                            //    review.Username = (string)dr["Username"];
-                            //
-                            //    stay.Review = review;
-                            //}
+                            if (!Convert.IsDBNull(dr["ReviewId"]))
+                            {
+
+                                Review review = new Review();
+                            
+                                review.StayId = (int)dr["ReviewId"];
+                                review.Rating = (int)dr["Rating"];
+                                review.Text = (string)dr["ReviewText"];
+                                review.Username = (string)dr["Username"];
+                            
+                                stay.Review = review;
+                            }
                             user.Stays.Add(stay);
                         }
                         
-                        if (!user.Favorites.Any(f => f == (int)dr["ListingId"]))
-                        {
-                            user.Favorites.Add((int)dr["ListingId"]);
-                        }
+                        //need new query for favorites.
+                        //if (!user.Favorites.Any(f => f == (int)dr["ListingId"]))
+                        //{
+                        //    user.Favorites.Add((int)dr["ListingId"]);
+                        //}
                     }
                 }
-                var a = 1;
+                
                 return user;
 
                 //

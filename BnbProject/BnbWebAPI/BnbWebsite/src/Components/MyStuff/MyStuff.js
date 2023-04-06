@@ -34,9 +34,8 @@ const style = {
   };
 
 const {user, setUser} = useContext(UserContext);
-const [userLoaded, setUserLoaded] = useState(false);
+//const [userLoaded, setUserLoaded] = useState();
 const [listings, setListings] = useState();
-const [listingsLoaded, setListingsLoaded] = useState(false);
 const [drawerOpen, setDrawerOpen] = useState(false);
 const [rating, setRating] = useState(5);
 const [reviewText, setReviewText] = useState('');
@@ -52,18 +51,15 @@ const reRoute = () => {
 }
 
 useEffect(() => {
-
+    debugger;
     fetch(`${api}/bnb/listings`)
     .then((response) => response.json())
     .then((data) => {
     
         setListings(data.listings);
         console.log(data);
+        debugger;
     })
-    .then(() => {
-        setListingsLoaded(true);
-    });
-
 }, [])
 
 const getUser = (id) => {
@@ -72,22 +68,22 @@ const getUser = (id) => {
     .then((response) => response.json())
     .then((data) => {
         setUser(data.user);
-    })
-    .then(() => {
-        setUserLoaded(true);
+        debugger;
     });
 }
 
 const verifyLogin = () => {
-    debugger;
+
     if(!user){
+        debugger;
         //user is coming in null from my login using the database...
         //if user is null, parse the cookie. If there's no cookie, id will be NaN. So, either get user by Id if Id has value, or reroute to login.
         var elements = document.cookie.split('=');
         var id = Number(elements[1]);
-        debugger;
         if(!isNaN(id)){
             getUser(id);
+            debugger;
+            //setUserLoaded(true); {/*need or nah?*/}
         }
         else{
             reRoute();
@@ -97,15 +93,13 @@ const verifyLogin = () => {
         if(dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
             reRoute();
         }
-        else{ 
-            debugger;
-            setUserLoaded(true); 
-        }
+        debugger;
+        //else{
+            //setUserLoaded(true); {/*need or nah?*/}
+        //}
     } 
 }
-useEffect(() => {
-    verifyLogin();
-}, [])
+verifyLogin();
 
 
 const showReview = (stay) => {
@@ -215,7 +209,7 @@ const cancelReview = () => {
 
     return(
         <div>
-            {(userLoaded && listingsLoaded && !!user) && 
+            {(!!listings && !!user) && 
                 <div>
                     <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', m:3}}>Welcome {user.username}</Typography>
 

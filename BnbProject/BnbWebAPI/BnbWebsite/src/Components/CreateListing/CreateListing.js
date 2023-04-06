@@ -188,7 +188,8 @@ const handleListingChange = () => {
             Location: location,
             Description: description,
             Amenities: listingAmenities,
-            Files: files 
+            Files: files
+
         };
         
         fetch(`${api}/bnb/addlisting`, {

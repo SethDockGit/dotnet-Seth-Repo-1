@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace BnbProject.Models
 {
-    public class FileModel
+    public class FileTransfer
     {
-        public int Id { get; set; }
-        public IFormFile ImageFile { get; set; }
+        public List<IFormFile> Files { get; set; }
+
+        //public int ListingId { get; set; }
     }
 }

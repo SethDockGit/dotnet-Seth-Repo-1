@@ -1,0 +1,16 @@
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\bin\Debug\netcoreapp3.1\PracticeAndReview.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\bin\Debug\netcoreapp3.1\PracticeAndReview.deps.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\bin\Debug\netcoreapp3.1\PracticeAndReview.runtimeconfig.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\bin\Debug\netcoreapp3.1\PracticeAndReview.runtimeconfig.dev.json
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\bin\Debug\netcoreapp3.1\PracticeAndReview.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\bin\Debug\netcoreapp3.1\PracticeAndReview.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\obj\Debug\netcoreapp3.1\PracticeAndReview.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\obj\Debug\netcoreapp3.1\PracticeAndReview.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\obj\Debug\netcoreapp3.1\PracticeAndReview.AssemblyInfoInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\obj\Debug\netcoreapp3.1\PracticeAndReview.AssemblyInfo.cs
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\obj\Debug\netcoreapp3.1\PracticeAndReview.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\obj\Debug\netcoreapp3.1\PracticeAndReview.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\obj\Debug\netcoreapp3.1\PracticeAndReview.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\obj\Debug\netcoreapp3.1\PracticeAndReview.genruntimeconfig.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\bin\Debug\netcoreapp3.1\BCrypt.Net-Next.dll
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\PracticeAndReview\PracticeAndReview\obj\Debug\netcoreapp3.1\PracticeAndReview.csproj.CopyComplete

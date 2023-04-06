@@ -38,7 +38,7 @@ namespace BnbWebAPI.Controllers
             return response;
         }
         [HttpGet]
-        [Route("user/{id}")]     //you might end up not needing this method. User is accessed at login or create account, then provided via context elsewhere.
+        [Route("user/{id}")]     
         public WorkflowResponse GetUser(int id)
         {
             WorkflowResponse response = Manager.GetUserById(id);
@@ -111,6 +111,7 @@ namespace BnbWebAPI.Controllers
 
             return response;
         }
+
 
     }
 }
