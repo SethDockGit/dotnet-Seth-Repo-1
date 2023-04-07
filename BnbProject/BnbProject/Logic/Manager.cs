@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using BnbProject.Data;
 using BnbProject.Models;
+using Microsoft.AspNetCore.Http;
+using static System.Net.Mime.MediaTypeNames;
 using BC = BCrypt.Net.BCrypt;
 
 namespace BnbProject.Logic
@@ -49,7 +52,7 @@ namespace BnbProject.Logic
             listing.Description = transfer.Description;
             listing.Amenities = transfer.Amenities;
             listing.Stays = new List<Stay>();
-            listing.Files = transfer.Files;
+
 
             try
             {
@@ -296,5 +299,32 @@ namespace BnbProject.Logic
             return response;
         }
 
+        public WorkflowResponse AddFilesToListing(IFormFile file)
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            using (var ms = new MemoryStream())
+            {
+                file.CopyTo(ms);
+                var fileBytes = ms.ToArray();
+                //string s = Convert.ToBase64String(fileBytes);
+
+                try
+                {
+                    IDataSource.AddFileToListing(fileBytes);
+                    response.Success = true;
+                    response.Message = "Image successfully added to listing.";
+                }
+                catch (Exception e)
+                {
+                    response.Success = false;
+                    response.Message = e.Message;
+                }
+            }
+
+
+
+            return response;
+        }
     }
 }

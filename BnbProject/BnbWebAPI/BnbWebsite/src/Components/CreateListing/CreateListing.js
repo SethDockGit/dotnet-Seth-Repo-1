@@ -186,9 +186,7 @@ const handleListingChange = () => {
             Rate: Number(rate),
             Location: location,
             Description: description,
-            Amenities: listingAmenities,
-            Files: files
-            
+            Amenities: listingAmenities,      
         };
         
         fetch(`${api}/bnb/addlisting`, {
@@ -203,7 +201,22 @@ const handleListingChange = () => {
                 console.log(data);
                 setModalOpen(true);
             });
-        }   
+
+        var data = new FormData()
+        data.append('file', files[0])
+    
+        fetch(`${api}/bnb/files`, {
+            method: 'POST',
+            body: data,
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+
+                //if(!data.success)
+                //show an error message, likely related to type of file.
+            }); 
+    }   
 }
 const showFailMessage = () => {
 
@@ -236,7 +249,7 @@ const fileSelectedHandler = (e) => {
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
                 <form>
-                  <div><Typography variant="h6" sx={{mb:1}}>Upload Images</Typography></div>
+                  <div><Typography variant="h6" sx={{mb:1}}>Upload Image</Typography></div>
                   <input type="file" multiple onChange={fileSelectedHandler} />
                 </form>
             </Grid>

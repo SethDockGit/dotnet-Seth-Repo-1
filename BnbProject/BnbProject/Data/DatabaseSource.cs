@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using BnbProject.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace BnbProject.Data
 {
@@ -26,9 +30,9 @@ namespace BnbProject.Data
                 SqlCommand cmd = new SqlCommand
                 {
                     Connection = conn,
-                    CommandText = "SELECT * FROM Listing"
+                    CommandText = "SELECT * FROM Listing LEFT JOIN ListingImage on ListingImage.ListingshowId=Listing.ListingId;"
                 };
-
+                var b = 1;
                 conn.Open();
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
@@ -44,6 +48,15 @@ namespace BnbProject.Data
                             Rate = (decimal)dr["Rate"]
                         };
 
+                        if(!Convert.IsDBNull(dr["Picture"]))
+                        {
+                            var bytes = (byte[])dr["Picture"];
+                            var stream = new MemoryStream(bytes);
+
+                            IFormFile file = new FormFile(stream, 0, bytes.Length, "name", "fileName");
+                            listing.Picture = file;
+                        }
+                        var a = 1;
                         listings.Add(listing);
                     }
                 }
@@ -73,11 +86,11 @@ namespace BnbProject.Data
                 conn.Open();
                 cmd.ExecuteNonQuery();
 
-                if(listing.Amenities != null)
+                if (listing.Amenities != null)
                 {
                     List<int> amenityIds = GetAmenityIdsByName(listing.Amenities);
 
-                    foreach(var a in amenityIds)
+                    foreach (var a in amenityIds)
                     {
                         SqlCommand cmd2 = new SqlCommand
                         {
@@ -89,7 +102,7 @@ namespace BnbProject.Data
                         cmd2.Parameters.AddWithValue("@ListingId", listing.Id);
 
                         cmd2.ExecuteNonQuery();
-                    }   
+                    }
                 }
 
                 //listingImages!!
@@ -333,7 +346,7 @@ namespace BnbProject.Data
                     Connection = conn,
                     CommandText = "UPDATE Listing SET Title=@Title, Description=@Description, " +
                     "Location=@Location, Rate=@Rate WHERE ListingId=@ListingId;" +
-                    "DELETE FROM AmenityListing WHERE ListingId=@ListingId;" 
+                    "DELETE FROM AmenityListing WHERE ListingId=@ListingId;"
                 };
                 cmd.Parameters.AddWithValue("@ListingId", listing.Id);
                 cmd.Parameters.AddWithValue("@Title", listing.Title);
@@ -519,7 +532,7 @@ namespace BnbProject.Data
                         user.Password = (string)dr["UserPassword"];
                         user.Email = (string)dr["Email"];
 
-                        if(!user.Listings.Any(l => l.Id == (int)dr["ListingId"]) && !Convert.IsDBNull(dr["ListingId"]))
+                        if (!user.Listings.Any(l => l.Id == (int)dr["ListingId"]) && !Convert.IsDBNull(dr["ListingId"]))
                         {
                             var listing = new Listing
                             {
@@ -540,7 +553,7 @@ namespace BnbProject.Data
                             {
                                 Id = (int)dr["StayId"],
                                 ListingId = (int)dr["PropertyId"],
-                                GuestId = (int)dr["GuestId"],                            
+                                GuestId = (int)dr["GuestId"],
                                 StartDate = (DateTime)dr["StartDate"],
                                 EndDate = (DateTime)dr["EndDate"]
                             };
@@ -549,12 +562,12 @@ namespace BnbProject.Data
                             {
 
                                 Review review = new Review();
-                            
+
                                 //review.StayId = (int)dr["ReviewId"];
                                 review.Rating = (int)dr["Rating"];
                                 review.Text = (string)dr["ReviewText"];
                                 review.Username = (string)dr["Username"];
-                            
+
                                 stay.Review = review;
                             }
                             user.Stays.Add(stay);
@@ -566,7 +579,7 @@ namespace BnbProject.Data
                         }
 
                     }
-                }           
+                }
                 return user;
             }
         }
@@ -589,7 +602,23 @@ namespace BnbProject.Data
                 cmd.ExecuteNonQuery();
             }
         }
+        public void AddFileToListing(byte[] file)
+        {
+            using (SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = ConnectionString;
+
+                SqlCommand cmd = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = "INSERT INTO ListingImage VALUES (IDENT_CURRENT('Listing'), @Picture);"
+                };
+
+                cmd.Parameters.AddWithValue("@Picture", file);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
-
-
 }

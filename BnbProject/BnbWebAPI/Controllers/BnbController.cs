@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BnbProject.Logic;
 using BnbProject.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -57,9 +58,16 @@ namespace BnbWebAPI.Controllers
         [Route("addlisting")]
         public WorkflowResponse AddListing([FromBody] ListingTransfer transfer)
         {
-            var a = 1;
             WorkflowResponse response = Manager.AddListing(transfer);
 
+            return response;
+        }
+        [HttpPost]
+        [Route("files")]
+        public WorkflowResponse AddFilesToListing([FromForm] IFormFile file)
+        {
+            WorkflowResponse response = Manager.AddFilesToListing(file);
+     
             return response;
         }
         [HttpPost]

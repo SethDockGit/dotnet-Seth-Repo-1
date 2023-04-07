@@ -13,7 +13,7 @@ export default function ListingsCard({listing}){
                 <Card sx={{minWidth:280, ml:3, mr:3, mb:3}}>
                     <CardActionArea>
                         <CardContent>
-                            {/*pic goes here*/}
+                            {listing.picture}
                             <Grid container>
                                 <Grid item xs={8}>
                                     <Typography sx={{ fontSize: 20 }}>

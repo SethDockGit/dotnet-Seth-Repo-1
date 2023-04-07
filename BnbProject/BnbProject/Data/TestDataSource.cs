@@ -5,6 +5,7 @@ using System.Text;
 using BnbProject.Models;
 using System.Linq;
 using BC = BCrypt.Net.BCrypt;
+using Microsoft.AspNetCore.Http;
 
 namespace BnbProject.Data
 {
@@ -211,6 +212,10 @@ namespace BnbProject.Data
             UserAccount user = TestUsers.SingleOrDefault(u => u.Id == ul.UserId);
 
             user.Favorites.Add(ul.ListingId);
+        }
+        public void AddFileToListing(byte[] file)
+        {
+            throw new NotImplementedException();
         }
     }
 }
