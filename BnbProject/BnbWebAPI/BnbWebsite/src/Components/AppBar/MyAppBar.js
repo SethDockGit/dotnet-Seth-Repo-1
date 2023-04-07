@@ -20,14 +20,14 @@ export default function MyAppBar(){
 const {user, setUser, isLoggedIn, setIsLoggedIn} = useContext(UserContext);
  
 const navigate = useNavigate();
-const [anchorEl, setAnchorEl] = useState(null);
+const [anchorEl, setAnchorEl] = useState();
 
 const open = Boolean(anchorEl);
 const handleClick = (event) => {
   setAnchorEl(event.currentTarget);
 };
 const handleClose = () => {
-  setAnchorEl(null);
+  setAnchorEl();
 };
 
 const reRoute = () => {
@@ -80,7 +80,7 @@ const displayButton = () => {
 
     //first, only renders if isLoggedIn has value (default is null), then renders conditionally dependent on value of isLoggedIn
     <div>
-      {!!isLoggedIn && isLoggedIn ?
+      {isLoggedIn ?
       <div>
         <IconButton
           onClick={handleClick}

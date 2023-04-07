@@ -47,7 +47,6 @@ const [listingAmenities, setListingAmenities] = useState([]);
 const [customAmenity, setCustomAmenity] = useState('');
 const [failMessage, setFailMessage] = useState('');
 const [failCreateListing, setFailCreateListing] = useState(false);
-const [listing, setListing] = useState();
 const [modalOpen, setModalOpen] = useState(false);
 const [files, setFiles] = useState([]);
 const navigate = useNavigate();
@@ -189,7 +188,7 @@ const handleListingChange = () => {
             Description: description,
             Amenities: listingAmenities,
             Files: files
-
+            
         };
         
         fetch(`${api}/bnb/addlisting`, {
@@ -198,12 +197,10 @@ const handleListingChange = () => {
             headers: {
                 'Content-Type': 'application/json'
             }
-        })
+            })
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-
-                setListing(data.listing);
                 setModalOpen(true);
             });
         }   
@@ -333,7 +330,7 @@ const fileSelectedHandler = (e) => {
                     >
                         <Box sx={style}>
                             <Typography variant="h6">Listing saved!</Typography>
-                            <Link style={{ textDecoration: 'none' }} to={`/listings/${listing.id}`}>
+                            <Link style={{ textDecoration: 'none' }} to={`/mystuff`}>
                                 <Button>Go to your listing</Button>
                             </Link>
                         </Box>

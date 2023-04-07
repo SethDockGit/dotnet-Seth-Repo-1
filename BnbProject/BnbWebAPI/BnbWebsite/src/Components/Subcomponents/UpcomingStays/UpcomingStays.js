@@ -24,7 +24,8 @@ export default function UpcomingStays({
         return(
 
             <div key={index}>
-                <Typography variant="h6">{dayjs(val.startDate)} - {dayjs(val.endDate)}</Typography>
+                <Typography variant="subtitle1" sx={{mt:2, ml:8}}>{dayjs(val.startDate).format('MM/DD/YYYY').toString()}
+                 - {dayjs(val.endDate).format('MM/DD/YYYY').toString()}</Typography>
                 <ListingsCard listing={val.listing}/>
             </div>
         )

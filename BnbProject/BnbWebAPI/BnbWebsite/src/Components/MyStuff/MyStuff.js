@@ -34,7 +34,8 @@ const style = {
   };
 
 const {user, setUser} = useContext(UserContext);
-//const [userLoaded, setUserLoaded] = useState();
+//const [userLoaded, setUserLoaded] = useState(false);
+//const [listingsLoaded, setListingsLoaded] = useState(false);
 const [listings, setListings] = useState();
 const [drawerOpen, setDrawerOpen] = useState(false);
 const [rating, setRating] = useState(5);
@@ -50,40 +51,41 @@ const reRoute = () => {
     navigate("/user/login");
 }
 
-useEffect(() => {
-    debugger;
+const getListings = () => {
+
     fetch(`${api}/bnb/listings`)
     .then((response) => response.json())
     .then((data) => {
     
         setListings(data.listings);
+
         console.log(data);
-        debugger;
-    })
-}, [])
+    });
+}
+
 
 const getUser = (id) => {
 
     fetch(`${api}/bnb/user/${id}`)
     .then((response) => response.json())
     .then((data) => {
+        console.log(data);
         setUser(data.user);
-        debugger;
+
     });
 }
 
 const verifyLogin = () => {
 
     if(!user){
-        debugger;
+
         //user is coming in null from my login using the database...
         //if user is null, parse the cookie. If there's no cookie, id will be NaN. So, either get user by Id if Id has value, or reroute to login.
         var elements = document.cookie.split('=');
         var id = Number(elements[1]);
         if(!isNaN(id)){
             getUser(id);
-            debugger;
-            //setUserLoaded(true); {/*need or nah?*/}
+
         }
         else{
             reRoute();
@@ -93,13 +95,17 @@ const verifyLogin = () => {
         if(dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
             reRoute();
         }
-        debugger;
-        //else{
-            //setUserLoaded(true); {/*need or nah?*/}
-        //}
     } 
 }
-verifyLogin();
+
+useEffect(() => {
+    verifyLogin();
+}, [])
+    
+useEffect(() => {
+    getListings();
+}, [])
+
 
 
 const showReview = (stay) => {

@@ -40,20 +40,7 @@ namespace BnbProject.Logic
         {
             WorkflowResponse response = new WorkflowResponse();
 
-            List<Listing> listings = IDataSource.GetListings();
-
             Listing listing = new Listing();
-
-            if (listings.Count == 0)
-            {
-                listing.Id = 1;
-            }
-            else
-            {
-                var highestID = listings.Max(l => l.Id);
-
-                listing.Id = highestID + 1;
-            }
 
             listing.HostId = transfer.HostId;
             listing.Title = transfer.Title;
@@ -68,7 +55,7 @@ namespace BnbProject.Logic
             {
                 IDataSource.AddListing(listing);
                 response.Success = true;
-                response.Message = $"Listing '{listing.Title}' ID: {listing.Id} Added successfully.";
+                response.Message = $"Listing '{listing.Title}' Added successfully.";
                 response.Listing = listing;
             }
             catch (Exception e)
@@ -86,15 +73,13 @@ namespace BnbProject.Logic
             {
                 Listing listing = IDataSource.GetListingById(transfer.Id);
 
-                IDataSource.RemoveListing(listing);
-
                 listing.Title = transfer.Title;
                 listing.Rate = transfer.Rate;
                 listing.Location = transfer.Location;
                 listing.Description = transfer.Description;
                 listing.Amenities = transfer.Amenities;
 
-                IDataSource.AddListing(listing);
+                IDataSource.UpdateListing(listing);
                 response.Success = true;
                 response.Message = $"Listing '{listing.Title}' ID: {listing.Id} Edited successfully.";
             }
@@ -166,22 +151,9 @@ namespace BnbProject.Logic
 
             Listing listing = IDataSource.GetListingById(transfer.ListingId);
 
-            int newId = 0;
-
-            if (listing.Stays.Count == 0) //this is wrong, you will need to get all stays. Unless you wanna do that auto-PK thing
-            {
-                newId = 1;
-            }
-            else
-            {
-                var highestID = listing.Stays.Max(s => s.Id);
-
-                newId = highestID + 1;
-            }
-
             Stay stay = new Stay()
             {
-                Id = newId,
+
                 GuestId = transfer.GuestId,
                 HostId = transfer.HostId,
                 ListingId = transfer.ListingId,
@@ -238,24 +210,9 @@ namespace BnbProject.Logic
 
             string hashedPass = BC.HashPassword(request.Password);
 
-            List<int> userIds = IDataSource.GetUserIds();
-
-            int newId = 0;
-
-            if (userIds.Count == 0)
-            {
-                newId = 1;
-            }
-            else
-            {
-                var highestID = userIds.Max(u => u);
-
-                newId = highestID + 1;
-            }
 
             UserAccount user = new UserAccount()
             {
-                Id = newId,
                 Username = request.Username,
                 Password = hashedPass,
                 Email = request.Email,
@@ -282,7 +239,7 @@ namespace BnbProject.Logic
         public WorkflowResponse Authenticate(AuthenticationRequest request)
         {
             WorkflowResponse response = new WorkflowResponse();
-
+       
             try
             {
                 UserAccount user = IDataSource.GetUserByUsername(request.Username);
@@ -296,7 +253,7 @@ namespace BnbProject.Logic
                 {  
                     
                     bool verifyPass = BC.Verify(request.Password, user.Password);
-
+              
                     if (verifyPass)
                     {
                         response.Success = true;
@@ -306,12 +263,13 @@ namespace BnbProject.Logic
                     else
                     {
                         response.Success = false;
-                        response.Message = $"Error: Incorrect Password";
+                        response.Message = "Error: Incorrect Password";
                     }
                 }
             }
             catch (Exception e)
             {
+           
                 response.Success = false;
                 response.Message = e.Message;
             }

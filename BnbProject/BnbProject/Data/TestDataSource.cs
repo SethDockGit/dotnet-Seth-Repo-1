@@ -157,9 +157,13 @@ namespace BnbProject.Data
             return TestUsers.SingleOrDefault(u => u.Id == id);
             
         }
-        public void RemoveListing(Listing listing)
+        public void UpdateListing(Listing listing)
         {
-            TestListings.Remove(listing);
+            Listing toUpdate = TestListings.SingleOrDefault(l => l.Id == listing.Id);
+
+            var index = TestListings.IndexOf(toUpdate);
+
+            TestListings[index] = listing;
         }
         public void AddStay(Stay stay)
         {

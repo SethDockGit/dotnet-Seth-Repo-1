@@ -57,7 +57,7 @@ namespace BnbWebAPI.Controllers
         [Route("addlisting")]
         public WorkflowResponse AddListing([FromBody] ListingTransfer transfer)
         {
-
+            var a = 1;
             WorkflowResponse response = Manager.AddListing(transfer);
 
             return response;
@@ -99,6 +99,7 @@ namespace BnbWebAPI.Controllers
         [Route("authenticate")]
         public WorkflowResponse Authenticate([FromBody] AuthenticationRequest request)
         {
+          
             WorkflowResponse response = Manager.Authenticate(request);
 
             return response;
