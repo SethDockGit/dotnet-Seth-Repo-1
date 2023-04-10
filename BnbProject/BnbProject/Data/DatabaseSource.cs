@@ -10,6 +10,7 @@ using System.Text;
 using BnbProject.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BnbProject.Data
 {
@@ -30,7 +31,7 @@ namespace BnbProject.Data
                 SqlCommand cmd = new SqlCommand
                 {
                     Connection = conn,
-                    CommandText = "SELECT * FROM Listing LEFT JOIN ListingImage on ListingImage.ListingshowId=Listing.ListingId;"
+                    CommandText = "SELECT * FROM Listing LEFT JOIN ListingImage on ListingImage.ListingshownId=Listing.ListingId;"
                 };
                 var b = 1;
                 conn.Open();
@@ -51,12 +52,17 @@ namespace BnbProject.Data
                         if(!Convert.IsDBNull(dr["Picture"]))
                         {
                             var bytes = (byte[])dr["Picture"];
-                            var stream = new MemoryStream(bytes);
+                            //var stream = new MemoryStream(bytes);
 
-                            IFormFile file = new FormFile(stream, 0, bytes.Length, "name", "fileName");
-                            listing.Picture = file;
+                            //IFormFile file = new FormFile(stream, 0, bytes.Length, "name", "fileName");
+                            //listing.Picture = file;
+
+
+                            
+
+                            listing.Picture = bytes;
                         }
-                        var a = 1;
+
                         listings.Add(listing);
                     }
                 }
@@ -104,8 +110,6 @@ namespace BnbProject.Data
                         cmd2.ExecuteNonQuery();
                     }
                 }
-
-                //listingImages!!
 
             }
         }
@@ -186,11 +190,12 @@ namespace BnbProject.Data
                     "Listing.Description, Listing.Location, Listing.Rate, " +
                     "Stay.StayId, Stay.PropertyId, Stay.GuestId, Stay.ReviewId, Stay.StartDate, " +
                     "Stay.EndDate, Review.Rating, Review.ReviewText, Review.Username, " +
-                    "Amenity.AmenityName FROM Listing " +
+                    "Amenity.AmenityName, ListingImage.Picture FROM Listing " +
                     "LEFT JOIN Stay on Stay.PropertyId = Listing.ListingId " +
                     "LEFT JOIN Review on Review.ReviewId = Stay.ReviewId " +
                     "LEFT JOIN AmenityListing on AmenityListing.ListingId = Listing.ListingId " +
                     "LEFT JOIN Amenity on Amenity.AmenityId = AmenityListing.AmenityId " +
+                    "LEFT JOIN ListingImage on ListingImage.ListingshownId=Listing.ListingId " +
                     "WHERE Listing.ListingId=@ListingId"
 
                 };
@@ -237,6 +242,13 @@ namespace BnbProject.Data
                         if (!listing.Amenities.Any(a => a == (string)dr["AmenityName"]) && !Convert.IsDBNull(dr["AmenityName"]))
                         {
                             listing.Amenities.Add((string)dr["AmenityName"]);
+                        }
+
+                        if (!Convert.IsDBNull(dr["Picture"]))
+                        {
+                            var bytes = (byte[])dr["Picture"];
+
+                            listing.Picture = bytes;
                         }
                     }
                 }

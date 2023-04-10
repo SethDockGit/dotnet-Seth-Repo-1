@@ -336,13 +336,30 @@ const displayFavoriteIcon = () => {
             </Grid>
     )
 }
+
+
+const showListingPic = () => {
+
+        var blob = new Blob( [ listing.picture ], { type: "image/jpeg" } );
+        var imageUrl = URL.createObjectURL( blob );
+        
+        debugger;
+        return(
+            (listing.picture != null)
+            
+            ? <img src={imageUrl}/>
+            : <div></div>
+        )
+
+}
     return(
 
         <div>
 
-            {/*here go the pics*/}
+            
             {listingLoaded && 
             <div>
+            {showListingPic()}
             {displayFavoriteIcon()}
 
             <Divider sx={{backgroundColor:'peachpuff'}}/>
