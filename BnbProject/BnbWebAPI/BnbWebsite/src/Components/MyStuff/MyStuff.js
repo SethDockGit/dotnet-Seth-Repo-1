@@ -34,8 +34,6 @@ const style = {
   };
 
 const {user, setUser} = useContext(UserContext);
-//const [userLoaded, setUserLoaded] = useState(false);
-//const [listingsLoaded, setListingsLoaded] = useState(false);
 const [listings, setListings] = useState();
 const [drawerOpen, setDrawerOpen] = useState(false);
 const [rating, setRating] = useState(5);
@@ -232,7 +230,7 @@ const cancelReview = () => {
                     <Grid container sx={{mb:2}}>
                         <MyListings listings={user.listings}/>
                     </Grid>
-                    {/*show list of booked stays as well?*/}
+
                     <Divider sx={{backgroundColor:'peachpuff'}}/>
 
                     <Typography variant="h5" sx={{ml:3, mt:2}}>Favorites</Typography>

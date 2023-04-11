@@ -24,50 +24,58 @@ namespace BnbWebAPI.Controllers
 
         [HttpGet]
         [Route("listings")]
-        public WorkflowResponse GetListings()
+        public GetListingsResponse GetListings()
         {
-            WorkflowResponse response = Manager.GetListings();
+            GetListingsResponse response = Manager.GetListings();
 
             return response;
         }
         [HttpGet]
         [Route("listing/{id}")]
-        public WorkflowResponse GetListing(int id)
+        public ListingResponse GetListing(int id)
         {
-            WorkflowResponse response = Manager.GetListingById(id);
+            ListingResponse response = Manager.GetListingById(id);
 
             return response;
         }
         [HttpGet]
         [Route("user/{id}")]     
-        public WorkflowResponse GetUser(int id)
+        public UserResponse GetUser(int id)
         {
-            WorkflowResponse response = Manager.GetUserById(id);
+            UserResponse response = Manager.GetUserById(id);
 
             return response;
         }
         [HttpGet]
         [Route("amenities")]
-        public WorkflowResponse GetAmenities()
+        public AmenitiesResponse GetAmenities()
         {
-            WorkflowResponse response = Manager.GetAmenities();
+            AmenitiesResponse response = Manager.GetAmenities();
 
             return response;
         }
         [HttpPost]
         [Route("addlisting")]
-        public WorkflowResponse AddListing([FromBody] ListingTransfer transfer)
+        public ListingResponse AddListing([FromBody] ListingTransfer transfer)
         {
-            WorkflowResponse response = Manager.AddListing(transfer);
+            ListingResponse response = Manager.AddListing(transfer);
 
             return response;
         }
         [HttpPost]
-        [Route("files")]
+        [Route("file")]
         public WorkflowResponse AddFilesToListing([FromForm] IFormFile file)
         {
-            WorkflowResponse response = Manager.AddFilesToListing(file);
+            WorkflowResponse response = Manager.AddFileToListing(file);
      
+            return response;
+        }
+        [HttpPost]
+        [Route("editfile")]
+        public WorkflowResponse EditListingFile([FromBody] ImageTransfer transfer)
+        {
+            WorkflowResponse response = Manager.EditListingFile(transfer);
+
             return response;
         }
         [HttpPost]
@@ -97,18 +105,17 @@ namespace BnbWebAPI.Controllers
         }
         [HttpPost]
         [Route("newaccount")]
-        public WorkflowResponse CreateAccount([FromBody] CreateAccountRequest request)
+        public UserResponse CreateAccount([FromBody] CreateAccountRequest request)
         {
-            WorkflowResponse response = Manager.CreateAccount(request);
+            UserResponse response = Manager.CreateAccount(request);
 
             return response;
         }
         [HttpPost]
         [Route("authenticate")]
-        public WorkflowResponse Authenticate([FromBody] AuthenticationRequest request)
-        {
-          
-            WorkflowResponse response = Manager.Authenticate(request);
+        public UserResponse Authenticate([FromBody] AuthenticationRequest request)
+        {   
+            UserResponse response = Manager.Authenticate(request);
 
             return response;
         }

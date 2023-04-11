@@ -7,15 +7,20 @@ import Grid from '@mui/material/Unstable_Grid2';
 export default function ListingsCard({listing}){
 
 
-//var blob = new Blob( [ listing.picture ], { type: "image/jpeg" } );
-//var imageUrl = URL.createObjectURL( blob );
-//
-//const showListingPic = () => {
-//
-//    (listing.picture == null)
-//    ? <image src={imageUrl}/>
-//    : <div></div>
-//}
+    const showPic = () => {
+
+        var data = listing.picture;
+        
+        const Picture = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} alt=""
+        width="175" height="200"/>
+        
+        return (
+    
+            (data != null)
+            ? <Picture data={data}/>
+            : <div></div>
+        )
+    }
 
     return(
 
@@ -24,7 +29,7 @@ export default function ListingsCard({listing}){
                 <Card sx={{minWidth:280, ml:3, mr:3, mb:3}}>
                     <CardActionArea>
                         <CardContent>
-                            {/*showListingPic()*/}
+                            {showPic()}
                             <Grid container>
                                 <Grid item xs={8}>
                                     <Typography sx={{ fontSize: 20 }}>
@@ -45,6 +50,5 @@ export default function ListingsCard({listing}){
                 </Card>
             </Link>
         </Grid>
-
     )
 }

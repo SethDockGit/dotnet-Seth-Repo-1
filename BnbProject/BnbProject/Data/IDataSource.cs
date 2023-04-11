@@ -22,6 +22,7 @@ namespace BnbProject.Data
         public UserAccount GetUserByUsername(string username);
         public List<int> GetUserIds();
         public void UpdateListing(Listing listing);
+        public void EditListingFile(byte[] file, int listingId);
     }
 
 

@@ -58,7 +58,6 @@ const reRoute = () => {
     //this should overwrite any cookie so that it expires.
     navigate("/user/login");
 }
-
 const getUser = (id) => {
 
     fetch(`${api}/bnb/user/${id}`)
@@ -165,16 +164,23 @@ const handleClickRemoveAmenity = (e) => {
 }
 const handleListingChange = () => {
      
-    let rateNumber = parseFloat(rate);
-    
-    if (isNaN(rateNumber)){
-        setFailCreateListing(true);
+    var file = files[0];
+    var fileType = file['type'];
+    const validImageTypes = ['image/jpeg', 'image/png'];
 
+    var rateNumber = parseFloat(rate);
+
+    if (!validImageTypes.includes(fileType)) {
+        setFailCreateListing(true);
+        setFailMessage("Error: File type must be jpeg or png.");
+        setFiles([]);
+    }
+    else if (isNaN(rateNumber)){
+        setFailCreateListing(true);
         setFailMessage("Error: Rate must be a number or decimal.");
     } 
     else if (title == "" || location == "" || description == ""){
         setFailCreateListing(true);
-
         setFailMessage("Error: One or more fields were left blank.");
     }
     else {
@@ -199,23 +205,32 @@ const handleListingChange = () => {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                setModalOpen(true);
+
+                if(data.success){
+                    user.listings = [...user.listings, data.listing];
+                    setUser(user);
+                    setModalOpen(true);
+                }
             });
 
-        var data = new FormData()
-        data.append('file', files[0])
-    
-        fetch(`${api}/bnb/files`, {
-            method: 'POST',
-            body: data,
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
+        if(!!files[0]){
 
-                //if(!data.success)
-                //show an error message, likely related to type of file.
-            }); 
+            var data = new FormData()
+            data.append('file', files[0])
+        
+            fetch(`${api}/bnb/file`, {
+                method: 'POST',
+                body: data,
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+    
+                    //if(!data.success)
+                    //show an error message, likely related to type of file.
+                    //check what happens when you upload mp3
+                }); 
+        }
     }   
 }
 const showFailMessage = () => {
@@ -339,12 +354,12 @@ const fileSelectedHandler = (e) => {
                 {modalOpen &&
                     <Modal
                       open={modalOpen}
-                      onClose={() => setModalOpen(false)}
+                      onClose={() => navigate(`/mystuff`)}
                     >
                         <Box sx={style}>
                             <Typography variant="h6">Listing saved!</Typography>
                             <Link style={{ textDecoration: 'none' }} to={`/mystuff`}>
-                                <Button>Go to your listing</Button>
+                                <Button>Back to MyStuff</Button>
                             </Link>
                         </Box>
                     </Modal>

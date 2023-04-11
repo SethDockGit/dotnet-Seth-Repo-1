@@ -97,7 +97,7 @@ const getListing = () => {
     fetch(`${api}/bnb/listing/${id}`)
     .then((response) => response.json())
     .then((data) => {
-  
+        debugger;
         setListing(data.listing);
         console.log(data);
     })
@@ -338,20 +338,22 @@ const displayFavoriteIcon = () => {
 }
 
 
-const showListingPic = () => {
+const showPic = () => {
 
-        var blob = new Blob( [ listing.picture ], { type: "image/jpeg" } );
-        var imageUrl = URL.createObjectURL( blob );
-        
-        debugger;
-        return(
-            (listing.picture != null)
-            
-            ? <img src={imageUrl}/>
-            : <div></div>
-        )
+    var data = listing.picture;
+    
+    const Picture = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} />
+    
+    return (
 
+        (data != null)
+        ? <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+            <Picture data={data}/>
+          </Grid>
+        : <div></div>
+    )
 }
+
     return(
 
         <div>
@@ -359,7 +361,7 @@ const showListingPic = () => {
             
             {listingLoaded && 
             <div>
-            {showListingPic()}
+            {showPic()}
             {displayFavoriteIcon()}
 
             <Divider sx={{backgroundColor:'peachpuff'}}/>

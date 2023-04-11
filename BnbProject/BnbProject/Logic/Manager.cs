@@ -20,9 +20,9 @@ namespace BnbProject.Logic
         {
             IDataSource = datasource;
         }
-        public WorkflowResponse GetListings()
+        public GetListingsResponse GetListings()
         {
-            WorkflowResponse response = new WorkflowResponse();
+            GetListingsResponse response = new GetListingsResponse();
 
             try
             {
@@ -39,9 +39,9 @@ namespace BnbProject.Logic
             }
             return response;
         }
-        public WorkflowResponse AddListing(ListingTransfer transfer)
+        public ListingResponse AddListing(ListingTransfer transfer)
         {
-            WorkflowResponse response = new WorkflowResponse();
+            ListingResponse response = new ListingResponse();
 
             Listing listing = new Listing();
 
@@ -95,9 +95,9 @@ namespace BnbProject.Logic
 
 
         }
-        public WorkflowResponse GetAmenities()
+        public AmenitiesResponse GetAmenities()
         {
-            WorkflowResponse response = new WorkflowResponse();
+            AmenitiesResponse response = new AmenitiesResponse();
 
             try
             {
@@ -113,9 +113,9 @@ namespace BnbProject.Logic
             }
             return response;
         }
-        public WorkflowResponse GetListingById(int id)
+        public ListingResponse GetListingById(int id)
         {
-            WorkflowResponse response = new WorkflowResponse();
+            ListingResponse response = new ListingResponse();
 
             try
             {
@@ -131,9 +131,9 @@ namespace BnbProject.Logic
             return response;
 
         }
-        public WorkflowResponse GetUserById(int id)
+        public UserResponse GetUserById(int id)
         {
-            WorkflowResponse response = new WorkflowResponse();
+            UserResponse response = new UserResponse();
 
             try
             {
@@ -198,13 +198,13 @@ namespace BnbProject.Logic
             return response;
 
         }
-        public WorkflowResponse CreateAccount(CreateAccountRequest request)
+        public UserResponse CreateAccount(CreateAccountRequest request)
         {
-            WorkflowResponse response = new WorkflowResponse();
+            UserResponse response = new UserResponse();
 
             bool isDuplicate = IDataSource.CheckUsername(request.Username);
 
-            if(isDuplicate)
+            if (isDuplicate)
             {
                 response.Success = false;
                 response.Message = "Duplicate username found.";
@@ -220,7 +220,7 @@ namespace BnbProject.Logic
                 Password = hashedPass,
                 Email = request.Email,
                 Listings = new List<Listing>(),
-                Favorites = new List<int>(),                                                  
+                Favorites = new List<int>(),
                 Stays = new List<Stay>()
             };
 
@@ -239,10 +239,10 @@ namespace BnbProject.Logic
 
             return response;
         }
-        public WorkflowResponse Authenticate(AuthenticationRequest request)
+        public UserResponse Authenticate(AuthenticationRequest request)
         {
-            WorkflowResponse response = new WorkflowResponse();
-       
+            UserResponse response = new UserResponse();
+
             try
             {
                 UserAccount user = IDataSource.GetUserByUsername(request.Username);
@@ -253,10 +253,10 @@ namespace BnbProject.Logic
                     response.Message = $"User {request.Username} not found.";
                 }
                 else
-                {  
-                    
+                {
+
                     bool verifyPass = BC.Verify(request.Password, user.Password);
-              
+
                     if (verifyPass)
                     {
                         response.Success = true;
@@ -272,12 +272,10 @@ namespace BnbProject.Logic
             }
             catch (Exception e)
             {
-           
+
                 response.Success = false;
                 response.Message = e.Message;
             }
-
-
             return response;
         }
         public WorkflowResponse AddFavorite(UserListing ul)
@@ -299,7 +297,7 @@ namespace BnbProject.Logic
             return response;
         }
 
-        public WorkflowResponse AddFilesToListing(IFormFile file)
+        public WorkflowResponse AddFileToListing(IFormFile file)
         {
             WorkflowResponse response = new WorkflowResponse();
 
@@ -307,7 +305,6 @@ namespace BnbProject.Logic
             {
                 file.CopyTo(ms);
                 var fileBytes = ms.ToArray();
-                //string s = Convert.ToBase64String(fileBytes);
 
                 try
                 {
@@ -322,7 +319,29 @@ namespace BnbProject.Logic
                 }
             }
 
+            return response;
+        }
+        public WorkflowResponse EditListingFile(ImageTransfer transfer)
+        {
+            WorkflowResponse response = new WorkflowResponse();
 
+            using (var ms = new MemoryStream())
+            {
+                transfer.ImageFile.CopyTo(ms);
+                var fileBytes = ms.ToArray();
+
+                try
+                {
+                    IDataSource.EditListingFile(fileBytes, transfer.ListingId);
+                    response.Success = true;
+                    response.Message = "Listing image successfully changed.";
+                }
+                catch (Exception e)
+                {
+                    response.Success = false;
+                    response.Message = e.Message;
+                }
+            }
 
             return response;
         }

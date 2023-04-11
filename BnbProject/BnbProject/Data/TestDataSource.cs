@@ -38,7 +38,6 @@ namespace BnbProject.Data
                 Stays = new List<Stay>()
             },
         };
-
         public List<Listing> TestListings = new List<Listing>()
         {
             new Listing()
@@ -214,6 +213,10 @@ namespace BnbProject.Data
             user.Favorites.Add(ul.ListingId);
         }
         public void AddFileToListing(byte[] file)
+        {
+            throw new NotImplementedException();
+        }
+        public void EditListingFile(byte[] file, int listingId)
         {
             throw new NotImplementedException();
         }

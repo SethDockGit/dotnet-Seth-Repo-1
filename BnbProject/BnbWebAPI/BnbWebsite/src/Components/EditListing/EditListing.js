@@ -36,7 +36,7 @@ const style = {
 
 const {user, setUser} = useContext(UserContext);
 const {id} = useParams();
-const [userLoaded, setUserLoaded] = useState(false);  //do I want to use this or isLoggedIn?
+const [userLoaded, setUserLoaded] = useState(false);  
 const [listing, setListing] = useState();
 const [title, setTitle] = useState('');
 const [rate, setRate] = useState();
@@ -129,9 +129,10 @@ const getListing = () => {
         setListingAmenities(data.listing.amenities);
         console.log(data);
 
-        //if(user.id != data.listing.hostId){
-        //    navigate("/listings"); //This is so one user can't edit the listing of another. Flawed: needs fixed.
-        //}
+            if(!user || user.id != data.listing.hostId){
+                navigate("/listings"); 
+            }
+        
     })
     .then(() => {
         setListingLoaded(true);
@@ -204,16 +205,23 @@ const showFailMessage = () => {
 }
 const handleListingChange = () => {
 
-    let rateNumber = parseFloat(rate);
-    
-    if (isNaN(rateNumber)){
-        setFailSaveListing(true);
+    var file = files[0];
+    var fileType = file['type'];
+    const validImageTypes = ['image/jpeg', 'image/png'];
 
+    var rateNumber = parseFloat(rate);
+
+    if (!validImageTypes.includes(fileType)) {
+        setFailSaveListing(true);
+        setFailMessage("Error: File type must be jpeg or png.");
+        setFiles([]);
+    }
+    else if (isNaN(rateNumber)){
+        setFailSaveListing(true);
         setFailMessage("Error: Rate must be a number or decimal.");
     } 
     else if (title == "" || location == "" || description == ""){
         setFailSaveListing(true);
-
         setFailMessage("Error: One or more fields were left blank.");
     }
     else {
@@ -241,7 +249,32 @@ const handleListingChange = () => {
 
                 setModalOpen(true);
             });
-        }   
+        }  
+
+        if(!!files[0]){
+
+            var data = new FormData()
+            data.append('file', files[0])
+
+            var APIRequest = {
+                ImageFile: data,
+                ListingId: id
+            }
+        
+            fetch(`${api}/bnb/editfile`, {
+                method: 'POST',
+                body: APIRequest,
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+    
+                    //if(!data.success)
+                    //show an error message, likely related to type of file.
+                    //check what happens when you upload mp3
+                }); 
+        }
+       
 }
 const cancelEditListing = () => {
     navigate("/mystuff");
@@ -250,18 +283,34 @@ const cancelEditListing = () => {
 const fileSelectedHandler = (e) => {
     setFiles([...files, ...e.target.files]);
 }
+
+const showPic = () => {
+
+    var data = listing.picture;
+    
+    const Picture = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} />
+    
+    return (
+
+        (data != null)
+        ? <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+            <Picture data={data}/>
+          </Grid>
+        : <div></div>
+    )
+}
     return(
 
         <div>
             {listingLoaded && amenitiesLoaded && userLoaded &&
             <div>
                 <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', margin:2, fontSize:50}}>Edit Listing...</Typography>
-                {/*here go the pics*/}
+                {showPic()}
                 <Divider sx={{backgroundColor:'peachpuff'}}/>
 
                 <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
                     <form>
-                      <div><Typography variant="h6" sx={{mb:1}}>Upload Images</Typography></div>
+                      <div><Typography variant="h6" sx={{mb:1}}>Select Image</Typography></div>
                       <input type="file" multiple onChange={fileSelectedHandler} />
                     </form>
                 </Grid>
@@ -351,12 +400,12 @@ const fileSelectedHandler = (e) => {
 
                     <Modal
                       open={modalOpen}
-                      onClose={() => navigate(`/listings/${listing.id}`)}
+                      onClose={() => navigate('/mystuff')}
                     >
                         <Box sx={style}>
                             <Typography variant="h6">Changes saved!</Typography>
-                            <Link style={{ textDecoration: 'none' }} to={`/listings/${listing.id}`}>
-                                <Button>Go to your listing</Button>
+                            <Link style={{ textDecoration: 'none' }} to={`/mystuff`}>
+                                <Button>Back to MyStuff</Button>
                             </Link>
                         </Box>
                     </Modal>
