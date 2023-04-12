@@ -56,7 +56,6 @@ const getListings = () => {
     .then((data) => {
     
         setListings(data.listings);
-        debugger;
         console.log(data);
     });
 }

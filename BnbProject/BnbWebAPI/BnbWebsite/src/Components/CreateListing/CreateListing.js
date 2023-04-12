@@ -157,20 +157,29 @@ const showListingAmenities = () => {
 const handleClickRemoveAmenity = (e) => {
 
     const value1 = e.currentTarget.getAttribute("data-value1")
-        
+
     var newAmenities = listingAmenities.filter(a => a != value1);
 
     setListingAmenities(newAmenities);
 }
-const handleListingChange = () => {
+const handleClickCreateListing = () => {
      
-    var file = files[0];
-    var fileType = file['type'];
-    const validImageTypes = ['image/jpeg', 'image/png'];
+    var fail = false;
+
+    for(let i = 0; i < files.length; i++){
+
+        var file = files[i].file;
+        var fileType = file['type'];
+        const validImageTypes = ['image/jpeg', 'image/png'];
+
+        if(!validImageTypes.includes(fileType)){
+            fail = true;
+        }
+    }
 
     var rateNumber = parseFloat(rate);
 
-    if (!validImageTypes.includes(fileType)) {
+    if (fail) {
         setFailCreateListing(true);
         setFailMessage("Error: File type must be jpeg or png.");
         setFiles([]);
@@ -213,23 +222,22 @@ const handleListingChange = () => {
                 }
             });
 
-        if(!!files[0]){
+        if(!!files){
 
-            var data = new FormData()
-            data.append('file', files[0])
-        
-            fetch(`${api}/bnb/file`, {
-                method: 'POST',
-                body: data,
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-    
-                    //if(!data.success)
-                    //show an error message, likely related to type of file.
-                    //check what happens when you upload mp3
-                }); 
+            for(let i =0; i < files.length; i++){
+
+                var data = new FormData();
+                data.append('file', files[i].file)
+
+                fetch(`${api}/bnb/file`, {
+                    method: 'POST',
+                    body: data,
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                    }); 
+            }
         }
     }   
 }
@@ -250,7 +258,60 @@ const cancelCreateListing = () => {
     navigate("/mystuff");
 }
 const fileSelectedHandler = (e) => {
-    setFiles([...files, ...e.target.files]);
+    
+    const arr = Array.from(e.target.files);
+
+    if (files.length == 0){
+        
+        var filesToAdd = arr.map(function(val, index) {
+            return(
+                {
+                    id: index,
+                    file: val
+                }
+            )
+        })
+        setFiles([...filesToAdd]);
+    }
+    else{
+
+        var ids = files.map(function(val) {
+            return(
+                val.id
+            )
+        })
+        var highest = ids.reduce((a, b) => Math.max(a, b), -Infinity);
+
+        var filesToAdd = arr.map(function(val, index) {
+            return(
+                {
+                    id: highest + index + 1,
+                    file: val
+                }
+            )
+        })
+        setFiles([...files, ...filesToAdd]);
+    }
+
+}
+const displayFiles = () => {
+    
+    return files.map(function(val, index){
+        return(      
+            <ListItem key={index}>
+                • {val.file.name}
+                <Button type="button" onClick={handleClickRemoveFile} data-value1={val.id}>x</Button>
+            </ListItem>           
+        )        
+    })
+}
+const handleClickRemoveFile = (e) => {
+
+    const value1 = e.currentTarget.getAttribute("data-value1");
+
+    var newFiles = files.filter(f => f.id != value1);
+
+    setFiles(newFiles);
 }
 
     return(
@@ -264,7 +325,8 @@ const fileSelectedHandler = (e) => {
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
                 <form>
-                  <div><Typography variant="h6" sx={{mb:1}}>Upload Image</Typography></div>
+                  <div><Typography variant="h6" sx={{mb:1}}>Upload Images</Typography></div>
+                  {displayFiles()}
                   <input type="file" multiple onChange={fileSelectedHandler} />
                 </form>
             </Grid>
@@ -346,7 +408,7 @@ const fileSelectedHandler = (e) => {
                 </Grid>
                 <Grid item xs={.75}>
                     <Button variant="contained" sx={{":hover": {
-                    bgcolor: "peachpuff"}, backgroundColor:'lightsalmon', m:'auto', justifyContent: 'center', display: 'flex'}} onClick={handleListingChange}>Save</Button>
+                    bgcolor: "peachpuff"}, backgroundColor:'lightsalmon', m:'auto', justifyContent: 'center', display: 'flex'}} onClick={handleClickCreateListing}>Save</Button>
                 </Grid>
                 <Grid item xs={5}>
                     {showFailMessage()} 

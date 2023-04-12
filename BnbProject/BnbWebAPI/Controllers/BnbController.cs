@@ -66,13 +66,14 @@ namespace BnbWebAPI.Controllers
         [Route("file")]
         public WorkflowResponse AddFilesToListing([FromForm] IFormFile file)
         {
+
             WorkflowResponse response = Manager.AddFileToListing(file);
      
             return response;
         }
         [HttpPost]
-        [Route("editfile")]
-        public WorkflowResponse EditListingFile([FromBody] ImageTransfer transfer)
+        [Route("editfile/{id}")]
+        public WorkflowResponse EditListingFile([FromBody] ImageTransfer transfer, int id)
         {
             WorkflowResponse response = Manager.EditListingFile(transfer);
 

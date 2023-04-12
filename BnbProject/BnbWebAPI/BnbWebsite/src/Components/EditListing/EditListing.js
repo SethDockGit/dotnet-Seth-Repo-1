@@ -203,7 +203,7 @@ const showFailMessage = () => {
         </div>
     )
 }
-const handleListingChange = () => {
+const handleClickSaveListing = () => {
 
     var file = files[0];
     var fileType = file['type'];
@@ -261,7 +261,7 @@ const handleListingChange = () => {
                 ListingId: id
             }
         
-            fetch(`${api}/bnb/editfile`, {
+            fetch(`${api}/bnb/editfile/${id}`, {
                 method: 'POST',
                 body: APIRequest,
                 })
@@ -392,7 +392,7 @@ const showPic = () => {
                     </Grid>
                     <Grid item xs={1}>
                         <Button variant="contained" sx={{":hover": {
-                        bgcolor: "peachpuff"}, backgroundColor:'lightsalmon', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={handleListingChange}>Save Changes</Button>
+                        bgcolor: "peachpuff"}, backgroundColor:'lightsalmon', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={handleClickSaveListing}>Save Changes</Button>
                     </Grid>
                     <Grid item xs={5}>
                         {showFailMessage()} 
