@@ -123,8 +123,6 @@ namespace BnbProject.Data
             TestUsers[0].Listings.Add(TestListings[0]);
             TestUsers[0].Favorites.Add(TestListings[1].Id);
 
-
-
             //Bob owns listing 2, and stayed at listing 1 during stay 2
             TestStays[1].Review = TestReviews[1];
             TestStays[1].HostId = TestUsers[0].Id;
@@ -139,9 +137,19 @@ namespace BnbProject.Data
         {
             return TestListings;
         }
-        public void AddListing(Listing listing)
+        public Listing AddListing(Listing listing)
         {
+            var highest = TestListings.Max(l => l.Id);
+
+            listing.Id = highest++;
+
             TestListings.Add(listing);
+
+            var user = TestUsers.SingleOrDefault(u => u.Id == listing.HostId);
+
+            user.Listings.Add(listing);
+
+            return listing;    
         }
         public List<string> GetAmenities()
         {
@@ -161,12 +169,16 @@ namespace BnbProject.Data
         {
             Listing toUpdate = TestListings.SingleOrDefault(l => l.Id == listing.Id);
 
-            var index = TestListings.IndexOf(toUpdate);
+            toUpdate = listing;
 
-            TestListings[index] = listing;
         }
         public void AddStay(Stay stay)
         {
+
+            var highest = TestStays.Max(s => s.Id);
+
+            stay.Id = highest++;
+
             TestStays.Add(stay);
 
             UserAccount user = TestUsers.SingleOrDefault(u => u.Id == stay.GuestId);
@@ -179,6 +191,7 @@ namespace BnbProject.Data
         }
         public void AddReview(Review review)
         {
+
             Stay stay = TestStays.SingleOrDefault(s => s.Id == review.StayId);
 
             stay.Review = review;
@@ -200,6 +213,10 @@ namespace BnbProject.Data
         }
         public void AddUser(UserAccount user)
         {
+            var highest = TestUsers.Max(u => u.Id);
+
+            user.Id = highest++;
+
             TestUsers.Add(user);
         }
         public UserAccount GetUserByUsername(string username)
@@ -212,7 +229,7 @@ namespace BnbProject.Data
 
             user.Favorites.Add(ul.ListingId);
         }
-        public void AddFileToListing(byte[] file)
+        public void AddFileToListing(byte[] file, int listingId)
         {
             throw new NotImplementedException();
         }

@@ -18,7 +18,7 @@ import Box from '@mui/material/Box';
 import { UserContext } from "../../Contexts/UserContext/UserContext";
 import { useContext } from "react";
 import { useEffect } from "react";
-
+import ImageGallery from "../Subcomponents/ImageGallery/ImageGallery";
 
 export default function Listing(){
 
@@ -337,23 +337,6 @@ const displayFavoriteIcon = () => {
     )
 }
 
-
-const showPic = () => {
-
-    var data = listing.picture;
-    
-    const Picture = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} />
-    
-    return (
-
-        (data != null)
-        ? <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-            <Picture data={data}/>
-          </Grid>
-        : <div></div>
-    )
-}
-
     return(
 
         <div>
@@ -361,7 +344,9 @@ const showPic = () => {
             
             {listingLoaded && 
             <div>
-            {showPic()}
+            <Grid container sx={{justifyContent: 'center', display: 'flex'}}>
+                <ImageGallery listing={listing}/>
+            </Grid>
             {displayFavoriteIcon()}
 
             <Divider sx={{backgroundColor:'peachpuff'}}/>

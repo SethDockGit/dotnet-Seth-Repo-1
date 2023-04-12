@@ -56,10 +56,10 @@ namespace BnbProject.Logic
 
             try
             {
-                IDataSource.AddListing(listing);
+                var completeListing = IDataSource.AddListing(listing);
                 response.Success = true;
                 response.Message = $"Listing '{listing.Title}' Added successfully.";
-                response.Listing = listing;
+                response.Listing = completeListing;
             }
             catch (Exception e)
             {
@@ -297,7 +297,7 @@ namespace BnbProject.Logic
             return response;
         }
 
-        public WorkflowResponse AddFileToListing(IFormFile file)
+        public WorkflowResponse AddFileToListing(IFormFile file, int listingId)
         {
             WorkflowResponse response = new WorkflowResponse();
 
@@ -308,7 +308,7 @@ namespace BnbProject.Logic
 
                 try
                 {
-                    IDataSource.AddFileToListing(fileBytes);
+                    IDataSource.AddFileToListing(fileBytes, listingId);
                     response.Success = true;
                     response.Message = "Image successfully added to listing.";
                 }
@@ -321,18 +321,18 @@ namespace BnbProject.Logic
 
             return response;
         }
-        public WorkflowResponse EditListingFile(ImageTransfer transfer)
+        public WorkflowResponse EditListingFile(IFormFile file, int listingId)
         {
             WorkflowResponse response = new WorkflowResponse();
 
             using (var ms = new MemoryStream())
             {
-                transfer.ImageFile.CopyTo(ms);
+                file.CopyTo(ms);
                 var fileBytes = ms.ToArray();
 
                 try
                 {
-                    IDataSource.EditListingFile(fileBytes, transfer.ListingId);
+                    IDataSource.EditListingFile(fileBytes, listingId);
                     response.Success = true;
                     response.Message = "Listing image successfully changed.";
                 }

@@ -9,7 +9,7 @@ export default function ListingsCard({listing}){
 
     const showPic = () => {
 
-        var data = listing.picture;
+        var data = listing.pictures[0];
         
         const Picture = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} alt=""
         width="175" height="200"/>

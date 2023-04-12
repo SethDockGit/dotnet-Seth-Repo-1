@@ -45,14 +45,15 @@ namespace BnbProject.Data
                         Title = (string)dr["Title"],
                         Description = (string)dr["Description"],
                         Location = (string)dr["Location"],
-                        Rate = (decimal)dr["Rate"]
-                    };
+                        Rate = (decimal)dr["Rate"],
+                        Pictures = new List<byte[]>()
+                };
 
-                    if (!Convert.IsDBNull(dr["Picture"]))
+                    if (!Convert.IsDBNull(dr["Picture"]) && !listing.Pictures.Any(p => p == (byte[])dr["Picture"]))
                     {
                         var bytes = (byte[])dr["Picture"];
 
-                        listing.Picture = bytes;
+                        listing.Pictures.Add(bytes);
                     }
 
                     listings.Add(listing);
@@ -61,7 +62,7 @@ namespace BnbProject.Data
 
             return listings;
         }
-        public void AddListing(Listing listing)
+        public Listing AddListing(Listing listing)
         {
 
             using SqlConnection conn = new SqlConnection();
@@ -70,7 +71,8 @@ namespace BnbProject.Data
             SqlCommand cmd = new SqlCommand
             {
                 Connection = conn,
-                CommandText = "INSERT INTO Listing VALUES (@HostId, @Title, @Description, @Location, @Rate);"
+                CommandText = "INSERT INTO Listing VALUES (@HostId, @Title, @Description, @Location, @Rate); " +
+                "SELECT @@Identity as 'ListingId';"
             };
 
             cmd.Parameters.AddWithValue("@HostId", listing.HostId);
@@ -80,7 +82,12 @@ namespace BnbProject.Data
             cmd.Parameters.AddWithValue("@Rate", listing.Rate);
 
             conn.Open();
-            cmd.ExecuteNonQuery();
+            using SqlDataReader dr = cmd.ExecuteReader();
+            while (dr.Read())
+            {
+                listing.Id = Convert.ToInt32(dr["ListingId"]);
+            }
+            conn.Close();
 
             if (listing.Amenities != null)
             {
@@ -97,9 +104,12 @@ namespace BnbProject.Data
                     cmd2.Parameters.AddWithValue("@AmenityId", a);
                     cmd2.Parameters.AddWithValue("@ListingId", listing.Id);
 
+                    conn.Open();
                     cmd2.ExecuteNonQuery();
                 }
             }
+
+            return listing;
         }
         public List<int> GetAmenityIdsByName(List<string> amenities)
         {
@@ -162,6 +172,7 @@ namespace BnbProject.Data
             Listing listing = new Listing();
             listing.Amenities = new List<string>();
             listing.Stays = new List<Stay>();
+            listing.Pictures = new List<byte[]>();
 
             using (SqlConnection conn = new SqlConnection())
             {
@@ -228,15 +239,15 @@ namespace BnbProject.Data
                             listing.Amenities.Add((string)dr["AmenityName"]);
                         }
 
-                        if (!Convert.IsDBNull(dr["Picture"]))
+                        if (!Convert.IsDBNull(dr["Picture"]) && !listing.Pictures.Any(p => p == (byte[])dr["Picture"]))
                         {
                             var bytes = (byte[])dr["Picture"];
 
-                            listing.Picture = bytes;
+                            listing.Pictures.Add(bytes);
                         }
                     }
                 }
-                var a = 1;
+
                 return listing;
 
             }
@@ -288,14 +299,15 @@ namespace BnbProject.Data
                             Title = (string)dr["Title"],
                             Description = (string)dr["Description"],
                             Location = (string)dr["Location"],
-                            Rate = (decimal)dr["Rate"]
+                            Rate = (decimal)dr["Rate"],
+                            Pictures = new List<byte[]>()
                         };
 
-                        if (!Convert.IsDBNull(dr["Picture"]))
+                        if (!Convert.IsDBNull(dr["Picture"]) && !listing.Pictures.Any(p => p == (byte[])dr["Picture"]))
                         {
                             var bytes = (byte[])dr["Picture"];
 
-                            listing.Picture = bytes;
+                            listing.Pictures.Add(bytes);
                         }
 
                         user.Listings.Add(listing);
@@ -527,14 +539,15 @@ namespace BnbProject.Data
                             Title = (string)dr["Title"],
                             Description = (string)dr["Description"],
                             Location = (string)dr["Location"],
-                            Rate = (decimal)dr["Rate"]
+                            Rate = (decimal)dr["Rate"],
+                            Pictures = new List<byte[]>()
                         };
 
-                        if (!Convert.IsDBNull(dr["Picture"]))
+                        if (!Convert.IsDBNull(dr["Picture"]) && !listing.Pictures.Any(p => p == (byte[])dr["Picture"]))
                         {
                             var bytes = (byte[])dr["Picture"];
 
-                            listing.Picture = bytes;
+                            listing.Pictures.Add(bytes);
                         }
 
                         user.Listings.Add(listing);
@@ -591,7 +604,7 @@ namespace BnbProject.Data
             conn.Open();
             cmd.ExecuteNonQuery();
         }
-        public void AddFileToListing(byte[] file)
+        public void AddFileToListing(byte[] file, int listingId)
         {
             using SqlConnection conn = new SqlConnection();
             conn.ConnectionString = ConnectionString;
@@ -599,9 +612,10 @@ namespace BnbProject.Data
             SqlCommand cmd = new SqlCommand
             {
                 Connection = conn,
-                CommandText = "INSERT INTO ListingImage VALUES (IDENT_CURRENT('Listing'), @Picture);"
+                CommandText = "INSERT INTO ListingImage VALUES (@ListingShownId, @Picture);"
             };
 
+            cmd.Parameters.AddWithValue("@ListingShownId", listingId);
             cmd.Parameters.AddWithValue("@Picture", file);
 
             conn.Open();

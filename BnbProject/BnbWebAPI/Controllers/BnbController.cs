@@ -63,19 +63,19 @@ namespace BnbWebAPI.Controllers
             return response;
         }
         [HttpPost]
-        [Route("file")]
-        public WorkflowResponse AddFilesToListing([FromForm] IFormFile file)
+        [Route("file/{id}")]
+        public WorkflowResponse AddFilesToListing([FromForm] IFormFile file, int id)
         {
 
-            WorkflowResponse response = Manager.AddFileToListing(file);
+            WorkflowResponse response = Manager.AddFileToListing(file, id);
      
             return response;
         }
         [HttpPost]
         [Route("editfile/{id}")]
-        public WorkflowResponse EditListingFile([FromBody] ImageTransfer transfer, int id)
+        public WorkflowResponse EditListingFile([FromForm] IFormFile file, int id)
         {
-            WorkflowResponse response = Manager.EditListingFile(transfer);
+            WorkflowResponse response = Manager.EditListingFile(file, id);
 
             return response;
         }

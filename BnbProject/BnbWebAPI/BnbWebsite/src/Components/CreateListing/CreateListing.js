@@ -219,26 +219,26 @@ const handleClickCreateListing = () => {
                     user.listings = [...user.listings, data.listing];
                     setUser(user);
                     setModalOpen(true);
+
+                    if(!!files){
+
+                        for(let i =0; i < files.length; i++){
+            
+                            var form = new FormData();
+                            form.append('file', files[i].file)
+            
+                            fetch(`${api}/bnb/file/${data.listing.id}`, {
+                                method: 'POST',
+                                body: form,
+                                })
+                                .then((response) => response.json())
+                                .then((data) => {
+                                    console.log(data);
+                                }); 
+                        }
+                    }
                 }
             });
-
-        if(!!files){
-
-            for(let i =0; i < files.length; i++){
-
-                var data = new FormData();
-                data.append('file', files[i].file)
-
-                fetch(`${api}/bnb/file`, {
-                    method: 'POST',
-                    body: data,
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        console.log(data);
-                    }); 
-            }
-        }
     }   
 }
 const showFailMessage = () => {

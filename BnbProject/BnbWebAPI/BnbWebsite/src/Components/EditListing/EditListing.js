@@ -205,13 +205,22 @@ const showFailMessage = () => {
 }
 const handleClickSaveListing = () => {
 
-    var file = files[0];
-    var fileType = file['type'];
-    const validImageTypes = ['image/jpeg', 'image/png'];
+    var fail = false;
+
+    for(let i = 0; i < files.length; i++){
+
+        var file = files[i].file;
+        var fileType = file['type'];
+        const validImageTypes = ['image/jpeg', 'image/png'];
+
+        if(!validImageTypes.includes(fileType)){
+            fail = true;
+        }
+    }
 
     var rateNumber = parseFloat(rate);
 
-    if (!validImageTypes.includes(fileType)) {
+    if (!fail) {
         setFailSaveListing(true);
         setFailMessage("Error: File type must be jpeg or png.");
         setFiles([]);
@@ -279,38 +288,104 @@ const handleClickSaveListing = () => {
 const cancelEditListing = () => {
     navigate("/mystuff");
 }
-
 const fileSelectedHandler = (e) => {
-    setFiles([...files, ...e.target.files]);
+    
+    const arr = Array.from(e.target.files);
+
+    if (files.length == 0){
+        
+        var filesToAdd = arr.map(function(val, index) {
+            return(
+                {
+                    id: index,
+                    file: val
+                }
+            )
+        })
+        setFiles([...filesToAdd]);
+    }
+    else{
+
+        var ids = files.map(function(val) {
+            return(
+                val.id
+            )
+        })
+        var highest = ids.reduce((a, b) => Math.max(a, b), -Infinity);
+
+        var filesToAdd = arr.map(function(val, index) {
+            return(
+                {
+                    id: highest + index + 1,
+                    file: val
+                }
+            )
+        })
+        setFiles([...files, ...filesToAdd]);
+    }
+
+}
+const displayFiles = () => {
+    
+    return files.map(function(val, index){
+        return(      
+            <ListItem key={index}>
+                • {val.file.name}
+                <Button type="button" onClick={handleClickRemoveFile} data-value1={val.id}>x</Button>
+            </ListItem>           
+        )        
+    })
+}
+const handleClickRemoveFile = (e) => {
+
+    const value1 = e.currentTarget.getAttribute("data-value1");
+
+    var newFiles = files.filter(f => f.id != value1);
+
+    setFiles(newFiles);
+}
+const showPics = () => {
+
+    const Picture = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} alt=""
+    width="250" height="225"/>
+
+    return listing.pictures.map(function(val, index) {
+        return(
+            <div key={index}>
+                <Picture data={val}/>
+                <Button type="button" onClick={handleClickRemovePic} data-value1={val}>x</Button>
+            </div>
+        )
+    })
+}
+const handleClickRemovePic = (e) => {
+
+    const value1 = e.currentTarget.getAttribute("data-value1");
+
+    let tempListing = listing;
+
+    tempListing.pictures = listing.pictures.filter(p => p != value1);
+
+    setListing(tempListing);
 }
 
-const showPic = () => {
-
-    var data = listing.picture;
-    
-    const Picture = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} />
-    
-    return (
-
-        (data != null)
-        ? <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-            <Picture data={data}/>
-          </Grid>
-        : <div></div>
-    )
-}
     return(
 
         <div>
             {listingLoaded && amenitiesLoaded && userLoaded &&
             <div>
                 <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', margin:2, fontSize:50}}>Edit Listing...</Typography>
-                {showPic()}
+
                 <Divider sx={{backgroundColor:'peachpuff'}}/>
 
                 <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+                    {showPics()}
+                </Grid>
+
+                <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
                     <form>
-                      <div><Typography variant="h6" sx={{mb:1}}>Select Image</Typography></div>
+                      <div><Typography variant="h6" sx={{mb:1}}>Choose Images</Typography></div>
+                      {displayFiles()}
                       <input type="file" multiple onChange={fileSelectedHandler} />
                     </form>
                 </Grid>

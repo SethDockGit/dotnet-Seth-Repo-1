@@ -130,11 +130,6 @@ const applyFilters = () => {
         var filtered = unfiltered.filter(l => l.rate < maxRate && l.rate > minRate);
         //If there are no failures, it starts with the list of unfiltered listings, and filters first for rates.
 
-
-        //wait a minute. Shouldn't every reference to "listings" in these loops use "filtered" instead? Or does changing
-        //an array while looping through it cause some sort of problem?
-        //I guess it still works the same, but that way you'd be filtering from a smaller array, thus more efficient.
-        
         for(let i=0; i < listings.length; i++){
 
             for(let j=0; j < selectedAmenities.length, j++;){
