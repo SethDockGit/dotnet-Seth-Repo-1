@@ -12,21 +12,16 @@ export default function ListingsCard({listing}){
         var data = listing.pictures[0];
         
         const Picture = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} alt=""
-        width="175" height="200"/>
+        width="225" height="250"/>
         
-        return (
-    
-            (data != null)
-            ? <Picture data={data}/>
-            : <div></div>
-        )
+        return <Picture data={data}/>
     }
 
     return(
 
         <Grid item s={3}>
             <Link style={{ textDecoration: 'none' }} underline='none' to={`/listings/${listing.id}`}>
-                <Card sx={{minWidth:280, ml:3, mr:3, mb:3}}>
+                <Card sx={{minWidth:225, ml:3, mr:3, mb:3}}>
                     <CardActionArea>
                         <CardContent>
                             {showPic()}

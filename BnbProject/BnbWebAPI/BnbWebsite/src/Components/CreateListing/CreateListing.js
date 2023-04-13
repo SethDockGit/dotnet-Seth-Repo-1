@@ -323,6 +323,7 @@ const handleClickRemoveFile = (e) => {
 
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
+                            {/*subcomponent here*/}
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
                 <form>
                   <div><Typography variant="h6" sx={{mb:1}}>Upload Images</Typography></div>
@@ -382,6 +383,8 @@ const handleClickRemoveFile = (e) => {
                     <TextField sx={{mb:2}} placeholder='Enter Amenity' onChange={handleCustomAmenityChange}/>
                     <Button sx={{color:'lightsalmon'}} onClick={addCustomAmenity}>Add</Button>
                 </Grid>
+
+                            {/*subcomponent here*/}
                 <Grid item xs={2}>
                     <Typography sx={{mt:2}} variant='h6'>Your Amenities:</Typography>
                     <List sx={{

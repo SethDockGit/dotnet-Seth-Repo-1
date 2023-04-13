@@ -2,23 +2,19 @@ import { Divider, Typography } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
 import { useState } from "react";
 import Button from "@mui/material/Button";
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import IconButton from '@mui/material/IconButton';
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import { useParams } from "react-router-dom";
-import Rating from '@mui/material/Rating';
 import dayjs from "dayjs";
-import ListItem from "@mui/material/ListItem";
-import List from "@mui/material/List";
-import Drawer from "@mui/material/Drawer";
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { UserContext } from "../../Contexts/UserContext/UserContext";
 import { useContext } from "react";
 import { useEffect } from "react";
 import ImageGallery from "../Subcomponents/ImageGallery/ImageGallery";
+import AmenitiesList from "../Subcomponents/AmenitiesList/AmenitiesList";
+import FaveIcon from "../Subcomponents/FaveIcon/FaveIcon";
+import ReviewCard from "../Subcomponents/ReviewCard/ReviewCard";
+import BookingDrawer from "../Subcomponents/BookingDrawer/BookingDrawer";
+
 
 export default function Listing(){
 
@@ -40,15 +36,15 @@ const {id} = useParams();
 const [listingLoaded, setListingLoaded] = useState(false);
 const {user, setUser, isLoggedIn, setIsLoggedIn} = useContext(UserContext);
 const [listing, setListing] = useState();
-const [drawerOpen, setDrawerOpen] = useState(false);
-const [checkin, setCheckin] = useState('');
-const [checkout, setCheckout] = useState('');
-const [failBooking, setFailBooking] = useState(false);
-const [failBookingMessage, setFailBookingMessage] = useState('');
 const [modalOpen, setModalOpen] = useState(false);
 const [requiresLogin, setRequiresLogin] = useState(false);
 const [loginErrorMessage, setLoginErrorMessage] = useState('');
 const [addToFavorites, setAddtoFavorites] = useState(false);
+const [failBooking, setFailBooking] = useState(false);
+const [failBookingMessage, setFailBookingMessage] = useState('');
+const [drawerOpen, setDrawerOpen] = useState(false);
+const [checkin, setCheckin] = useState('');
+const [checkout, setCheckout] = useState('');
 
 //whereas some pages rely on user existing to render at all, this page relies on isloggedin to render conditionally.
 //That's why the verify login method is different. No re-routing occurs, just setting of isloggedin.
@@ -97,7 +93,6 @@ const getListing = () => {
     fetch(`${api}/bnb/listing/${id}`)
     .then((response) => response.json())
     .then((data) => {
-        debugger;
         setListing(data.listing);
         console.log(data);
     })
@@ -109,82 +104,6 @@ const getListing = () => {
     getListing();
 }, []);
 
-
-const showListingAmenities = () => {
-    
-    return listing.amenities.map(function(val, index){
-        return(      
-            <ListItem key={index}>
-                • {val}
-            </ListItem>           
-        )        
-    })
-}
-const showBookingDrawer = () => {
-
-    const isDisabled = (date) => {
-
-        for(let i = 0; i < listing.stays.length; i++){
-
-            if(dayjs(date).isBetween(dayjs(listing.stays[i].startDate), dayjs(listing.stays[i].endDate), 'day', '[)')){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }
-    }
-
-    return(
-        <Grid container sx={{justifyContent: 'center', display: 'flex', width:400}}>
-            <Grid item xs={7}>
-                <Typography variant="h4" sx={{mb:3, mt:3}}>Book a Stay</Typography>
-                <Divider sx={{backgroundColor:'peachpuff'}}/>
-
-                <Typography vairant="h6" sx={{mt:4, mb:1}}>When would you like to stay?</Typography>
-
-                <Typography sx={{mt:3, mb:1}}>Check-in</Typography>
-                <DesktopDatePicker
-                    label="Check-in"
-                    inputFormat="MM/DD/YYYY"
-                    value={checkin}
-                    shouldDisableDate={isDisabled}
-                    onChange={handleCheckinChange}
-                    />
-                <Typography sx={{mt:3, mb:1}}>Check-out</Typography>
-                <DesktopDatePicker
-                    label="Check-out"
-                    inputFormat="MM/DD/YYYY"
-                    value={checkout}
-                    shouldDisableDate={isDisabled}
-                    onChange={handleCheckoutChange}
-                    />
-                {showBookingMessage()}
-                <br/>
-                <Button variant="contained" sx={{":hover": {
-                bgcolor: "peachpuff"}, mt:3, mr:2, backgroundColor:"lightsalmon"}} 
-                onClick={confirmBooking}>Confirm
-                </Button>
-                <Button variant="contained" sx={{":hover": {
-                bgcolor: "gray"}, mt:3, backgroundColor:'lightgray'}} 
-                onClick={() => setDrawerOpen(false)}>Cancel</Button>
-            </Grid>  
-        </Grid>
-    )
-}
-const handleCheckinChange = (newValue) => {
-    setCheckin(newValue);
-}
-const handleCheckoutChange = (newValue) => {
-    setCheckout(newValue);
-}
-const showBookingMessage = () => {
-
-    return(
-        failBooking &&
-        <Typography variant="caption" color="red">{failBookingMessage}</Typography>
-    )
-}
 const confirmBooking = () => {
 
     if(dayjs(checkin).isAfter(dayjs(checkout))){
@@ -230,36 +149,20 @@ const confirmBooking = () => {
             });
     }
 }
-const showReviews = () => {
+const Reviews = () => {
     
     return listing.stays.map(function(val, index){
 
         return(
-
-            val.review != null &&
-            <Grid item s={4} key={index}>
-                <Card sx={{ maxWidth: 300, margin:3}}>
-                    <CardContent>
-                      <Typography sx={{ fontSize: 14 }}>
-                        {val.review.username}
-                      </Typography>
-                      <Typography variant="body1" color="text.secondary">
-                        {dayjs(val.startDate).format('MM/DD/YYYY')} - {dayjs(val.endDate).format('MM/DD/YYYY')}
-                      </Typography>
-                          <Rating
-                          name="user rating"
-                          value={val.review.rating}
-                          disabled
-                          />
-                      <Typography variant="body2">
-                        "{val.review.text}"
-                      </Typography>
-                    </CardContent>
-                </Card>
-            </Grid>
-
+            <ReviewCard stay={val} key={index}/>
         )
     })
+}
+const handleCheckinChange = (newValue) => {
+    setCheckin(newValue);
+}
+const handleCheckoutChange = (newValue) => {
+    setCheckout(newValue);
 }
 const handleClickBooking = () => {
 
@@ -270,7 +173,6 @@ const handleClickBooking = () => {
     else{
         setDrawerOpen(true);
     }
-    //before changing it, onClick for booking button was {() => setDrawerOpen(true)}
 }
 const showLoginError = () => {
     return(
@@ -308,46 +210,19 @@ const handleClickFavorite = () => {
             });
     }
 }
-const displayFavoriteIcon = () => {
-
-    var isFavorite = false;
-
-    if(isLoggedIn && !!user){
-
-        for(let i = 0; i < user.favorites.length; i++){
-
-            if(user.favorites[i] == id || addToFavorites){
-                isFavorite = true;
-            }
-        }
-    }
-
-    return(
-        isFavorite 
-        ?   <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <IconButton>
-                    <FavoriteIcon sx={{m:2, color:"pink"}}/>
-                </IconButton>
-            </Grid>
-        :   <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <IconButton onClick={handleClickFavorite}>
-                    <FavoriteIcon sx={{m:2}}/>
-                </IconButton>
-            </Grid>
-    )
-}
 
     return(
 
-        <div>
+        <div>     
 
-            
             {listingLoaded && 
+
             <div>
-            <Grid container sx={{justifyContent: 'center', display: 'flex'}}>
-                <ImageGallery listing={listing}/>
-            </Grid>
-            {displayFavoriteIcon()}
+
+            <ImageGallery listing={listing}/>
+
+            <FaveIcon isLoggedIn={isLoggedIn} user={user} handleClickFavorite={handleClickFavorite}
+            id={id} addToFavorites={addToFavorites}/>
 
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
@@ -364,9 +239,20 @@ const displayFavoriteIcon = () => {
                         Book A Stay
                     </Button>    
 
-                    <Drawer open={drawerOpen} anchor={"left"} onClose={() => setDrawerOpen(false)}>
-                        {showBookingDrawer()}
-                    </Drawer>
+                    <BookingDrawer 
+                    listing={listing}
+                    confirmBooking={confirmBooking}
+                    checkin={checkin}
+                    checkout={checkout}
+                    handleCheckinChange={handleCheckinChange}
+                    handleCheckoutChange={handleCheckoutChange}
+                    drawerOpen={drawerOpen}
+                    setDrawerOpen={setDrawerOpen}
+                    failBooking={failBooking}
+                    failBookingMessage={failBookingMessage} 
+                    />
+                    
+
                 </Grid>
                 <Grid item xs={1}>
                     <Typography sx={{mt:1}} variant='h6'>${listing.rate}/Night</Typography>
@@ -380,31 +266,17 @@ const displayFavoriteIcon = () => {
 
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
-            <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}> 
-                <Grid item xs={4}>
-                    <Typography sx={{mt:2}} variant='h6'>Amenities</Typography>
-                    <List sx={{
-                        width: '100%',
-                        maxWidth: 500,
-                        bgcolor: 'background.white',
-                        position: 'relative',
-                        overflow: 'auto',
-                        maxHeight: 200,
-                        '& ul': { padding: 0 },
-                        }}>
-                        {showListingAmenities()}
-                        </List>
-                </Grid>
-            </Grid>
+            <AmenitiesList listing={listing}/>
 
             <Divider sx={{backgroundColor:'peachpuff'}}/>
+
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}> 
                 <Grid item xs={4}>
                     <Typography sx={{mt:2}} variant='h6'>Reviews</Typography>
                 </Grid>
                 <Grid item xs={12}/>
-                {showReviews()}
+                <Reviews/>
             </Grid>
             <Modal
               open={modalOpen}

@@ -382,6 +382,7 @@ const handleClickRemovePic = (e) => {
                     {showPics()}
                 </Grid>
 
+            {/*subcomponent here*/}
                 <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
                     <form>
                       <div><Typography variant="h6" sx={{mb:1}}>Choose Images</Typography></div>

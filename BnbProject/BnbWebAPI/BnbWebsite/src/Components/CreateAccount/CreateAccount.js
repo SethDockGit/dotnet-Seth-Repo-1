@@ -48,9 +48,10 @@ const [modalOpen, setModalOpen] = useState(false);
 const [fail, setFail] = useState(false);
 const navigate = useNavigate();
 
-//if(isLoggedIn){
-//    navigate("/mystuff");
-//}
+if(isLoggedIn){
+   navigate("/mystuff");
+}
+
 //The logic here is that if the user manually navigates to login page while logged in, they are re-directed.
 //However, with impersistent test data, they are redirected to a page that can't find their data, 
 //since the App Bar reads the locally stored cookie and sets isLoggedIn to true, so error.
