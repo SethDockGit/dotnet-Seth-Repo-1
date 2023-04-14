@@ -36,7 +36,6 @@ const style = {
   };
 
 const {user, setUser} = useContext(UserContext);
-const [userLoaded, setUserLoaded] = useState(false); 
 const [title, setTitle] = useState('');
 const [rate, setRate] = useState();
 const [location, setLocation] = useState('');
@@ -64,9 +63,6 @@ const getUser = (id) => {
     .then((response) => response.json())
     .then((data) => {
         setUser(data.user);
-    })
-    .then(() => {
-        setUserLoaded(true);
     });
 }
 
@@ -87,9 +83,6 @@ const verifyLogin = () => {
     else{
         if(dayjs().isAfter(dayjs(user.logTime).add(6, 'hour'))){
             reRoute();
-        }
-        else{ 
-            setUserLoaded(true); 
         }
     } 
 }
@@ -148,7 +141,7 @@ const showListingAmenities = () => {
     return listingAmenities.map(function(val, index){
         return(      
             <ListItem key={index}>
-                • {val}
+                {val}
                 <Button type="button" onClick={handleClickRemoveAmenity} data-value1={val}>x</Button>
             </ListItem>           
         )        
@@ -257,54 +250,6 @@ const showFailMessage = () => {
 const cancelCreateListing = () => {
     navigate("/mystuff");
 }
-const fileSelectedHandler = (e) => {
-    
-    const arr = Array.from(e.target.files);
-
-    if (files.length == 0){
-        
-        var filesToAdd = arr.map(function(val, index) {
-            return(
-                {
-                    id: index,
-                    file: val
-                }
-            )
-        })
-        setFiles([...filesToAdd]);
-    }
-    else{
-
-        var ids = files.map(function(val) {
-            return(
-                val.id
-            )
-        })
-        var highest = ids.reduce((a, b) => Math.max(a, b), -Infinity);
-
-        var filesToAdd = arr.map(function(val, index) {
-            return(
-                {
-                    id: highest + index + 1,
-                    file: val
-                }
-            )
-        })
-        setFiles([...files, ...filesToAdd]);
-    }
-
-}
-const displayFiles = () => {
-    
-    return files.map(function(val, index){
-        return(      
-            <ListItem key={index}>
-                • {val.file.name}
-                <Button type="button" onClick={handleClickRemoveFile} data-value1={val.id}>x</Button>
-            </ListItem>           
-        )        
-    })
-}
 const handleClickRemoveFile = (e) => {
 
     const value1 = e.currentTarget.getAttribute("data-value1");
@@ -323,14 +268,7 @@ const handleClickRemoveFile = (e) => {
 
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
-                            {/*subcomponent here*/}
-            <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                <form>
-                  <div><Typography variant="h6" sx={{mb:1}}>Upload Images</Typography></div>
-                  {displayFiles()}
-                  <input type="file" multiple onChange={fileSelectedHandler} />
-                </form>
-            </Grid>
+            <ImageUpload files={files} setFiles={setFiles} handleClickRemoveFile={handleClickRemoveFile}/>
 
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 

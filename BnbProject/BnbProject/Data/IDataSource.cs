@@ -23,6 +23,8 @@ namespace BnbProject.Data
         public List<int> GetUserIds();
         public void UpdateListing(Listing listing);
         public void EditListingFile(byte[] file, int listingId);
+        public void RemoveFavorite(UserListing ul);
+        public void RemoveListing(int listingId);
     }
 
 

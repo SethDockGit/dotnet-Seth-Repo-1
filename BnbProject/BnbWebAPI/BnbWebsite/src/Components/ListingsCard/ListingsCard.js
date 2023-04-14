@@ -3,6 +3,7 @@ import CardContent from "@mui/material/CardContent";
 import { CardActionArea, Typography } from "@mui/material";
 import { Link } from 'react-router-dom';
 import Grid from '@mui/material/Unstable_Grid2';
+import Box from '@mui/material/Box';
 
 export default function ListingsCard({listing}){
 
@@ -14,7 +15,13 @@ export default function ListingsCard({listing}){
         const Picture = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} alt=""
         width="225" height="250"/>
         
-        return <Picture data={data}/>
+        return(
+        !!data
+        ? <Picture data={data}/>
+        : <Box sx={{width:225, height:250}}>
+            <Typography variant="caption">No image available</Typography>
+          </Box>
+        )
     }
 
     return(

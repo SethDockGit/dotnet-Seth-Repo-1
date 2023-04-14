@@ -37,6 +37,7 @@ namespace BnbProject.Logic
                 response.Success = false;
                 response.Message = e.Message + e.StackTrace;
             }
+
             return response;
         }
         public ListingResponse AddListing(ListingTransfer transfer)
@@ -66,6 +67,7 @@ namespace BnbProject.Logic
                 response.Success = false;
                 response.Message = e.Message + e.StackTrace;
             }
+
             return response;
         }
         public WorkflowResponse EditListing(ListingTransfer transfer)
@@ -91,9 +93,8 @@ namespace BnbProject.Logic
                 response.Success = false;
                 response.Message = e.Message + e.StackTrace;
             }
+
             return response;
-
-
         }
         public AmenitiesResponse GetAmenities()
         {
@@ -129,7 +130,6 @@ namespace BnbProject.Logic
                 response.Message = e.Message + e.StackTrace;
             }
             return response;
-
         }
         public UserResponse GetUserById(int id)
         {
@@ -178,6 +178,7 @@ namespace BnbProject.Logic
                 response.Success = false;
                 response.Message = e.Message + e.StackTrace;
             }
+
             return response;
         }
         public WorkflowResponse AddReview(Review review)
@@ -195,8 +196,8 @@ namespace BnbProject.Logic
                 response.Success = false;
                 response.Message = e.Message + e.StackTrace;
             }
-            return response;
 
+            return response;
         }
         public UserResponse CreateAccount(CreateAccountRequest request)
         {
@@ -276,6 +277,7 @@ namespace BnbProject.Logic
                 response.Success = false;
                 response.Message = e.Message;
             }
+
             return response;
         }
         public WorkflowResponse AddFavorite(UserListing ul)
@@ -341,6 +343,44 @@ namespace BnbProject.Logic
                     response.Success = false;
                     response.Message = e.Message;
                 }
+            }
+
+            return response;
+        }
+
+        public WorkflowResponse RemoveFavorite(UserListing ul)
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            try
+            {
+                IDataSource.RemoveFavorite(ul);
+                response.Success = true;
+                response.Message = $"Listing {ul.ListingId} removed from user {ul.UserId} favorites.";
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
+            }
+
+            return response;
+        }
+
+        public WorkflowResponse DeleteListing(int listingId)
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            try
+            {
+                IDataSource.RemoveListing(listingId);
+                response.Success = true;
+                response.Message = $"Listing {listingId} successfully deleted.";
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
             }
 
             return response;

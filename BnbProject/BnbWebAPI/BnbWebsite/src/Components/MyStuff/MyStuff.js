@@ -232,7 +232,7 @@ const cancelReview = () => {
 
                     <Divider sx={{backgroundColor:'peachpuff'}}/>
 
-                    <Typography variant="h5" sx={{ml:3, mt:2}}>Favorites</Typography>
+                    <Typography variant="h5" sx={{ml:3, mt:2}}>Your Favorites</Typography>
                     <Grid container sx={{mb:2}}>
                         <Favorites favorites={user.favorites} listings={listings}/>
                     </Grid>

@@ -88,6 +88,15 @@ namespace BnbWebAPI.Controllers
 
             return response;
         }
+        [HttpDelete]
+        [Route("deletelisting/{id}")]
+        public WorkflowResponse DeleteListing(int id)
+        {
+
+            WorkflowResponse response = Manager.DeleteListing(id);
+
+            return response;
+        }
         [HttpPost]
         [Route("addstay")]
         public WorkflowResponse AddStay([FromBody] StayTransfer transfer)
@@ -125,6 +134,14 @@ namespace BnbWebAPI.Controllers
         public WorkflowResponse AddFavorite([FromBody] UserListing ul)
         {
             WorkflowResponse response = Manager.AddFavorite(ul);
+
+            return response;
+        }
+        [HttpPost]
+        [Route("removefavorite")]
+        public WorkflowResponse RemoveFavorite([FromBody] UserListing ul)
+        {
+            WorkflowResponse response = Manager.RemoveFavorite(ul);
 
             return response;
         }

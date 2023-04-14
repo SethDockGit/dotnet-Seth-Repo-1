@@ -39,12 +39,13 @@ const [listing, setListing] = useState();
 const [modalOpen, setModalOpen] = useState(false);
 const [requiresLogin, setRequiresLogin] = useState(false);
 const [loginErrorMessage, setLoginErrorMessage] = useState('');
-const [addToFavorites, setAddtoFavorites] = useState(false);
+//const [addToFavorites, setAddtoFavorites] = useState(false);
 const [failBooking, setFailBooking] = useState(false);
 const [failBookingMessage, setFailBookingMessage] = useState('');
 const [drawerOpen, setDrawerOpen] = useState(false);
 const [checkin, setCheckin] = useState('');
 const [checkout, setCheckout] = useState('');
+const [isFavorite, setIsFavorite] = useState(false);
 
 //whereas some pages rely on user existing to render at all, this page relies on isloggedin to render conditionally.
 //That's why the verify login method is different. No re-routing occurs, just setting of isloggedin.
@@ -205,11 +206,40 @@ const handleClickFavorite = () => {
                 console.log(data);
                 
                 if(data.success){
-                    setAddtoFavorites(true);
+                    var elements = document.cookie.split('=');
+                    var id = Number(elements[1]);
+                    getUser(id);
                 }
             });
     }
 }
+const handleClickUnFavorite = () => {
+
+        var APIRequest = {
+            UserId: user.id,
+            ListingId: listing.id
+        };
+
+        fetch(`${api}/bnb/removefavorite`, {
+            method: 'POST',
+            body: JSON.stringify(APIRequest),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                
+                if(data.success){
+                    var elements = document.cookie.split('=');
+                    var id = Number(elements[1]);
+                    getUser(id);
+                }
+            });
+}
+
+
 
     return(
 
@@ -221,8 +251,14 @@ const handleClickFavorite = () => {
 
             <ImageGallery listing={listing}/>
 
-            <FaveIcon isLoggedIn={isLoggedIn} user={user} handleClickFavorite={handleClickFavorite}
-            id={id} addToFavorites={addToFavorites}/>
+            <FaveIcon 
+            user={user}
+            isLoggedIn={isLoggedIn} 
+            handleClickFavorite={handleClickFavorite}
+            handleClickUnFavorite={handleClickUnFavorite}
+            id={id} 
+            isFavorite={isFavorite}
+            setIsFavorite={setIsFavorite}/>
 
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 

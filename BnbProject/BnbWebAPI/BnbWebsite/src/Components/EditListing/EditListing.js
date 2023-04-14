@@ -17,6 +17,9 @@ import { UserContext } from "../../Contexts/UserContext/UserContext";
 import { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
 import dayjs from "dayjs";
+import ImageUpload from "../ImageUpload/ImageUpload";
+import ListingImages from "../ListingImages/ListingImages";
+
 
 export default function EditListing(){
 
@@ -51,6 +54,7 @@ const [listingLoaded, setListingLoaded] = useState(false);
 const [amenitiesLoaded, setAmenitiesLoaded] = useState(false);
 const [modalOpen, setModalOpen] = useState(false);
 const [files, setFiles] = useState([]);
+const [pictures, setPictures] = useState([]);
 const navigate = useNavigate();
 
 const reRoute = () => {
@@ -127,6 +131,7 @@ const getListing = () => {
         setLocation(data.listing.location);
         setDescription(data.listing.description);
         setListingAmenities(data.listing.amenities);
+        setPictures(data.listing.pictures);
         console.log(data);
 
             if(!user || user.id != data.listing.hostId){
@@ -157,7 +162,7 @@ const handleDescriptionChange = (e) => {
 const handleClickAmenity = (e) => {
     setListingAmenities([...listingAmenities, e.target.value]);
 }
-const showAvailableAmenities = () => {
+const AvailableAmenities = () => {
 
     return availableAmenities.map(function(val, index){
         return(
@@ -171,12 +176,12 @@ const handleCustomAmenityChange = (e) => {
 const addCustomAmenity = () => {
     setListingAmenities([...listingAmenities, customAmenity]);
 }
-const showListingAmenities = () => {
+const ListingAmenities = () => {
     
     return listingAmenities.map(function(val, index){
         return(      
             <ListItem key={index}>
-                • {val}
+                {val}
                 <Button type="button" onClick={handleClickRemoveAmenity} data-value1={val}>x</Button>
             </ListItem>           
         )        
@@ -288,54 +293,6 @@ const handleClickSaveListing = () => {
 const cancelEditListing = () => {
     navigate("/mystuff");
 }
-const fileSelectedHandler = (e) => {
-    
-    const arr = Array.from(e.target.files);
-
-    if (files.length == 0){
-        
-        var filesToAdd = arr.map(function(val, index) {
-            return(
-                {
-                    id: index,
-                    file: val
-                }
-            )
-        })
-        setFiles([...filesToAdd]);
-    }
-    else{
-
-        var ids = files.map(function(val) {
-            return(
-                val.id
-            )
-        })
-        var highest = ids.reduce((a, b) => Math.max(a, b), -Infinity);
-
-        var filesToAdd = arr.map(function(val, index) {
-            return(
-                {
-                    id: highest + index + 1,
-                    file: val
-                }
-            )
-        })
-        setFiles([...files, ...filesToAdd]);
-    }
-
-}
-const displayFiles = () => {
-    
-    return files.map(function(val, index){
-        return(      
-            <ListItem key={index}>
-                • {val.file.name}
-                <Button type="button" onClick={handleClickRemoveFile} data-value1={val.id}>x</Button>
-            </ListItem>           
-        )        
-    })
-}
 const handleClickRemoveFile = (e) => {
 
     const value1 = e.currentTarget.getAttribute("data-value1");
@@ -344,30 +301,25 @@ const handleClickRemoveFile = (e) => {
 
     setFiles(newFiles);
 }
-const showPics = () => {
-
-    const Picture = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} alt=""
-    width="250" height="225"/>
-
-    return listing.pictures.map(function(val, index) {
-        return(
-            <div key={index}>
-                <Picture data={val}/>
-                <Button type="button" onClick={handleClickRemovePic} data-value1={val}>x</Button>
-            </div>
-        )
-    })
-}
 const handleClickRemovePic = (e) => {
 
     const value1 = e.currentTarget.getAttribute("data-value1");
 
-    let tempListing = listing;
+    var tempPics = pictures.filter(p => p != value1);
 
-    tempListing.pictures = listing.pictures.filter(p => p != value1);
-
-    setListing(tempListing);
+    setPictures(tempPics);
 }
+const handleClickDeleteListing = () => {
+
+    fetch(`${api}/bnb/deletelisting/${id}`, {
+        method: 'DELETE' 
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+        });
+}
+
 
     return(
 
@@ -379,16 +331,13 @@ const handleClickRemovePic = (e) => {
                 <Divider sx={{backgroundColor:'peachpuff'}}/>
 
                 <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                    {showPics()}
-                </Grid>
+                    <Grid item xs={3}>
+                        <ListingImages pictures={pictures} handleClickRemovePic={handleClickRemovePic}/>
+                    </Grid>
 
-            {/*subcomponent here*/}
-                <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                    <form>
-                      <div><Typography variant="h6" sx={{mb:1}}>Choose Images</Typography></div>
-                      {displayFiles()}
-                      <input type="file" multiple onChange={fileSelectedHandler} />
-                    </form>
+                    <Grid item xs={3}>
+                        <ImageUpload files={files} setFiles={setFiles} handleClickRemoveFile={handleClickRemoveFile}/>
+                    </Grid>
                 </Grid>
 
                 <Divider sx={{backgroundColor:'peachpuff'}}/>
@@ -432,7 +381,7 @@ const handleClickRemovePic = (e) => {
                                     value={""}
                                     onChange={handleClickAmenity}
                                 >
-                                    {showAvailableAmenities()}
+                                    <AvailableAmenities/>
                                 </Select>
                             </FormControl>
                          </Box>
@@ -453,7 +402,7 @@ const handleClickRemovePic = (e) => {
                             maxHeight: 200,
                             '& ul': { padding: 0 },
                             }}>
-                            {showListingAmenities()}
+                            <ListingAmenities/>
                         </List>
                     </Grid>
                 </Grid>
@@ -461,7 +410,7 @@ const handleClickRemovePic = (e) => {
                 <Divider sx={{backgroundColor:'peachpuff'}}/>
     
                 <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
-                    <Grid item xs={5}/>
+                    <Grid item xs={4}/>
                     <Grid item xs={1}>
                         <Button variant="contained" sx={{":hover": {
                         bgcolor: "gray"}, backgroundColor:'lightgray', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={cancelEditListing}>Cancel</Button>
@@ -470,10 +419,15 @@ const handleClickRemovePic = (e) => {
                         <Button variant="contained" sx={{":hover": {
                         bgcolor: "peachpuff"}, backgroundColor:'lightsalmon', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={handleClickSaveListing}>Save Changes</Button>
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item xs={1.25}>
+                        <Button variant="contained" sx={{":hover": {
+                        bgcolor: "darkred"}, backgroundColor:'red', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={handleClickDeleteListing}>Delete Listing</Button>
+                    </Grid>
+                    <Grid item xs={4}>
                         {showFailMessage()} 
                     </Grid>
 
+                    {/*component?*/}
                     <Modal
                       open={modalOpen}
                       onClose={() => navigate('/mystuff')}

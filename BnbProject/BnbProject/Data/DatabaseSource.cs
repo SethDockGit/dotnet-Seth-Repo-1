@@ -382,8 +382,21 @@ namespace BnbProject.Data
                 cmd2.Parameters.AddWithValue("@ListingId", listing.Id);
 
                 cmd2.ExecuteNonQuery();
-
             }
+        }
+        public void RemoveListing(int listingId)
+        {
+            using SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = ConnectionString;
+            SqlCommand cmd = new SqlCommand
+            {
+                Connection = conn,
+                CommandText = "DELETE FROM Listing WHERE ListingId=@ListingId; " +
+                "DELETE FROM Stay WHERE PropertyId=@ListingId; " +
+                "DELETE FROM ListingImage WHERE ListingShownId=@ListingId " +
+                "DELETE FROM UserListing WHERE FavoriteId=@ListingId "
+            };
+            cmd.Parameters.AddWithValue("@ListingId", listingId);
         }
         public void AddStay(Stay stay)
         {
@@ -596,6 +609,23 @@ namespace BnbProject.Data
             {
                 Connection = conn,
                 CommandText = "INSERT INTO UserListing VALUES (@UserId, @ListingId);"
+            };
+
+            cmd.Parameters.AddWithValue("@UserId", ul.UserId);
+            cmd.Parameters.AddWithValue("@ListingId", ul.ListingId);
+
+            conn.Open();
+            cmd.ExecuteNonQuery();
+        }
+        public void RemoveFavorite(UserListing ul)
+        {
+            using SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = ConnectionString;
+
+            SqlCommand cmd = new SqlCommand
+            {
+                Connection = conn,
+                CommandText = "DELETE FROM UserListing WHERE (UserId=@UserId AND FavoriteId=@ListingId)"
             };
 
             cmd.Parameters.AddWithValue("@UserId", ul.UserId);

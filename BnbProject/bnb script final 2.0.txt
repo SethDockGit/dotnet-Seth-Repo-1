@@ -102,38 +102,38 @@ GO
 
 INSERT INTO UserAccount
 VALUES 
-(1, 'Seth', '$2a$11$Ux6Rxc0A0Wx0.26EAAY6seRa5bAl9K7Sx/9uaUPprw9uM19VUAW52', 'myemail'),  
-(2, 'Bob', '$2a$11$Ux6Rxc0A0Wx0.26EAAY6seRa5bAl9K7Sx/9uaUPprw9uM19VUAW52', 'hisemail');
+('Seth', '$2a$11$Ux6Rxc0A0Wx0.26EAAY6seRa5bAl9K7Sx/9uaUPprw9uM19VUAW52', 'myemail'),  
+('Bob', '$2a$11$Ux6Rxc0A0Wx0.26EAAY6seRa5bAl9K7Sx/9uaUPprw9uM19VUAW52', 'hisemail');
 
 
 INSERT INTO Listing
 VALUES
-(1, 1, 'Cozy 2BR Cabin', 'Come stay at our gorgeous cabin by the river', 'Redwing, MN', 150),
-(2, 2, 'Downtown loft', 'Great place to stay to catch a game.', 'Minneapolis, MN', 180),
-(3, 1, 'Sailboat', 'Enjoy a cozy sailboat on the marina', 'Lisbon, Portugal', 75);
+(1, 'Cozy 2BR Cabin', 'Come stay at our gorgeous cabin by the river', 'Redwing, MN', 150),
+(2, 'Downtown loft', 'Great place to stay to catch a game.', 'Minneapolis, MN', 180),
+(1, 'Sailboat', 'Enjoy a cozy sailboat on the marina', 'Lisbon, Portugal', 75);
 
 
 
 INSERT INTO Stay
 VALUES
-(1, 2, 1, 1, GETDATE(), GETDATE()),
-(2, 1, 2, 2, GETDATE(), GETDATE()),
-(3, 1, 1, null, GETDATE(), GETDATE()); 
+(2, 1, 1, GETDATE(), GETDATE()),
+(1, 2, 2, GETDATE(), GETDATE()),
+(1, 1, null, GETDATE(), GETDATE()); 
 
 
 INSERT INTO Review
 VALUES
-(1, 5, 'We had a wonderful stay.', 'Seth'),
-(2, 4, 'We enjoyed our stay. Some wi-fi issues', 'Bob');
+(5, 'We had a wonderful stay.', 'Seth'),
+(4, 'We enjoyed our stay. Some wi-fi issues', 'Bob');
 
 INSERT INTO Amenity
 VALUES
-(1, 'Hot tub'),
-(2, 'Fireplace'),
-(3, 'Pool table'),
-(4, 'Dishwasher'),
-(5, 'Gas Range'),
-(6, 'Lake Access');
+('Hot tub'),
+('Fireplace'),
+('Pool table'),
+('Dishwasher'),
+('Gas Range'),
+('Lake Access');
 
 INSERT INTO AmenityListing
 VALUES
