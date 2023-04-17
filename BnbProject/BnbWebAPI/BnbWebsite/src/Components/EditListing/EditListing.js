@@ -11,31 +11,19 @@ import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
 import { useParams } from "react-router-dom";
-import Modal from '@mui/material/Modal';
-import { Link } from "react-router-dom";
+import LinkModal from "../LinkModal/LinkModal";
 import { UserContext } from "../../Contexts/UserContext/UserContext";
 import { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
 import dayjs from "dayjs";
 import ImageUpload from "../ImageUpload/ImageUpload";
 import ListingImages from "../ListingImages/ListingImages";
+import WarningModal from "../WarningModal/WarningModal";
 
 
 export default function EditListing(){
 
 const api = `https://localhost:44305`;
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    borderRadius:3,
-    boxShadow: 24,
-    p: 4,
-  };
 
 const {user, setUser} = useContext(UserContext);
 const {id} = useParams();
@@ -52,7 +40,9 @@ const [failSaveListing, setFailSaveListing] = useState(false);
 const [failMessage, setFailMessage] = useState('');
 const [listingLoaded, setListingLoaded] = useState(false);
 const [amenitiesLoaded, setAmenitiesLoaded] = useState(false);
-const [modalOpen, setModalOpen] = useState(false);
+const [editModalOpen, setEditModalOpen] = useState(false);
+const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+const [warningModalOpen, setWarningModalOpen] = useState(false);
 const [files, setFiles] = useState([]);
 const [pictures, setPictures] = useState([]);
 const navigate = useNavigate();
@@ -212,23 +202,27 @@ const handleClickSaveListing = () => {
 
     var fail = false;
 
-    for(let i = 0; i < files.length; i++){
+    if(files.length != 0){
 
-        var file = files[i].file;
-        var fileType = file['type'];
-        const validImageTypes = ['image/jpeg', 'image/png'];
-
-        if(!validImageTypes.includes(fileType)){
-            fail = true;
+        for(let i = 0; i < files.length; i++){
+    
+            var file = files[i].file;
+            var fileType = file['type'];
+            const validImageTypes = ['image/jpeg', 'image/png'];
+    
+            if(!validImageTypes.includes(fileType)){
+                fail = true;
+            }
         }
     }
 
     var rateNumber = parseFloat(rate);
 
-    if (!fail) {
+    if (fail) {
         setFailSaveListing(true);
         setFailMessage("Error: File type must be jpeg or png.");
         setFiles([]);
+
     }
     else if (isNaN(rateNumber)){
         setFailSaveListing(true);
@@ -239,7 +233,7 @@ const handleClickSaveListing = () => {
         setFailMessage("Error: One or more fields were left blank.");
     }
     else {
-
+ 
         var APIRequest = {
             Id: listing.id,
             HostId: user.id,  
@@ -261,33 +255,36 @@ const handleClickSaveListing = () => {
             .then((data) => {
                 console.log(data);
 
-                setModalOpen(true);
+                if(data.success){
+
+                    if(!!files){
+
+                        for(let i =0; i < files.length; i++){
+            
+                            var form = new FormData();
+                            form.append('file', files[i].file)
+            
+                            fetch(`${api}/bnb/file/${listing.id}`, {
+                                method: 'POST',
+                                body: form,
+                                })
+                                .then((response) => response.json())
+                                .then((data) => {
+                                    console.log(data);
+                                }); 
+                        }
+                    }
+
+                    //now I'm adding all new files, which is perfect, but what if they deleted any old ones?
+                    //I think either every time they delete a pic, run the API call. OR, send the array of
+                    //whatever data it is back to C# and see if you can
+
+                    setEditModalOpen(true);
+                    setUser(data.user);
+                }
             });
         }  
 
-        if(!!files[0]){
-
-            var data = new FormData()
-            data.append('file', files[0])
-
-            var APIRequest = {
-                ImageFile: data,
-                ListingId: id
-            }
-        
-            fetch(`${api}/bnb/editfile/${id}`, {
-                method: 'POST',
-                body: APIRequest,
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-    
-                    //if(!data.success)
-                    //show an error message, likely related to type of file.
-                    //check what happens when you upload mp3
-                }); 
-        }
        
 }
 const cancelEditListing = () => {
@@ -304,22 +301,30 @@ const handleClickRemoveFile = (e) => {
 const handleClickRemovePic = (e) => {
 
     const value1 = e.currentTarget.getAttribute("data-value1");
-
+    debugger;
     var tempPics = pictures.filter(p => p != value1);
 
     setPictures(tempPics);
+
 }
 const handleClickDeleteListing = () => {
 
-    fetch(`${api}/bnb/deletelisting/${id}`, {
+    setWarningModalOpen(false);
+
+    fetch(`${api}/bnb/deletelisting/${id}/${user.id}`, {
         method: 'DELETE' 
     })
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
+
+            if(data.success){
+
+                setUser(data.user);
+                setDeleteModalOpen(true);
+            }
         });
 }
-
 
     return(
 
@@ -381,7 +386,7 @@ const handleClickDeleteListing = () => {
                                     value={""}
                                     onChange={handleClickAmenity}
                                 >
-                                    <AvailableAmenities/>
+                                    {AvailableAmenities()}
                                 </Select>
                             </FormControl>
                          </Box>
@@ -421,24 +426,29 @@ const handleClickDeleteListing = () => {
                     </Grid>
                     <Grid item xs={1.25}>
                         <Button variant="contained" sx={{":hover": {
-                        bgcolor: "darkred"}, backgroundColor:'red', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={handleClickDeleteListing}>Delete Listing</Button>
+                        bgcolor: "darkred"}, backgroundColor:'red', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={() => setWarningModalOpen(true)}>Delete Listing</Button>
                     </Grid>
                     <Grid item xs={4}>
                         {showFailMessage()} 
                     </Grid>
 
-                    {/*component?*/}
-                    <Modal
-                      open={modalOpen}
-                      onClose={() => navigate('/mystuff')}
-                    >
-                        <Box sx={style}>
-                            <Typography variant="h6">Changes saved!</Typography>
-                            <Link style={{ textDecoration: 'none' }} to={`/mystuff`}>
-                                <Button>Back to MyStuff</Button>
-                            </Link>
-                        </Box>
-                    </Modal>
+                    <WarningModal 
+                    modalOpen={warningModalOpen}
+                    modalClose={() => setWarningModalOpen(false)}
+                    message={"Are you sure you want to delete this listing?"}
+                    handleClickDeleteListing={handleClickDeleteListing}
+                    />
+                    <LinkModal 
+                    modalOpen={editModalOpen} 
+                    modalClose={() => navigate('/mystuff')} 
+                    message={"Changes Saved"} 
+                    messageTwo={"Back to MyStuff"}/>
+                    <LinkModal 
+                    modalOpen={deleteModalOpen} 
+                    modalClose={() => navigate('/mystuff')} 
+                    message={"Listing Deleted"} 
+                    messageTwo={"Back to MyStuff"}/>
+
                 </Grid>
             </div>
             }

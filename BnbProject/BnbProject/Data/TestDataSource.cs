@@ -168,7 +168,7 @@ namespace BnbProject.Data
             return TestUsers.SingleOrDefault(u => u.Id == id);
             
         }
-        public void UpdateListing(Listing listing)
+        public void EditListing(Listing listing)
         {
             Listing toUpdate = TestListings.SingleOrDefault(l => l.Id == listing.Id);
 
@@ -181,34 +181,26 @@ namespace BnbProject.Data
 
             TestListings.Remove(toRemove);
 
-            //UserAccount user = TestUsers.SingleOrDefault(u => u.Id == toRemove.HostId);
-            //
-            //user.Listings.Remove(toRemove);
-            //
-            //List<Stay> stays = TestStays.Where(s => s.ListingId == listingId).ToList();
-            //
-            //foreach(var s in stays)
-            //{
-            //    TestStays.Remove(s);
-            //
-            //    List<UserAccount> users = TestUsers.Where(u => u.Id == s.GuestId).ToList();
-            //
-            //    foreach(var u in users)
-            //    {
-            //        u.Stays.Remove(s);
-            //    }
-            //}
+            UserAccount user = TestUsers.SingleOrDefault(u => u.Id == toRemove.HostId);
+            
+            user.Listings.Remove(toRemove);
+            
+            List<Stay> stays = TestStays.Where(s => s.ListingId == listingId).ToList();
+            
+            foreach(var s in stays)
+            {
+                TestStays.Remove(s);
+            
+                List<UserAccount> users = TestUsers.Where(u => u.Id == s.GuestId).ToList();
+            
+                foreach(var u in users)
+                {
+                    u.Stays.Remove(s);
+                }
+            }
 
-            //All this needs to happen because the associations are still there. What's relevant though? You can't treat it like
-            //a persistent data source because it isn't. So, you don't need to scrub all associations like you do in the database.
-            //every front end action just retreives a fresh, unaltered dataset anyways. These methods need to be finalized
-            //with manager testing in mind, so that you get back what you expect. What the front end needs and what unit testing
-            //needs will not necessarily be the same thing.
 
-            //so, honestly, you really just need to remove from testlistings, unless you want to test other aspects, like
-            //removes stays associated with listing, removes listing from user, etc.
-
-            //I don't think we'd be testing our database would we?
+            //what about reviews?
         }
         public void AddStay(Stay stay)
         {

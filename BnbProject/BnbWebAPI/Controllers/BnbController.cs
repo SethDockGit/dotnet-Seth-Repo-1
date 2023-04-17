@@ -66,7 +66,6 @@ namespace BnbWebAPI.Controllers
         [Route("file/{id}")]
         public WorkflowResponse AddFilesToListing([FromForm] IFormFile file, int id)
         {
-
             WorkflowResponse response = Manager.AddFileToListing(file, id);
      
             return response;
@@ -81,20 +80,18 @@ namespace BnbWebAPI.Controllers
         }
         [HttpPost]
         [Route("editlisting")]
-        public WorkflowResponse EditListing([FromBody] ListingTransfer transfer)
+        public EditListingResponse EditListing([FromBody] ListingTransfer transfer)
         {
-
-            WorkflowResponse response = Manager.EditListing(transfer);
+            EditListingResponse response = Manager.EditListing(transfer);
 
             return response;
         }
         [HttpDelete]
-        [Route("deletelisting/{id}")]
-        public WorkflowResponse DeleteListing(int id)
+        [Route("deletelisting/{id}/{userId}")]
+        public DeleteListingResponse DeleteListing(int id, int userId)
         {
-
-            WorkflowResponse response = Manager.DeleteListing(id);
-
+            DeleteListingResponse response = Manager.DeleteListing(id, userId);
+            
             return response;
         }
         [HttpPost]

@@ -11,9 +11,6 @@ export default function PastStays({
     drawerOpen,
     setDrawerOpen,
     showReviewDrawer,
-    handleChangeReviewText,
-    submitReview,
-    cancelReview
 }){
     
     var past = stays.filter(s => dayjs(s.endDate).isBefore(dayjs()));

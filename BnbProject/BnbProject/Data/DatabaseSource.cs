@@ -347,7 +347,7 @@ namespace BnbProject.Data
 
             return user;
         }
-        public void UpdateListing(Listing listing)
+        public void EditListing(Listing listing)
         {
 
             using SqlConnection conn = new SqlConnection();
@@ -392,11 +392,12 @@ namespace BnbProject.Data
             {
                 Connection = conn,
                 CommandText = "DELETE FROM Listing WHERE ListingId=@ListingId; " +
-                "DELETE FROM Stay WHERE PropertyId=@ListingId; " +
-                "DELETE FROM ListingImage WHERE ListingShownId=@ListingId " +
-                "DELETE FROM UserListing WHERE FavoriteId=@ListingId "
+                "DELETE FROM Review WHERE ReviewId not IN (SELECT ReviewId FROM Stay WHERE ReviewId is not null);"
             };
             cmd.Parameters.AddWithValue("@ListingId", listingId);
+
+            conn.Open();
+            cmd.ExecuteNonQuery();
         }
         public void AddStay(Stay stay)
         {

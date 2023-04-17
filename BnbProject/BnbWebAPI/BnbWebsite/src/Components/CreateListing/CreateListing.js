@@ -209,9 +209,6 @@ const handleClickCreateListing = () => {
                 console.log(data);
 
                 if(data.success){
-                    user.listings = [...user.listings, data.listing];
-                    setUser(user);
-                    setModalOpen(true);
 
                     if(!!files){
 
@@ -231,6 +228,8 @@ const handleClickCreateListing = () => {
                         }
                     }
                 }
+
+                setModalOpen(true);
             });
     }   
 }

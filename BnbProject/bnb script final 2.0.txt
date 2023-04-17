@@ -9,17 +9,8 @@ USE Bnb;
 GO
 
 
-CREATE TABLE Review (
-
-	ReviewId INT AUTO_INCREMENT,  
-	Rating INT NOT NULL,
-	ReviewText VARCHAR (500) NOT NULL,
-	Username VARCHAR (100) NOT NULL
-)
-GO
-
 CREATE TABLE UserAccount (
-	UserId INT AUTO_INCREMENT,
+	UserId INT IDENTITY(1,1) PRIMARY KEY,
 	Username VARCHAR (100) NOT NULL,
 	UserPassword VARCHAR (100) NOT NULL,
 	Email VARCHAR (100) 
@@ -28,7 +19,7 @@ GO
 
 CREATE TABLE Listing (
 
-	ListingId INT AUTO_INCREMENT,
+	ListingId INT IDENTITY(1,1) PRIMARY KEY,
 	HostId INT FOREIGN KEY REFERENCES UserAccount(UserId) NOT NULL,
 	Title VARCHAR (100) NOT NULL,
 	Description VARCHAR (500) NOT NULL,
@@ -37,20 +28,30 @@ CREATE TABLE Listing (
 )
 GO
 
+CREATE TABLE Review (
+
+	ReviewId INT IDENTITY(1,1) PRIMARY KEY, 
+	Rating INT NOT NULL,
+	ReviewText VARCHAR (500) NOT NULL,
+	Username VARCHAR (100) NOT NULL
+)
+GO
+
 CREATE TABLE Stay (
 
-	StayId INT AUTO_INCREMENT,
-	PropertyId INT FOREIGN KEY REFERENCES Listing(ListingId) NOT NULL,
+	StayId INT IDENTITY(1,1) PRIMARY KEY,
+	PropertyId INT FOREIGN KEY REFERENCES Listing(ListingId) ON DELETE CASCADE NOT NULL,
+	ReviewId INT FOREIGN KEY REFERENCES Review(ReviewId), 
 	GuestId INT FOREIGN KEY REFERENCES UserAccount(UserId) NOT NULL,
-	ReviewId INT FOREIGN KEY REFERENCES Review(ReviewId),
 	StartDate Date Not Null,
 	EndDate Date Not Null
 )
 GO
 
+
 CREATE TABLE Amenity (
 
-	AmenityId INT AUTO_INCREMENT,
+	AmenityId INT IDENTITY(1,1) PRIMARY KEY,
 	AmenityName VARCHAR (100) NOT NULL,
 )
 GO
@@ -63,7 +64,7 @@ CREATE TABLE UserListing (
 	CONSTRAINT FK_UserId_UserListing
 		FOREIGN KEY (UserId) REFERENCES UserAccount(UserId),
 	CONSTRAINT FK_ListingId_UserListing
-		FOREIGN KEY (FavoriteId) REFERENCES Listing(ListingId)
+		FOREIGN KEY (FavoriteId) REFERENCES Listing(ListingId) ON DELETE CASCADE
 )
 GO
 
@@ -75,13 +76,13 @@ CREATE TABLE AmenityListing (
 	CONSTRAINT FK_AmenityId_AmenityListing
 		FOREIGN KEY (AmenityId) REFERENCES Amenity(AmenityId),
 	CONSTRAINT FK_ListingId_AmenityListing
-		FOREIGN KEY (ListingId) REFERENCES Listing(ListingId)
+		FOREIGN KEY (ListingId) REFERENCES Listing(ListingId) ON DELETE CASCADE
 )
 GO
 
 CREATE TABLE ListingImage (
-	ImageId INT AUTO_INCREMENT,
-	ListingShownId INT FOREIGN KEY REFERENCES Listing(ListingId) NOT NULL,
+	ImageId INT IDENTITY(1,1) PRIMARY KEY,
+	ListingShownId INT FOREIGN KEY REFERENCES Listing(ListingId) ON DELETE CASCADE NOT NULL,
 	Picture IMAGE NOT NULL
 )
 GO
@@ -116,15 +117,19 @@ VALUES
 
 INSERT INTO Stay
 VALUES
-(2, 1, 1, GETDATE(), GETDATE()),
-(1, 2, 2, GETDATE(), GETDATE()),
-(1, 1, null, GETDATE(), GETDATE()); 
+(2, NULL, 1, GETDATE(), GETDATE()),
+(1, NULL, 2, GETDATE(), GETDATE()),
+(1, NULL, 1, GETDATE(), GETDATE()); 
 
 
 INSERT INTO Review
 VALUES
 (5, 'We had a wonderful stay.', 'Seth'),
 (4, 'We enjoyed our stay. Some wi-fi issues', 'Bob');
+
+UPDATE Stay SET ReviewId=1 WHERE StayId=1;
+
+UPDATE Stay SET ReviewId=2 WHERE StayId=2;
 
 INSERT INTO Amenity
 VALUES

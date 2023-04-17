@@ -70,9 +70,9 @@ namespace BnbProject.Logic
 
             return response;
         }
-        public WorkflowResponse EditListing(ListingTransfer transfer)
+        public EditListingResponse EditListing(ListingTransfer transfer)
         {
-            WorkflowResponse response = new WorkflowResponse();
+            EditListingResponse response = new EditListingResponse();
 
             try
             {
@@ -84,9 +84,12 @@ namespace BnbProject.Logic
                 listing.Description = transfer.Description;
                 listing.Amenities = transfer.Amenities;
 
-                IDataSource.UpdateListing(listing);
+                IDataSource.EditListing(listing);
+
                 response.Success = true;
                 response.Message = $"Listing '{listing.Title}' ID: {listing.Id} Edited successfully.";
+
+                response.User = IDataSource.GetUserById(transfer.HostId);
             }
             catch (Exception e)
             {
@@ -298,7 +301,6 @@ namespace BnbProject.Logic
 
             return response;
         }
-
         public WorkflowResponse AddFileToListing(IFormFile file, int listingId)
         {
             WorkflowResponse response = new WorkflowResponse();
@@ -366,16 +368,17 @@ namespace BnbProject.Logic
 
             return response;
         }
-
-        public WorkflowResponse DeleteListing(int listingId)
+        public DeleteListingResponse DeleteListing(int listingId, int userId)
         {
-            WorkflowResponse response = new WorkflowResponse();
+            DeleteListingResponse response = new DeleteListingResponse();
 
             try
             {
                 IDataSource.RemoveListing(listingId);
                 response.Success = true;
                 response.Message = $"Listing {listingId} successfully deleted.";
+
+                response.User = IDataSource.GetUserById(userId);     
             }
             catch (Exception e)
             {
