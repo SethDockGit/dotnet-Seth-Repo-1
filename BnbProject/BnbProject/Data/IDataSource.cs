@@ -13,7 +13,7 @@ namespace BnbProject.Data
         public Listing AddListing(Listing listing);
         public void AddReview(Review review);
         public void AddStay(Stay stay);
-        public void AddUser(UserAccount user);
+        public UserAccount AddUser(UserAccount user);
         public bool CheckUsername(string username);
         public List<string> GetAmenities();
         public Listing GetListingById(int id);
@@ -22,9 +22,9 @@ namespace BnbProject.Data
         public UserAccount GetUserByUsername(string username);
         public List<int> GetUserIds();
         public void EditListing(Listing listing);
-        public void EditListingFile(byte[] file, int listingId);
         public void RemoveFavorite(UserListing ul);
-        public void RemoveListing(int listingId);
+        public void DeleteListing(int listingId);
+        public void DeletePicsById(int[] ids);
     }
 
 

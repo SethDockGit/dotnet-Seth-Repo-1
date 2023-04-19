@@ -7,7 +7,9 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Grid from '@mui/material/Unstable_Grid2';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-export default function ListingImages({pictures, handleClickRemovePic}){
+export default function ListingImages({
+  pictures, 
+  handleClickRemovePic}){
 
 const Pics = () => {
 
@@ -17,8 +19,8 @@ const Pics = () => {
     return pictures.map(function(val, index) {
         return(
             <ListItem key={index}>
-                <Picture data={val}/>
-                <ListItemButton type="button" onClick={handleClickRemovePic} data-value1={val}>
+                <Picture data={val.data}/>
+                <ListItemButton type="button" onClick={handleClickRemovePic} data-value1={val.id}>
                 <ListItemIcon>
                   <DeleteForeverIcon/>
                 </ListItemIcon>

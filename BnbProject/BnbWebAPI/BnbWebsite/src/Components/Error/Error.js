@@ -1,7 +1,9 @@
 import { Typography } from "@mui/material";
 
 
-export default function Error({message, bool}){
+export default function Error({
+message, 
+bool}){
 
 
     return (

@@ -15,6 +15,6 @@ namespace BnbProject.Models
         public string Description { get; set; }
         public List<string> Amenities { get; set; }
         public List<Stay> Stays { get; set; }
-        public List<byte[]> Pictures { get; set; }
+        public List<Picture> Pictures { get; set; }
     }
 }

@@ -2,9 +2,14 @@ import Modal from '@mui/material/Modal';
 import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
+import Grid from '@mui/material/Unstable_Grid2';
 
-
-export default function WarningModal({message, modalOpen, modalClose, handleClickDeleteListing}){
+export default function WarningModal({
+  message, 
+  modalOpen, 
+  modalClose, 
+  handleClickDeleteListing
+}){
 
 
 const style = {
@@ -29,12 +34,18 @@ const style = {
         >
           <Box sx={style}>
           <Typography variant="h5">{message}</Typography>
-          <Button variant="contained" sx={{":hover": {
-            bgcolor: "darkred"}, backgroundColor:'red', m:'auto', justifyContent: 'center', display: 'flex',}} 
-            onClick={handleClickDeleteListing}>Confirm</Button>
-          <Button variant="contained" sx={{":hover": {
-          bgcolor: "gray"}, backgroundColor:'lightgray', m:'auto', justifyContent: 'center', display: 'flex',}} 
-          onClick={modalClose}>Cancel</Button>
+          <Grid container sx={{m:'auto', justifyContent: 'center', display: 'flex'}}>
+            <Grid item xs={4}>
+              <Button variant="contained" sx={{":hover": {
+              bgcolor: "darkred"}, backgroundColor:'red', m:'auto', justifyContent: 'center', display: 'flex'}} 
+              onClick={handleClickDeleteListing}>Confirm</Button>
+            </Grid>
+            <Grid item xs={4}>
+              <Button variant="contained" sx={{":hover": {
+              bgcolor: "gray"}, backgroundColor:'lightgray', m:'auto', justifyContent: 'center', display: 'flex'}} 
+              onClick={modalClose}>Cancel</Button>
+            </Grid>
+          </Grid>
           </Box>
       </Modal>
     )

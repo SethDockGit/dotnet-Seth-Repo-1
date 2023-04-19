@@ -151,9 +151,9 @@ namespace BnbProject.Logic
             }
             return response;
         }
-        public WorkflowResponse AddStay(StayTransfer transfer)
+        public BookingResponse AddStay(StayTransfer transfer)
         {
-            WorkflowResponse response = new WorkflowResponse();
+            BookingResponse response = new BookingResponse();
 
             Listing listing = IDataSource.GetListingById(transfer.ListingId);
 
@@ -175,6 +175,7 @@ namespace BnbProject.Logic
                 response.Success = true;
                 response.Message = $"Booking confirmed for {listing.Title} from {stay.StartDate} to {stay.EndDate}";
 
+                response.User = IDataSource.GetUserById(transfer.GuestId);
             }
             catch (Exception e)
             {
@@ -184,15 +185,17 @@ namespace BnbProject.Logic
 
             return response;
         }
-        public WorkflowResponse AddReview(Review review)
+        public AddReviewResponse AddReview(Review review)
         {
-            WorkflowResponse response = new WorkflowResponse();
+            AddReviewResponse response = new AddReviewResponse();
 
             try
             {
                 IDataSource.AddReview(review);
                 response.Success = true;
                 response.Message = $"Review successfully added to stay {review.StayId}.";
+
+                response.User = IDataSource.GetUserByUsername(review.Username);
             }
             catch (Exception e)
             {
@@ -230,10 +233,10 @@ namespace BnbProject.Logic
 
             try
             {
-                IDataSource.AddUser(user);
+                var updatedUser = IDataSource.AddUser(user);
                 response.Success = true;
                 response.Message = $"User {user.Id} added successfully.";
-                response.User = user;
+                response.User = updatedUser;
             }
             catch (Exception e)
             {
@@ -325,31 +328,6 @@ namespace BnbProject.Logic
 
             return response;
         }
-        public WorkflowResponse EditListingFile(IFormFile file, int listingId)
-        {
-            WorkflowResponse response = new WorkflowResponse();
-
-            using (var ms = new MemoryStream())
-            {
-                file.CopyTo(ms);
-                var fileBytes = ms.ToArray();
-
-                try
-                {
-                    IDataSource.EditListingFile(fileBytes, listingId);
-                    response.Success = true;
-                    response.Message = "Listing image successfully changed.";
-                }
-                catch (Exception e)
-                {
-                    response.Success = false;
-                    response.Message = e.Message;
-                }
-            }
-
-            return response;
-        }
-
         public WorkflowResponse RemoveFavorite(UserListing ul)
         {
             WorkflowResponse response = new WorkflowResponse();
@@ -374,11 +352,29 @@ namespace BnbProject.Logic
 
             try
             {
-                IDataSource.RemoveListing(listingId);
+                IDataSource.DeleteListing(listingId);
                 response.Success = true;
                 response.Message = $"Listing {listingId} successfully deleted.";
 
                 response.User = IDataSource.GetUserById(userId);     
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message + e.StackTrace;
+            }
+
+            return response;
+        }
+        public DeletePicsResponse DeletePicsById(int[] ids)
+        {
+            DeletePicsResponse response = new DeletePicsResponse();
+
+            try
+            {
+                IDataSource.DeletePicsById(ids);
+                response.Success = true;
+                response.Message = $"Pictures successfully deleted.";
             }
             catch (Exception e)
             {

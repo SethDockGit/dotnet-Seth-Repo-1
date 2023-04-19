@@ -51,7 +51,7 @@ namespace BnbProject.Data
                 Description = "Come stay at our gorgeous cabin by the river. Close access to downtown.",
                 Amenities = new List<string>(),
                 Stays = new List<Stay>(),
-                Pictures = new List<byte[]>()
+                Pictures = new List<Picture>()
             },
             new Listing()
             {
@@ -63,7 +63,7 @@ namespace BnbProject.Data
                 Description = "Great place to stay to catch a game. Lots of great restaurants nearby.",
                 Amenities = new List<string>(),
                 Stays = new List<Stay>(),
-                Pictures = new List<byte[]>()
+                Pictures = new List<Picture>()
             }
         };
         public List<Stay> TestStays = new List<Stay>()
@@ -175,7 +175,7 @@ namespace BnbProject.Data
             toUpdate = listing;
 
         }
-        public void RemoveListing(int listingId)
+        public void DeleteListing(int listingId)
         {
             Listing toRemove = TestListings.SingleOrDefault(l => l.Id == listingId);
 
@@ -242,13 +242,15 @@ namespace BnbProject.Data
             }
             return userIds;
         }
-        public void AddUser(UserAccount user)
+        public UserAccount AddUser(UserAccount user)
         {
             var highest = TestUsers.Max(u => u.Id);
 
             user.Id = highest++;
 
             TestUsers.Add(user);
+
+            return user;
         }
         public UserAccount GetUserByUsername(string username)
         {
@@ -269,10 +271,14 @@ namespace BnbProject.Data
         public void AddFileToListing(byte[] file, int listingId)
         {
             throw new NotImplementedException();
+
+            //it's actually both possible as well as necessary for you to implement these...
         }
-        public void EditListingFile(byte[] file, int listingId)
+        public void DeletePicsById(int[] ids)
         {
             throw new NotImplementedException();
+
+            //it's actually both possible as well as necessary for you to implement these...
         }
     }
 }

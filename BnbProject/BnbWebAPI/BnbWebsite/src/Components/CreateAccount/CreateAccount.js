@@ -17,7 +17,7 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import dayjs from "dayjs";
 import { useNavigate } from 'react-router-dom';
-
+import Error from "../Error/Error";
 
 export default function CreateAccount(){
 
@@ -48,9 +48,9 @@ const [modalOpen, setModalOpen] = useState(false);
 const [fail, setFail] = useState(false);
 const navigate = useNavigate();
 
-if(isLoggedIn){
-   navigate("/mystuff");
-}
+//if(isLoggedIn){
+//   navigate("/mystuff");
+//}
 
 //The logic here is that if the user manually navigates to login page while logged in, they are re-directed.
 //However, with impersistent test data, they are redirected to a page that can't find their data, 
@@ -82,13 +82,6 @@ const handleMouseDownPasswordTwo = (event) => {
     event.preventDefault();
 };
 
-const displayErrorMessage = () => {
-
-  return(
-    fail &&
-    <Typography variant="caption" color="red">{errorMessage}</Typography>
-  )
-}
 const attemptCreateUser = () => {
   
   if(username == "" || email == "" || passwordOne == "" || passwordTwo == ""){
@@ -120,11 +113,12 @@ const attemptCreateUser = () => {
           console.log(data);
 
           if(!data.success){
+            setFail(true);
             setErrorMessage(data.message);
           }
           else{
 
-            var user = {
+            var userObject = {
               id: data.user.id,
               username: data.user.username,
               listings: data.user.listings,
@@ -133,7 +127,7 @@ const attemptCreateUser = () => {
               logTime: dayjs()
             };
 
-            setUser(user);
+            setUser(userObject);
             setIsLoggedIn(true);
 
             let expireTime = String(dayjs().add(6,'hour'));
@@ -141,7 +135,6 @@ const attemptCreateUser = () => {
             document.cookie = `id=${data.user.id};expires=${expireTime}UTC;path=/`;
 
             setModalOpen(true);
-
           }
       });
   }
@@ -213,7 +206,8 @@ const attemptCreateUser = () => {
 			              	onChange={(isValid) => {setValid(isValid)}}
 			              />
                     
-                    {displayErrorMessage()}
+                    <Error message={errorMessage} bool={fail}/>
+
                     <br/>
                     <Button variant="contained" sx={{":hover": {
                     bgcolor: "peachpuff"}, justifyContent:'right', backgroundColor:"lightsalmon", mt:2}}

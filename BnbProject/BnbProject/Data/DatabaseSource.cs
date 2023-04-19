@@ -31,32 +31,56 @@ namespace BnbProject.Data
                 SqlCommand cmd = new SqlCommand
                 {
                     Connection = conn,
-                    CommandText = "SELECT * FROM Listing LEFT JOIN ListingImage on ListingImage.ListingshownId=Listing.ListingId;"
+                    CommandText = "SELECT * FROM Listing LEFT JOIN ListingImage on ListingImage.ListingshownId=Listing.ListingId " +
+                    "LEFT JOIN Stay on Stay.PropertyId=Listing.ListingId;"
                 };
 
                 conn.Open();
                 using SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    var listing = new Listing
+                    if (!listings.Any(l => l.Id == (int)dr["ListingId"]))
                     {
-                        Id = (int)dr["ListingId"],
-                        HostId = (int)dr["HostId"],
-                        Title = (string)dr["Title"],
-                        Description = (string)dr["Description"],
-                        Location = (string)dr["Location"],
-                        Rate = (decimal)dr["Rate"],
-                        Pictures = new List<byte[]>()
-                };
-
-                    if (!Convert.IsDBNull(dr["Picture"]) && !listing.Pictures.Any(p => p == (byte[])dr["Picture"]))
-                    {
-                        var bytes = (byte[])dr["Picture"];
-
-                        listing.Pictures.Add(bytes);
+                        var listing = new Listing
+                        {
+                            Id = (int)dr["ListingId"],
+                            HostId = (int)dr["HostId"],
+                            Title = (string)dr["Title"],
+                            Description = (string)dr["Description"],
+                            Location = (string)dr["Location"],
+                            Rate = (decimal)dr["Rate"],
+                            Pictures = new List<Picture>(),
+                            Stays = new List<Stay>()
+                        };
+                        listings.Add(listing);
                     }
 
-                    listings.Add(listing);
+                    var listingToAmend = listings.Last();
+
+                    if (!Convert.IsDBNull(dr["ImageId"]) && !listingToAmend.Pictures.Any(p => p.Id == (int)dr["ImageId"]))
+                    {
+                        var picture = new Picture()
+                        {
+                            Data = (byte[])dr["Picture"],
+                            Id = (int)dr["ImageId"]
+                        };
+
+                        listingToAmend.Pictures.Add(picture);
+                    }
+
+                    if (!listingToAmend.Stays.Any(s => (int)dr["StayId"] == s.Id) && !Convert.IsDBNull(dr["StayId"]))
+                    {
+                        Stay stay = new Stay
+                        {
+                            Id = (int)dr["StayId"],
+                            ListingId = (int)dr["PropertyId"],
+                            GuestId = (int)dr["GuestId"],
+                            StartDate = (DateTime)dr["StartDate"],
+                            EndDate = (DateTime)dr["EndDate"]
+                        };
+
+                        listingToAmend.Stays.Add(stay);
+                    }     
                 }
             }
 
@@ -169,10 +193,12 @@ namespace BnbProject.Data
         }
         public Listing GetListingById(int id)
         {
-            Listing listing = new Listing();
-            listing.Amenities = new List<string>();
-            listing.Stays = new List<Stay>();
-            listing.Pictures = new List<byte[]>();
+            Listing listing = new Listing
+            {
+                Amenities = new List<string>(),
+                Stays = new List<Stay>(),
+                Pictures = new List<Picture>()
+            };
 
             using (SqlConnection conn = new SqlConnection())
             {
@@ -185,7 +211,7 @@ namespace BnbProject.Data
                     "Listing.Description, Listing.Location, Listing.Rate, " +
                     "Stay.StayId, Stay.PropertyId, Stay.GuestId, Stay.ReviewId, Stay.StartDate, " +
                     "Stay.EndDate, Review.Rating, Review.ReviewText, Review.Username, " +
-                    "Amenity.AmenityName, ListingImage.Picture FROM Listing " +
+                    "Amenity.AmenityName, ListingImage.ImageId, ListingImage.Picture FROM Listing " +
                     "LEFT JOIN Stay on Stay.PropertyId = Listing.ListingId " +
                     "LEFT JOIN Review on Review.ReviewId = Stay.ReviewId " +
                     "LEFT JOIN AmenityListing on AmenityListing.ListingId = Listing.ListingId " +
@@ -213,21 +239,23 @@ namespace BnbProject.Data
 
                         if (!listing.Stays.Any(s => (int)dr["StayId"] == s.Id) && !Convert.IsDBNull(dr["StayId"]))
                         {
-                            Stay stay = new Stay();
-
-                            stay.Id = (int)dr["StayId"];
-                            stay.ListingId = (int)dr["PropertyId"];
-                            stay.GuestId = (int)dr["GuestId"];
-                            stay.StartDate = (DateTime)dr["StartDate"];
-                            stay.EndDate = (DateTime)dr["EndDate"];
+                            Stay stay = new Stay
+                            {
+                                Id = (int)dr["StayId"],
+                                ListingId = (int)dr["PropertyId"],
+                                GuestId = (int)dr["GuestId"],
+                                StartDate = (DateTime)dr["StartDate"],
+                                EndDate = (DateTime)dr["EndDate"]
+                            };
 
                             if (!Convert.IsDBNull(dr["ReviewId"]))
                             {
-                                Review review = new Review();
-
-                                review.Rating = (int)dr["Rating"];
-                                review.Text = (string)dr["ReviewText"];
-                                review.Username = (string)dr["Username"];
+                                Review review = new Review
+                                {
+                                    Rating = (int)dr["Rating"],
+                                    Text = (string)dr["ReviewText"],
+                                    Username = (string)dr["Username"]
+                                };
 
                                 stay.Review = review;
                             }
@@ -239,26 +267,30 @@ namespace BnbProject.Data
                             listing.Amenities.Add((string)dr["AmenityName"]);
                         }
 
-                        if (!Convert.IsDBNull(dr["Picture"]) && !listing.Pictures.Any(p => p == (byte[])dr["Picture"]))
+                        if (!Convert.IsDBNull(dr["ImageId"]) && !listing.Pictures.Any(p => p.Id == (int)dr["ImageId"]))
                         {
-                            var bytes = (byte[])dr["Picture"];
+                            var picture = new Picture()
+                            {
+                                Data = (byte[])dr["Picture"],
+                                Id = (int)dr["ImageId"]
+                            };
 
-                            listing.Pictures.Add(bytes);
+                            listing.Pictures.Add(picture);
                         }
                     }
                 }
-
                 return listing;
-
             }
         }
         public UserAccount GetUserById(int id)
         {
 
-            UserAccount user = new UserAccount();
-            user.Listings = new List<Listing>();
-            user.Stays = new List<Stay>();
-            user.Favorites = new List<int>();
+            UserAccount user = new UserAccount
+            {
+                Listings = new List<Listing>(),
+                Stays = new List<Stay>(),
+                Favorites = new List<int>()
+            };
 
             using SqlConnection conn = new SqlConnection();
             conn.ConnectionString = ConnectionString;
@@ -268,7 +300,7 @@ namespace BnbProject.Data
                 Connection = conn,
                 CommandText = "SELECT UserAccount.Username, UserAccount.UserPassword, UserAccount.Email," +
                 "Listing.ListingId, Listing.HostId, Listing.Title, Listing.Description, Listing.Location," +
-                "Listing.Rate, ListingImage.Picture, Stay.StayId, Stay.PropertyId, Stay.ReviewId, Stay.GuestId, Stay.StartDate, Stay.EndDate," +
+                "Listing.Rate, ListingImage.ImageId, ListingImage.Picture, Stay.StayId, Stay.PropertyId, Stay.ReviewId, Stay.GuestId, Stay.StartDate, Stay.EndDate," +
                 "Review.Rating, Review.ReviewText, Review.Username, UserListing.FavoriteId FROM UserAccount " +
                 "LEFT JOIN Listing on Listing.HostId = UserAccount.UserId " +
                 "LEFT JOIN ListingImage on ListingImage.ListingshownId=Listing.ListingId " +
@@ -300,14 +332,18 @@ namespace BnbProject.Data
                             Description = (string)dr["Description"],
                             Location = (string)dr["Location"],
                             Rate = (decimal)dr["Rate"],
-                            Pictures = new List<byte[]>()
+                            Pictures = new List<Picture>()
                         };
 
-                        if (!Convert.IsDBNull(dr["Picture"]) && !listing.Pictures.Any(p => p == (byte[])dr["Picture"]))
+                        if (!Convert.IsDBNull(dr["ImageId"]) && !listing.Pictures.Any(p => p.Id == (int)dr["ImageId"]))
                         {
-                            var bytes = (byte[])dr["Picture"];
+                            var picture = new Picture()
+                            {
+                                Data = (byte[])dr["Picture"],
+                                Id = (int)dr["ImageId"]
+                            };
 
-                            listing.Pictures.Add(bytes);
+                            listing.Pictures.Add(picture);
                         }
 
                         user.Listings.Add(listing);
@@ -327,11 +363,12 @@ namespace BnbProject.Data
                         if (!Convert.IsDBNull(dr["ReviewId"]))
                         {
 
-                            Review review = new Review();
-
-                            review.Rating = (int)dr["Rating"];
-                            review.Text = (string)dr["ReviewText"];
-                            review.Username = (string)dr["Username"];
+                            Review review = new Review
+                            {
+                                Rating = (int)dr["Rating"],
+                                Text = (string)dr["ReviewText"],
+                                Username = (string)dr["Username"]
+                            };
 
                             stay.Review = review;
                         }
@@ -384,7 +421,7 @@ namespace BnbProject.Data
                 cmd2.ExecuteNonQuery();
             }
         }
-        public void RemoveListing(int listingId)
+        public void DeleteListing(int listingId)
         {
             using SqlConnection conn = new SqlConnection();
             conn.ConnectionString = ConnectionString;
@@ -490,7 +527,7 @@ namespace BnbProject.Data
 
             return ids;
         }
-        public void AddUser(UserAccount user)
+        public UserAccount AddUser(UserAccount user)
         {
             using SqlConnection conn = new SqlConnection();
             conn.ConnectionString = ConnectionString;
@@ -498,7 +535,8 @@ namespace BnbProject.Data
             SqlCommand cmd = new SqlCommand
             {
                 Connection = conn,
-                CommandText = "INSERT INTO UserAccount VALUES (@Username, @UserPassword, @Email)"
+                CommandText = "INSERT INTO UserAccount VALUES (@Username, @UserPassword, @Email); " +
+                "SELECT @@Identity as 'UserId';"
             };
 
             cmd.Parameters.AddWithValue("@Username", user.Username);
@@ -506,14 +544,23 @@ namespace BnbProject.Data
             cmd.Parameters.AddWithValue("@Email", user.Email);
 
             conn.Open();
-            cmd.ExecuteNonQuery();
+            using SqlDataReader dr = cmd.ExecuteReader();
+            while (dr.Read())
+            {
+                user.Id = Convert.ToInt32(dr["UserId"]);
+            }
+            conn.Close();
+
+            return user;
         }
         public UserAccount GetUserByUsername(string username)
         {
-            UserAccount user = new UserAccount();
-            user.Listings = new List<Listing>();
-            user.Stays = new List<Stay>();
-            user.Favorites = new List<int>();
+            UserAccount user = new UserAccount
+            {
+                Listings = new List<Listing>(),
+                Stays = new List<Stay>(),
+                Favorites = new List<int>()
+            };
 
             using SqlConnection conn = new SqlConnection();
             conn.ConnectionString = ConnectionString;
@@ -523,7 +570,7 @@ namespace BnbProject.Data
                 Connection = conn,
                 CommandText = "SELECT UserAccount.UserId, UserAccount.Email, UserAccount.Username, UserAccount.UserPassword," +
                 "Listing.ListingId, Listing.HostId, Listing.Title, Listing.Description, Listing.Location," +
-                "Listing.Rate, ListingImage.Picture, Stay.StayId, Stay.PropertyId, Stay.GuestId, Stay.StartDate, Stay.EndDate," +
+                "Listing.Rate, ListingImage.ImageId, ListingImage.Picture, Stay.StayId, Stay.PropertyId, Stay.GuestId, Stay.StartDate, Stay.EndDate," +
                 "Review.ReviewId, Review.Rating, Review.ReviewText, Review.Username, UserListing.FavoriteId FROM UserAccount " +
                 "LEFT JOIN Listing on Listing.HostId = UserAccount.UserId " +
                 "LEFT JOIN ListingImage on ListingImage.ListingshownId=Listing.ListingId " +
@@ -554,14 +601,18 @@ namespace BnbProject.Data
                             Description = (string)dr["Description"],
                             Location = (string)dr["Location"],
                             Rate = (decimal)dr["Rate"],
-                            Pictures = new List<byte[]>()
+                            Pictures = new List<Picture>()
                         };
 
-                        if (!Convert.IsDBNull(dr["Picture"]) && !listing.Pictures.Any(p => p == (byte[])dr["Picture"]))
+                        if (!Convert.IsDBNull(dr["ImageId"]) && !listing.Pictures.Any(p => p.Id == (int)dr["ImageId"]))
                         {
-                            var bytes = (byte[])dr["Picture"];
+                            var picture = new Picture()
+                            {
+                                Data = (byte[])dr["Picture"],
+                                Id = (int)dr["ImageId"]
+                            };
 
-                            listing.Pictures.Add(bytes);
+                            listing.Pictures.Add(picture);
                         }
 
                         user.Listings.Add(listing);
@@ -581,11 +632,12 @@ namespace BnbProject.Data
                         if (!Convert.IsDBNull(dr["ReviewId"]) && !Convert.IsDBNull(dr["ReviewId"]))
                         {
 
-                            Review review = new Review();
-
-                            review.Rating = (int)dr["Rating"];
-                            review.Text = (string)dr["ReviewText"];
-                            review.Username = (string)dr["Username"];
+                            Review review = new Review
+                            {
+                                Rating = (int)dr["Rating"],
+                                Text = (string)dr["ReviewText"],
+                                Username = (string)dr["Username"]
+                            };
 
                             stay.Review = review;
                         }
@@ -652,23 +704,24 @@ namespace BnbProject.Data
             conn.Open();
             cmd.ExecuteNonQuery();
         }
-        public void EditListingFile(byte[] file, int listingId)
+        public void DeletePicsById(int[] ids)
         {
             using SqlConnection conn = new SqlConnection();
             conn.ConnectionString = ConnectionString;
-
-            SqlCommand cmd = new SqlCommand
+           
+            foreach(var id in ids)
             {
-                Connection = conn,
-                CommandText = "UPDATE ListingImage SET Picture=@Picture WHERE ListingShownId=@ListingId;"
-            };
+                SqlCommand cmd = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandText = "DELETE FROM ListingImage WHERE (ImageId=@Id)"
+                };
 
-            cmd.Parameters.AddWithValue("@Picture", file);
-            cmd.Parameters.AddWithValue("@ListingId", listingId);
-
-            conn.Open();
-            cmd.ExecuteNonQuery();
-
+                cmd.Parameters.AddWithValue("@Id", id);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
         }
     }
 }

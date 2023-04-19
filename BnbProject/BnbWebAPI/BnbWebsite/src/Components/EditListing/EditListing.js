@@ -19,7 +19,7 @@ import dayjs from "dayjs";
 import ImageUpload from "../ImageUpload/ImageUpload";
 import ListingImages from "../ListingImages/ListingImages";
 import WarningModal from "../WarningModal/WarningModal";
-
+import Error from "../Error/Error";
 
 export default function EditListing(){
 
@@ -45,6 +45,9 @@ const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 const [warningModalOpen, setWarningModalOpen] = useState(false);
 const [files, setFiles] = useState([]);
 const [pictures, setPictures] = useState([]);
+const [deletePicIds, setDeletePicIds] = useState([]);
+const [finishDeletePics, setFinishDeletePics] = useState(false);
+const [finishAddFiles, setFinishAddFiles] = useState(false);
 const navigate = useNavigate();
 
 const reRoute = () => {
@@ -54,9 +57,9 @@ const reRoute = () => {
     navigate("/user/login");
 }
 
-const getUser = (id) => {
+const getUser = (userId) => {
 
-    fetch(`${api}/bnb/user/${id}`)
+    fetch(`${api}/bnb/user/${userId}`)
     .then((response) => response.json())
     .then((data) => {
         setUser(data.user);
@@ -65,16 +68,15 @@ const getUser = (id) => {
         setUserLoaded(true);
     });
 }
-
 const verifyLogin = () => {
 
     if(!user){
         //if user is null, parse the cookie. If there's no cookie, id will be NaN. So, either get user by Id if Id has value, or reroute to login.
         var elements = document.cookie.split('=');
-        var id = Number(elements[1]);
+        var userId = Number(elements[1]);
 
         if(!isNaN(id)){
-            getUser(id);
+            getUser(userId);
         }
         else{
             reRoute();
@@ -185,19 +187,6 @@ const handleClickRemoveAmenity = (e) => {
 
     setListingAmenities(newAmenities);
 }
-const showFailMessage = () => {
-
-    return (
-        <div>
-        {
-        failSaveListing &&   
-            <div style={{margin:'auto'}}>
-                <Typography color="red" variant="h6">{failMessage}</Typography>
-            </div>    
-        }
-        </div>
-    )
-}
 const handleClickSaveListing = () => {
 
     var fail = false;
@@ -257,6 +246,24 @@ const handleClickSaveListing = () => {
 
                 if(data.success){
 
+                    if(deletePicIds.length != 0){
+
+                        fetch(`${api}/bnb/deletePicIds`, {
+                            method: 'POST',
+                            body: JSON.stringify(deletePicIds),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                            })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                console.log(data);   
+                                setFinishDeletePics(true);         
+                            });
+                    }
+                    else{
+                        setFinishDeletePics(true);
+                    }
                     if(!!files){
 
                         for(let i =0; i < files.length; i++){
@@ -271,21 +278,25 @@ const handleClickSaveListing = () => {
                                 .then((response) => response.json())
                                 .then((data) => {
                                     console.log(data);
+                                    setFinishAddFiles(true);
                                 }); 
                         }
                     }
-
-                    //now I'm adding all new files, which is perfect, but what if they deleted any old ones?
-                    //I think either every time they delete a pic, run the API call. OR, send the array of
-                    //whatever data it is back to C# and see if you can
-
-                    setEditModalOpen(true);
-                    setUser(data.user);
+                    else{
+                        setFinishAddFiles(true);
+                    }
                 }
             });
         }  
+}
+if(finishAddFiles && finishDeletePics){
 
-       
+    fetch(`${api}/bnb/user/${user.id}`)
+    .then((response) => response.json())
+    .then((data) => {
+        setUser(data.user);
+        setEditModalOpen(true);
+    });
 }
 const cancelEditListing = () => {
     navigate("/mystuff");
@@ -301,11 +312,11 @@ const handleClickRemoveFile = (e) => {
 const handleClickRemovePic = (e) => {
 
     const value1 = e.currentTarget.getAttribute("data-value1");
-    debugger;
-    var tempPics = pictures.filter(p => p != value1);
+ 
+    var tempPics = pictures.filter(p => p.id != value1);
 
     setPictures(tempPics);
-
+    setDeletePicIds([...deletePicIds, Number(value1)]);
 }
 const handleClickDeleteListing = () => {
 
@@ -331,7 +342,7 @@ const handleClickDeleteListing = () => {
         <div>
             {listingLoaded && amenitiesLoaded && userLoaded &&
             <div>
-                <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', margin:2, fontSize:50}}>Edit Listing...</Typography>
+                <Typography variant="h2" sx={{justifyContent: 'center', display: 'flex', margin:2, fontSize:50}}>Edit Your Listing...</Typography>
 
                 <Divider sx={{backgroundColor:'peachpuff'}}/>
 
@@ -350,11 +361,12 @@ const handleClickDeleteListing = () => {
                 <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
                     <Grid item xs={2}>
                         <Typography sx={{mt:2}} variant='h6'>Title: {title}</Typography>
-                        <TextField sx={{mb:2}} placeholder='New Title' onChange={handleTitleChange}/>
+                        <TextField sx={{mb:2}} inputProps={{ maxLength: 28 }}
+                        placeholder='New Title' onChange={handleTitleChange}/>
                     </Grid>
                     <Grid item xs={2}>
                         <Typography sx={{mt:2}} variant='h6'>Nightly Rate: ${rate}</Typography>
-                        <TextField sx={{mb:2}} placeholder='New Rate' onChange={handleRateChange}/>
+                        <TextField sx={{mb:2}} inputProps={{ maxLength: 6 }} placeholder='New Rate' onChange={handleRateChange}/>
                     </Grid>
                     <Grid item xs={2}>
                         <Typography sx={{mt:2}} variant='h6'>Location: {location}</Typography>
@@ -429,7 +441,7 @@ const handleClickDeleteListing = () => {
                         bgcolor: "darkred"}, backgroundColor:'red', m:'auto', justifyContent: 'center', display: 'flex',}} onClick={() => setWarningModalOpen(true)}>Delete Listing</Button>
                     </Grid>
                     <Grid item xs={4}>
-                        {showFailMessage()} 
+                        <Error message={failMessage} bool={failSaveListing}/> 
                     </Grid>
 
                     <WarningModal 

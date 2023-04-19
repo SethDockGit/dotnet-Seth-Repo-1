@@ -4,7 +4,10 @@ import {Typography } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
 
 
-export default function AmenitiesList({listing}){
+export default function AmenitiesList({
+listing,
+title
+}){
 
 
 const Amenities = () => {

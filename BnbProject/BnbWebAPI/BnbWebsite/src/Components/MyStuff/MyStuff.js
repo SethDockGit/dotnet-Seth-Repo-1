@@ -39,6 +39,7 @@ const [drawerOpen, setDrawerOpen] = useState(false);
 const [rating, setRating] = useState(5);
 const [reviewText, setReviewText] = useState('');
 const [failReviewMessage, setFailReviewMessage] = useState('');
+const [failReview, setFailReview] = useState(false);
 const [modalOpen, setModalOpen] = useState(false);
 const navigate = useNavigate();
 
@@ -48,7 +49,6 @@ const reRoute = () => {
     //this should overwrite any cookie so that it expires.
     navigate("/user/login");
 }
-
 const getListings = () => {
 
     fetch(`${api}/bnb/listings`)
@@ -59,8 +59,6 @@ const getListings = () => {
         console.log(data);
     });
 }
-
-
 const getUser = (id) => {
 
     fetch(`${api}/bnb/user/${id}`)
@@ -68,21 +66,16 @@ const getUser = (id) => {
     .then((data) => {
         console.log(data);
         setUser(data.user);
-
     });
 }
-
 const verifyLogin = () => {
 
     if(!user){
 
-        //user is coming in null from my login using the database...
-        //if user is null, parse the cookie. If there's no cookie, id will be NaN. So, either get user by Id if Id has value, or reroute to login.
         var elements = document.cookie.split('=');
         var id = Number(elements[1]);
         if(!isNaN(id)){
             getUser(id);
-
         }
         else{
             reRoute();
@@ -94,16 +87,13 @@ const verifyLogin = () => {
         }
     } 
 }
-
 useEffect(() => {
     verifyLogin();
-}, [])
+}, [user])
     
 useEffect(() => {
     getListings();
 }, [])
-
-
 
 const showReview = (stay) => {
 
@@ -131,50 +121,18 @@ const showReview = (stay) => {
         </div>
     )
 }
-const showReviewDrawer = (listing, stay) => {
 
-    return(
-        <Grid container sx={{justifyContent: 'center', display: 'flex', width:400}}>
-            <Grid item xs={10}>
-                <Typography variant="h4" sx={{mb:3, mt:3}}>Leave a Review for- {listing.title}</Typography>
-                <Divider sx={{backgroundColor:'peachpuff'}}/>
-                <Typography vairant="h6" sx={{mt:4}}>Your Rating</Typography>
-                <br/>
-                <Rating
-                    name="user rating"
-                    value={rating}
-                    onChange={(event, newValue) => {
-                    setRating(newValue);}}
-                />
-                <Typography vairant="h6" sx={{mt:4}}>How was your stay?</Typography>
-                <TextField multiline minRows={5} maxRows={8} placeholder="..." 
-                sx={{width:300}} inputProps={{maxLength: 300}} onChange={handleChangeReviewText}/>
-                <br/>
-                <Typography variant="caption" color="red">{failReviewMessage}</Typography>
-                <br/>
-                <Button variant="contained" sx={{":hover": {
-                bgcolor: "peachpuff"}, mt:3, mr:2, backgroundColor:"lightsalmon"}} 
-                onClick={() => submitReview(stay)}>Submit
-                </Button>
-                <Button variant="contained" sx={{":hover": {
-                bgcolor: "gray"}, mt:3, backgroundColor:'lightgray'}} 
-                onClick={cancelReview}>Cancel</Button>
-            </Grid>
-            
-        </Grid>
-    )
-}
 const handleChangeReviewText = (e) => {
     setReviewText(e.target.value);
 }
 const submitReview = (stay) => {
 
     if (reviewText == ""){
+        setFailReview(true);
         setFailReviewMessage("You must enter text for the review.");
     }
-    else{
-        
-        setFailReviewMessage("");
+    else{   
+        setFailReview(false);
 
         if (rating == null){
             setRating(0);
@@ -198,11 +156,11 @@ const submitReview = (stay) => {
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
+            setUser(data.user);
             setDrawerOpen(false);
             setModalOpen(true);
         });
     }
-    
 }
 const cancelReview = () => {
     setRating(undefined);
@@ -254,8 +212,11 @@ const cancelReview = () => {
                         showReview={showReview}
                         drawerOpen={drawerOpen}
                         setDrawerOpen={setDrawerOpen}
-                        showReviewDrawer={showReviewDrawer}
                         handleChangeReviewText={handleChangeReviewText}
+                        failReviewMessage={failReviewMessage}
+                        failReview={failReview}
+                        rating={rating}
+                        setRating={setRating}
                         submitReview={submitReview}
                         cancelReview={cancelReview}
                         />

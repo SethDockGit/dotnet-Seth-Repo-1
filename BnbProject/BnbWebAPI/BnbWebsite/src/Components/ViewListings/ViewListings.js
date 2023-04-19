@@ -13,6 +13,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import ListingsCard from "../ListingsCard/ListingsCard";
+import Error from "../Error/Error";
 
 
 export default function ViewListings(){
@@ -57,7 +58,7 @@ useEffect(() => {
 }, []);
 
 
-const showListings = () => {
+const Listings = () => {
 
     return listings.map(function(val, index) {
         
@@ -130,15 +131,13 @@ const applyFilters = () => {
         var filtered = unfiltered.filter(l => l.rate < maxRate && l.rate > minRate);
         //If there are no failures, it starts with the list of unfiltered listings, and filters first for rates.
 
-        for(let i=0; i < listings.length; i++){
+        for(let i=0; i < filtered.length; i++){
 
-            for(let j=0; j < selectedAmenities.length, j++;){
+            for(let j=0; j < selectedAmenities.length; j++){
 
-                var test = listings[i].amenities.find(selectedAmenities[j]);
+                if(filtered[i].amenities == null || !filtered[i].amenities.includes(selectedAmenities[j])){
 
-                if(test == undefined)
-                {
-                    filtered = filtered.filter(l => l.id != listings[i].id);
+                    filtered = filtered.filter(l => l.id != filtered[i].id);
                 }
             }
         }
@@ -146,28 +145,27 @@ const applyFilters = () => {
 
         if(checkin != "" && checkin != null && checkout != "" && checkout != null){
 
-            for(let i=0; i <listings.length; i++){
-                
-                for(let j=0; j < listings[i].stays.length; j++){
-                     
-                    if(dayjs(checkin).isBetween(dayjs(listings[i].stays[j].startDate), dayjs(listings[i].stays[j].endDate), 'day', '[]')){
-                        
-                        filtered = filtered.filter(l => l.id != listings[i].id);
+            for(let i=0; i < filtered.length; i++){
+
+                for(let j=0; j < filtered[i].stays.length; j++){
+                    debugger;
+                    if(dayjs(checkin).isBetween(dayjs(filtered[i].stays[j].startDate), dayjs(filtered[i].stays[j].endDate), 'day', '[]')){
+                        filtered = filtered.filter(l => l.id != filtered[i].id);
                     }
-                    else if(dayjs(checkout).isBetween(dayjs(listings[i].stays[j].startDate), dayjs(listings[i].stays[j].endDate), 'day', '[]')){
+                    else if(dayjs(checkout).isBetween(dayjs(filtered[i].stays[j].startDate), dayjs(filtered[i].stays[j].endDate), 'day', '[]')){
                         
-                        filtered = filtered.filter(l => l.id != listings[i].id);
+                        filtered = filtered.filter(l => l.id != filtered[i].id);
                     }
-                    else if(dayjs(listings[i].stays[j].startDate).isBetween(dayjs(checkin), dayjs(checkout), 'day', '[]')){
+                    else if(dayjs(filtered[i].stays[j].startDate).isBetween(dayjs(checkin), dayjs(checkout), 'day', '[]')){
                         
-                        filtered = filtered.filter(l => l.id != listings[i].id);
+                        filtered = filtered.filter(l => l.id != filtered[i].id);
                     }
-                    else if(dayjs(listings[i].stays[j].endDate).isBetween(dayjs(checkin), dayjs(checkout), 'day', '[]')){
+                    else if(dayjs(filtered[i].stays[j].endDate).isBetween(dayjs(checkin), dayjs(checkout), 'day', '[]')){
                         
-                        filtered = filtered.filter(l => l.id != listings[i].id);
+                        filtered = filtered.filter(l => l.id != filtered[i].id);
                     }
-                }
-            };    
+                }             
+            }    
         }
         //finally, if none of the fields are empty, it filters for dates. If both fields are empty, it does not.
 
@@ -176,35 +174,6 @@ const applyFilters = () => {
     }
 }
 
-const showDateMessage = () => {
-
-    return (
-        <div>
-        {
-        failDateFilters &&   
-            <div style={{margin:'auto'}}>
-                <Typography color="red" variant="caption">{dateMessage}</Typography>
-            </div>    
-        }
-        </div>
-    )
-}
-const showRateMessage = () => {
-
-    return (
-        <div>
-        {
-        failRateFilters &&   
-            <div style={{margin:'auto'}}>
-                <Typography color="red" variant="caption">{rateMessage}</Typography>
-            </div>    
-        }
-        </div>
-    )
-}
-
-//so what you can do here, is double bang listings and amenities, skip the bool, and use effect
-//on the API calls and that shooouuulldd do it.
     return(
         
         <div>
@@ -231,13 +200,13 @@ const showRateMessage = () => {
                         value={checkout}
                         onChange={handleCheckoutChange}
                         />
-                        {showDateMessage()} 
+                        <Error message={dateMessage} bool={failDateFilters}/> 
                 </Grid>
                 <Grid item xs={2.5}>
                     <Typography variant='h6'>Rate($)</Typography>
                     <TextField sx={{maxWidth:150}} placeholder="Min Rate" onChange={handleMinRateChange}/>
                     <TextField sx={{maxWidth:150}} placeholder="Max Rate" onChange={handleMaxRateChange}/>
-                    {showRateMessage()} 
+                    <Error message={rateMessage} bool={failRateFilters}/> 
                 </Grid>
                 <Grid item xs={2}>
                     <Typography variant='h6'>Amenities</Typography>
@@ -271,7 +240,7 @@ const showRateMessage = () => {
             <Divider sx={{backgroundColor:'peachpuff'}}/>
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}> 
-                {showListings()}
+                {Listings()}
             </Grid>
             </div>}
         </div>

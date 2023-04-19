@@ -24,14 +24,14 @@ if(isLoggedIn && !!user){
 
     return(
         isFavorite 
-        ?   <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+        ?   <Grid container sx={{justifyContent: 'center', display: 'flex'}}>
                 <IconButton onClick={handleClickUnFavorite}>
-                    <FavoriteIcon sx={{m:2, color:"pink"}}/>
+                    <FavoriteIcon sx={{color:"pink", mb:2}}/>
                 </IconButton>
             </Grid>
-        :   <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
+        :   <Grid container sx={{justifyContent: 'center', display: 'flex'}}>
                 <IconButton onClick={handleClickFavorite}>
-                    <FavoriteIcon sx={{m:2}}/>
+                    <FavoriteIcon sx={{mb:2}}/>
                 </IconButton>
             </Grid>
     )

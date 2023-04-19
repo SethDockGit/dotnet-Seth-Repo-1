@@ -14,7 +14,7 @@ import AmenitiesList from "../Subcomponents/AmenitiesList/AmenitiesList";
 import FaveIcon from "../Subcomponents/FaveIcon/FaveIcon";
 import ReviewCard from "../Subcomponents/ReviewCard/ReviewCard";
 import BookingDrawer from "../Subcomponents/BookingDrawer/BookingDrawer";
-
+import Error from "../Error/Error";
 
 export default function Listing(){
 
@@ -39,7 +39,6 @@ const [listing, setListing] = useState();
 const [modalOpen, setModalOpen] = useState(false);
 const [requiresLogin, setRequiresLogin] = useState(false);
 const [loginErrorMessage, setLoginErrorMessage] = useState('');
-//const [addToFavorites, setAddtoFavorites] = useState(false);
 const [failBooking, setFailBooking] = useState(false);
 const [failBookingMessage, setFailBookingMessage] = useState('');
 const [drawerOpen, setDrawerOpen] = useState(false);
@@ -145,6 +144,7 @@ const confirmBooking = () => {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
+                setUser(data.user);
                 setDrawerOpen(false);
                 setModalOpen(true);
             });
@@ -206,9 +206,7 @@ const handleClickFavorite = () => {
                 console.log(data);
                 
                 if(data.success){
-                    var elements = document.cookie.split('=');
-                    var id = Number(elements[1]);
-                    getUser(id);
+                    getUser(user.id);
                 }
             });
     }
@@ -239,8 +237,6 @@ const handleClickUnFavorite = () => {
             });
 }
 
-
-
     return(
 
         <div>     
@@ -264,7 +260,7 @@ const handleClickUnFavorite = () => {
 
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
                 <Grid item xs={12} sx={{justifyContent: 'center', display: 'flex'}}>
-                    {showLoginError()}
+                    <Error message={loginErrorMessage} bool={showLoginError}/>
                 </Grid>
                 <Grid item xs={3}>
                     <Typography sx={{mt:1}} variant='h6'>{listing.title}</Typography>

@@ -71,18 +71,18 @@ namespace BnbWebAPI.Controllers
             return response;
         }
         [HttpPost]
-        [Route("editfile/{id}")]
-        public WorkflowResponse EditListingFile([FromForm] IFormFile file, int id)
-        {
-            WorkflowResponse response = Manager.EditListingFile(file, id);
-
-            return response;
-        }
-        [HttpPost]
         [Route("editlisting")]
         public EditListingResponse EditListing([FromBody] ListingTransfer transfer)
         {
             EditListingResponse response = Manager.EditListing(transfer);
+
+            return response;
+        }
+        [HttpPost]
+        [Route("deletePicIds")]
+        public DeletePicsResponse DeletePicsById([FromBody]int[] deletePicIds)
+        {
+            DeletePicsResponse response = Manager.DeletePicsById(deletePicIds);
 
             return response;
         }
@@ -96,17 +96,17 @@ namespace BnbWebAPI.Controllers
         }
         [HttpPost]
         [Route("addstay")]
-        public WorkflowResponse AddStay([FromBody] StayTransfer transfer)
+        public BookingResponse AddStay([FromBody] StayTransfer transfer)
         {
-            WorkflowResponse response = Manager.AddStay(transfer);
+            BookingResponse response = Manager.AddStay(transfer);
 
             return response;
         }
         [HttpPost]
         [Route("review")]
-        public WorkflowResponse AddReview([FromBody] Review review)
+        public AddReviewResponse AddReview([FromBody] Review review)
         {
-            WorkflowResponse response = Manager.AddReview(review);
+            AddReviewResponse response = Manager.AddReview(review);
 
             return response;
         }

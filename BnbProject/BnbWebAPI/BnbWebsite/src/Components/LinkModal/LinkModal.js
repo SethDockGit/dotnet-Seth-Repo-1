@@ -4,7 +4,11 @@ import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 
-export default function LinkModal({message, messageTwo, modalOpen, modalClose}){
+export default function LinkModal({
+  message, 
+  messageTwo, 
+  modalOpen, 
+  modalClose}){
 
 
 const style = {

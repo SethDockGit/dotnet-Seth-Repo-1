@@ -2,15 +2,21 @@ import dayjs from "dayjs";
 import { Typography } from "@mui/material";
 import ListingsCard from "../../ListingsCard/ListingsCard";
 import { Drawer } from "@mui/material";
-
+import ReviewDrawer from "../../ReviewDrawer/ReviewDrawer";
 
 export default function PastStays({
-    stays,
-    listings,
-    showReview,
-    drawerOpen,
-    setDrawerOpen,
-    showReviewDrawer,
+stays,
+listings,
+showReview,
+drawerOpen,
+setDrawerOpen,
+rating,
+setRating,
+handleChangeReviewText,
+failReviewMessage,
+failReview,
+submitReview,
+cancelReview
 }){
     
     var past = stays.filter(s => dayjs(s.endDate).isBefore(dayjs()));
@@ -35,7 +41,17 @@ export default function PastStays({
                 <ListingsCard listing={val.listing}/>
                 {showReview(past[index])}
                 <Drawer open={drawerOpen} anchor={"left"} onClose={() => setDrawerOpen(false)}>
-                    {showReviewDrawer(val.listing, past[index])} {/*double-check that this is solid logic. If not there must be some way to save the stay id*/}
+                    <ReviewDrawer 
+                    listing={val.listing}
+                    stay={past[index]}
+                    rating={rating}
+                    setRating={setRating}
+                    handleChangeReviewText={handleChangeReviewText}
+                    failReviewMessage={failReviewMessage}
+                    failReview={failReview}
+                    submitReview={submitReview}
+                    cancelReview={cancelReview}
+                    />
                 </Drawer>
             </div>
         )

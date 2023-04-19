@@ -18,6 +18,8 @@ import { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from "react";
 import ImageUpload from "../ImageUpload/ImageUpload";
+import Error from "../Error/Error";
+import LinkModal from "../LinkModal/LinkModal";
 
 export default function CreateListing(){
 
@@ -48,6 +50,7 @@ const [failMessage, setFailMessage] = useState('');
 const [failCreateListing, setFailCreateListing] = useState(false);
 const [modalOpen, setModalOpen] = useState(false);
 const [files, setFiles] = useState([]);
+const [finishAddFiles, setFinishAddFiles] = useState(false);
 const navigate = useNavigate();
 
 
@@ -122,7 +125,7 @@ const handleDescriptionChange = (e) => {
 const handleClickAmenity = (e) => {
     setListingAmenities([...listingAmenities, e.target.value]);
 }
-const showAvailableAmenities = () => {
+const AvailableAmenities = () => {
 
     return availableAmenities.map(function(val, index){
         return(
@@ -136,7 +139,7 @@ const handleCustomAmenityChange = (e) => {
 const addCustomAmenity = () => {
     setListingAmenities([...listingAmenities, customAmenity]);
 }
-const showListingAmenities = () => {
+const ListingAmenities = () => {
     
     return listingAmenities.map(function(val, index){
         return(      
@@ -224,27 +227,26 @@ const handleClickCreateListing = () => {
                                 .then((response) => response.json())
                                 .then((data) => {
                                     console.log(data);
+                                    setFinishAddFiles(true);
                                 }); 
                         }
                     }
+                    else{
+                        setFinishAddFiles(true);
+                    }
                 }
-
                 setModalOpen(true);
             });
     }   
 }
-const showFailMessage = () => {
-
-    return (
-        <div>
-        {
-        failCreateListing &&   
-            <div style={{margin:'auto'}}>
-                <Typography color="red" variant="h6">{failMessage}</Typography>
-            </div>    
-        }
-        </div>
-    )
+if(finishAddFiles){
+    
+    fetch(`${api}/bnb/user/${user.id}`)
+    .then((response) => response.json())
+    .then((data) => {
+        setUser(data.user);
+        setModalOpen(true);
+    });
 }
 const cancelCreateListing = () => {
     navigate("/mystuff");
@@ -274,11 +276,12 @@ const handleClickRemoveFile = (e) => {
             <Grid container sx={{justifyContent: 'center', display: 'flex', margin:2}}>
                 <Grid item xs={2}>
                     <Typography sx={{mt:2}} variant='h6'>Listing Title</Typography>
-                    <TextField sx={{mb:2}} placeholder='Enter Title' onChange={handleTitleChange}/>
+                    <TextField sx={{mb:2}} inputProps={{ maxLength: 28 }}
+                    placeholder='Enter Title' onChange={handleTitleChange}/>
                 </Grid>
                 <Grid item xs={2}>
                     <Typography sx={{mt:2}} variant='h6'>Nightly Rate($)</Typography>
-                    <TextField sx={{mb:2}} placeholder='Enter Rate' onChange={handleRateChange}/>
+                    <TextField sx={{mb:2}} inputProps={{ maxLength: 6 }} placeholder='Enter Rate' onChange={handleRateChange}/>
                 </Grid>
                 <Grid item xs={2}>
                     <Typography sx={{mt:2}} variant='h6'>Location</Typography>
@@ -310,7 +313,7 @@ const handleClickRemoveFile = (e) => {
                                 value={""}
                                 onChange={handleClickAmenity}
                             >
-                                {showAvailableAmenities()}
+                                {AvailableAmenities()}
                             </Select>
                         </FormControl>
                      </Box>
@@ -321,7 +324,6 @@ const handleClickRemoveFile = (e) => {
                     <Button sx={{color:'lightsalmon'}} onClick={addCustomAmenity}>Add</Button>
                 </Grid>
 
-                            {/*subcomponent here*/}
                 <Grid item xs={2}>
                     <Typography sx={{mt:2}} variant='h6'>Your Amenities:</Typography>
                     <List sx={{
@@ -333,7 +335,7 @@ const handleClickRemoveFile = (e) => {
                         maxHeight: 200,
                         '& ul': { padding: 0 },
                         }}>
-                        {showListingAmenities()}
+                        {ListingAmenities()}
                     </List>
                 </Grid>
             </Grid>
@@ -351,21 +353,13 @@ const handleClickRemoveFile = (e) => {
                     bgcolor: "peachpuff"}, backgroundColor:'lightsalmon', m:'auto', justifyContent: 'center', display: 'flex'}} onClick={handleClickCreateListing}>Save</Button>
                 </Grid>
                 <Grid item xs={5}>
-                    {showFailMessage()} 
+                    <Error message={failMessage} bool={failCreateListing}/> 
                 </Grid>
-                {modalOpen &&
-                    <Modal
-                      open={modalOpen}
-                      onClose={() => navigate(`/mystuff`)}
-                    >
-                        <Box sx={style}>
-                            <Typography variant="h6">Listing saved!</Typography>
-                            <Link style={{ textDecoration: 'none' }} to={`/mystuff`}>
-                                <Button>Back to MyStuff</Button>
-                            </Link>
-                        </Box>
-                    </Modal>
-                }
+                <LinkModal 
+                message={"Listing Saved!"}
+                messageTwo={"Back to MyStuff"}
+                modalOpen={modalOpen}
+                modalClose={() => navigate(`/mystuff`)}/>
             </Grid>
             </div>
             } 
