@@ -29,6 +29,7 @@ namespace BnbProject.Logic
                 List<Listing> listings = IDataSource.GetListings();
 
                 response.Success = true;
+                response.Message = "Listings retreived successfully";
                 response.Listings = listings;
 
             }
@@ -40,19 +41,20 @@ namespace BnbProject.Logic
 
             return response;
         }
-        public ListingResponse AddListing(ListingTransfer transfer)
+        public ListingResponse AddListing(AddListingTransfer transfer)
         {
             ListingResponse response = new ListingResponse();
 
-            Listing listing = new Listing();
-
-            listing.HostId = transfer.HostId;
-            listing.Title = transfer.Title;
-            listing.Rate = transfer.Rate;
-            listing.Location = transfer.Location;
-            listing.Description = transfer.Description;
-            listing.Amenities = transfer.Amenities;
-            listing.Stays = new List<Stay>();
+            Listing listing = new Listing
+            {
+                HostId = transfer.HostId,
+                Title = transfer.Title,
+                Rate = transfer.Rate,
+                Location = transfer.Location,
+                Description = transfer.Description,
+                Amenities = transfer.Amenities,
+                Stays = new List<Stay>()
+            };
 
 
             try
@@ -70,7 +72,7 @@ namespace BnbProject.Logic
 
             return response;
         }
-        public EditListingResponse EditListing(ListingTransfer transfer)
+        public EditListingResponse EditListing(EditListingTransfer transfer)
         {
             EditListingResponse response = new EditListingResponse();
 
@@ -107,6 +109,7 @@ namespace BnbProject.Logic
             {
                 List<string> amenities = IDataSource.GetAmenities();
                 response.Success = true;
+                response.Message = $"{amenities.Count} amenities successfully retrieved.";
                 response.Amenities = amenities;
 
             }
@@ -124,8 +127,18 @@ namespace BnbProject.Logic
             try
             {
                 Listing listing = IDataSource.GetListingById(id);
-                response.Listing = listing;
-                response.Success = true;
+
+                if(listing != null)
+                {
+                    response.Listing = listing;
+                    response.Message = $"Listing {id} retrieved.";
+                    response.Success = true;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Listing not found.";
+                }
             }
             catch (Exception e)
             {
@@ -141,8 +154,18 @@ namespace BnbProject.Logic
             try
             {
                 UserAccount user = IDataSource.GetUserById(id);
-                response.User = user;
-                response.Success = true;
+
+                if(user != null)
+                {
+                    response.User = user;
+                    response.Message = $"User {id} successfully retrieved.";
+                    response.Success = true;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "User not found.";
+                }
             }
             catch (Exception e)
             {
@@ -155,11 +178,8 @@ namespace BnbProject.Logic
         {
             BookingResponse response = new BookingResponse();
 
-            Listing listing = IDataSource.GetListingById(transfer.ListingId);
-
             Stay stay = new Stay()
             {
-
                 GuestId = transfer.GuestId,
                 HostId = transfer.HostId,
                 ListingId = transfer.ListingId,
@@ -173,7 +193,7 @@ namespace BnbProject.Logic
                 IDataSource.AddStay(stay);
 
                 response.Success = true;
-                response.Message = $"Booking confirmed for {listing.Title} from {stay.StartDate} to {stay.EndDate}";
+                response.Message = $"Booking confirmed from {stay.StartDate} to {stay.EndDate}";
 
                 response.User = IDataSource.GetUserById(transfer.GuestId);
             }
@@ -219,7 +239,6 @@ namespace BnbProject.Logic
             }
 
             string hashedPass = BC.HashPassword(request.Password);
-
 
             UserAccount user = new UserAccount()
             {
@@ -304,30 +323,6 @@ namespace BnbProject.Logic
 
             return response;
         }
-        public WorkflowResponse AddFileToListing(IFormFile file, int listingId)
-        {
-            WorkflowResponse response = new WorkflowResponse();
-
-            using (var ms = new MemoryStream())
-            {
-                file.CopyTo(ms);
-                var fileBytes = ms.ToArray();
-
-                try
-                {
-                    IDataSource.AddFileToListing(fileBytes, listingId);
-                    response.Success = true;
-                    response.Message = "Image successfully added to listing.";
-                }
-                catch (Exception e)
-                {
-                    response.Success = false;
-                    response.Message = e.Message;
-                }
-            }
-
-            return response;
-        }
         public WorkflowResponse RemoveFavorite(UserListing ul)
         {
             WorkflowResponse response = new WorkflowResponse();
@@ -356,12 +351,36 @@ namespace BnbProject.Logic
                 response.Success = true;
                 response.Message = $"Listing {listingId} successfully deleted.";
 
-                response.User = IDataSource.GetUserById(userId);     
+                response.User = IDataSource.GetUserById(userId);
             }
             catch (Exception e)
             {
                 response.Success = false;
                 response.Message = e.Message + e.StackTrace;
+            }
+
+            return response;
+        }
+        public WorkflowResponse AddFileToListing(IFormFile file, int listingId)
+        {
+            WorkflowResponse response = new WorkflowResponse();
+
+            using (var ms = new MemoryStream())
+            {
+                file.CopyTo(ms);
+                var fileBytes = ms.ToArray();
+
+                try
+                {
+                    IDataSource.AddFileToListing(fileBytes, listingId);
+                    response.Success = true;
+                    response.Message = "Image successfully added to listing.";
+                }
+                catch (Exception e)
+                {
+                    response.Success = false;
+                    response.Message = e.Message;
+                }
             }
 
             return response;

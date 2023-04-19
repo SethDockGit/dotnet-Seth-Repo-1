@@ -56,7 +56,7 @@ namespace BnbWebAPI.Controllers
         }
         [HttpPost]
         [Route("addlisting")]
-        public ListingResponse AddListing([FromBody] ListingTransfer transfer)
+        public ListingResponse AddListing([FromBody] AddListingTransfer transfer)
         {
             ListingResponse response = Manager.AddListing(transfer);
 
@@ -72,7 +72,7 @@ namespace BnbWebAPI.Controllers
         }
         [HttpPost]
         [Route("editlisting")]
-        public EditListingResponse EditListing([FromBody] ListingTransfer transfer)
+        public EditListingResponse EditListing([FromBody] EditListingTransfer transfer)
         {
             EditListingResponse response = Manager.EditListing(transfer);
 
