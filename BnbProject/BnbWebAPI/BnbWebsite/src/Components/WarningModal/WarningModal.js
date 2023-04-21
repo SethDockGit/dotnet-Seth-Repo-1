@@ -37,13 +37,13 @@ const style = {
           <Grid container sx={{m:'auto', justifyContent: 'center', display: 'flex'}}>
             <Grid item xs={4}>
               <Button variant="contained" sx={{":hover": {
-              bgcolor: "darkred"}, backgroundColor:'red', m:'auto', justifyContent: 'center', display: 'flex'}} 
-              onClick={handleClickDeleteListing}>Confirm</Button>
+              bgcolor: "gray"}, backgroundColor:'lightgray', m:'auto', justifyContent: 'center', display: 'flex'}} 
+              onClick={modalClose}>Cancel</Button>
             </Grid>
             <Grid item xs={4}>
               <Button variant="contained" sx={{":hover": {
-              bgcolor: "gray"}, backgroundColor:'lightgray', m:'auto', justifyContent: 'center', display: 'flex'}} 
-              onClick={modalClose}>Cancel</Button>
+              bgcolor: "darkred"}, backgroundColor:'red', m:'auto', justifyContent: 'center', display: 'flex'}} 
+              onClick={handleClickDeleteListing}>Confirm</Button>
             </Grid>
           </Grid>
           </Box>

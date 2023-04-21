@@ -142,7 +142,5 @@ namespace BnbWebAPI.Controllers
 
             return response;
         }
-
-
     }
 }

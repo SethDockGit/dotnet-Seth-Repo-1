@@ -16,10 +16,10 @@ import { UserContext } from "../../Contexts/UserContext/UserContext";
 import { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
 import dayjs from "dayjs";
-import ImageUpload from "../ImageUpload/ImageUpload";
-import ListingImages from "../ListingImages/ListingImages";
+import ImageUpload from "../Subcomponents/ImageUpload/ImageUpload";
+import ListingImages from "../Subcomponents/ListingImages/ListingImages";
 import WarningModal from "../WarningModal/WarningModal";
-import Error from "../Error/Error";
+import Error from "../Subcomponents/Error/Error";
 
 export default function EditListing(){
 
@@ -71,7 +71,7 @@ const getUser = (userId) => {
 const verifyLogin = () => {
 
     if(!user){
-        //if user is null, parse the cookie. If there's no cookie, id will be NaN. So, either get user by Id if Id has value, or reroute to login.
+
         var elements = document.cookie.split('=');
         var userId = Number(elements[1]);
 

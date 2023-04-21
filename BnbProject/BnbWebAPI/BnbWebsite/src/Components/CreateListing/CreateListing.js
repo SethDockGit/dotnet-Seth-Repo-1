@@ -10,32 +10,18 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
-import Modal from '@mui/material/Modal';
-import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { UserContext } from "../../Contexts/UserContext/UserContext";
 import { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from "react";
-import ImageUpload from "../ImageUpload/ImageUpload";
-import Error from "../Error/Error";
+import ImageUpload from "../Subcomponents/ImageUpload/ImageUpload";
+import Error from "../Subcomponents/Error/Error";
 import LinkModal from "../LinkModal/LinkModal";
 
 export default function CreateListing(){
 
 const api = `https://localhost:44305`;
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    borderRadius:3,
-    boxShadow: 24,
-    p: 4,
-  };
 
 const {user, setUser} = useContext(UserContext);
 const [title, setTitle] = useState('');
@@ -199,7 +185,7 @@ const handleClickCreateListing = () => {
             Description: description,
             Amenities: listingAmenities,      
         };
-        
+        debugger;
         fetch(`${api}/bnb/addlisting`, {
             method: 'POST',
             body: JSON.stringify(APIRequest),
@@ -239,15 +225,19 @@ const handleClickCreateListing = () => {
             });
     }   
 }
-if(finishAddFiles){
+
+useEffect(() => {
+    if(finishAddFiles){
     
-    fetch(`${api}/bnb/user/${user.id}`)
-    .then((response) => response.json())
-    .then((data) => {
-        setUser(data.user);
-        setModalOpen(true);
-    });
-}
+        fetch(`${api}/bnb/user/${user.id}`)
+        .then((response) => response.json())
+        .then((data) => {
+            setUser(data.user);
+            setModalOpen(true);
+        });
+    }
+}, [finishAddFiles]);
+
 const cancelCreateListing = () => {
     navigate("/mystuff");
 }
@@ -364,6 +354,5 @@ const handleClickRemoveFile = (e) => {
             </div>
             } 
         </div>
-
     )
 }

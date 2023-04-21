@@ -32,7 +32,9 @@ namespace BnbProject.Data
                 {
                     Connection = conn,
                     CommandText = "SELECT * FROM Listing LEFT JOIN ListingImage on ListingImage.ListingshownId=Listing.ListingId " +
-                    "LEFT JOIN Stay on Stay.PropertyId=Listing.ListingId;"
+                    "LEFT JOIN Stay on Stay.PropertyId=Listing.ListingId " +
+                    "LEFT JOIN AmenityListing on AmenityListing.ListingId=Listing.ListingId " +
+                    "LEFT JOIN Amenity on Amenity.AmenityId = AmenityListing.AmenityId;"
                 };
 
                 conn.Open();
@@ -50,7 +52,8 @@ namespace BnbProject.Data
                             Location = (string)dr["Location"],
                             Rate = (decimal)dr["Rate"],
                             Pictures = new List<Picture>(),
-                            Stays = new List<Stay>()
+                            Stays = new List<Stay>(),
+                            Amenities = new List<string>()
                         };
                         listings.Add(listing);
                     }
@@ -80,7 +83,11 @@ namespace BnbProject.Data
                         };
 
                         listingToAmend.Stays.Add(stay);
-                    }     
+                    }
+                    if (!listingToAmend.Amenities.Any(a => a == (string)dr["AmenityName"]) && !Convert.IsDBNull(dr["AmenityName"]))
+                    {
+                        listingToAmend.Amenities.Add((string)dr["AmenityName"]);
+                    }
                 }
             }
 

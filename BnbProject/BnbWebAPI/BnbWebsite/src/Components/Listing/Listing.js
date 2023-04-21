@@ -14,7 +14,7 @@ import AmenitiesList from "../Subcomponents/AmenitiesList/AmenitiesList";
 import FaveIcon from "../Subcomponents/FaveIcon/FaveIcon";
 import ReviewCard from "../Subcomponents/ReviewCard/ReviewCard";
 import BookingDrawer from "../Subcomponents/BookingDrawer/BookingDrawer";
-import Error from "../Error/Error";
+import Error from "../Subcomponents/Error/Error";
 
 export default function Listing(){
 
@@ -45,9 +45,6 @@ const [drawerOpen, setDrawerOpen] = useState(false);
 const [checkin, setCheckin] = useState('');
 const [checkout, setCheckout] = useState('');
 const [isFavorite, setIsFavorite] = useState(false);
-
-//whereas some pages rely on user existing to render at all, this page relies on isloggedin to render conditionally.
-//That's why the verify login method is different. No re-routing occurs, just setting of isloggedin.
 
 const getUser = (id) => {
 

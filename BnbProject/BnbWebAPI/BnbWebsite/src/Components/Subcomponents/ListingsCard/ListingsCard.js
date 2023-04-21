@@ -6,7 +6,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Box from '@mui/material/Box';
 
 export default function ListingsCard({
-listing
+    listing
 }){
 
 

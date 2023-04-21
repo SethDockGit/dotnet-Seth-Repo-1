@@ -12,13 +12,25 @@ import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
-import ListingsCard from "../ListingsCard/ListingsCard";
-import Error from "../Error/Error";
+import ListingsCard from "../Subcomponents/ListingsCard/ListingsCard";
+import Error from "../Subcomponents/Error/Error";
 
 
 export default function ViewListings(){
 
 const api = `https://localhost:44305`;
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+
 
 const [listings, setListings] = useState();
 const [unfiltered, setUnfiltered] = useState([]);
@@ -87,17 +99,6 @@ const handleAmenitiesChange = (e) => {
         typeof value === 'string' ? value.split(',') : value,
     );
 };
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
-
 const applyFilters = () => {
 
     setFailDateFilters(false);
@@ -127,49 +128,64 @@ const applyFilters = () => {
         setDateMessage("Please select a check-out date.");
     }
     else{
+
+        var filtered = unfiltered.map(function(val) {
+            return(
+                {
+                    listing: val,
+                    display: Boolean(true)
+                }
+            )
+        });
         
-        var filtered = unfiltered.filter(l => l.rate < maxRate && l.rate > minRate);
-        //If there are no failures, it starts with the list of unfiltered listings, and filters first for rates.
+        filtered = filtered.filter(l => l.listing.rate < maxRate && l.listing.rate > minRate);
 
         for(let i=0; i < filtered.length; i++){
 
             for(let j=0; j < selectedAmenities.length; j++){
 
-                if(filtered[i].amenities == null || !filtered[i].amenities.includes(selectedAmenities[j])){
+                if(!filtered[i].listing.amenities.includes(selectedAmenities[j])){
 
-                    filtered = filtered.filter(l => l.id != filtered[i].id);
+                    filtered[i].display = false;
                 }
             }
         }
-        //then, it filters for amenities.
+
 
         if(checkin != "" && checkin != null && checkout != "" && checkout != null){
 
             for(let i=0; i < filtered.length; i++){
 
-                for(let j=0; j < filtered[i].stays.length; j++){
-                    debugger;
-                    if(dayjs(checkin).isBetween(dayjs(filtered[i].stays[j].startDate), dayjs(filtered[i].stays[j].endDate), 'day', '[]')){
-                        filtered = filtered.filter(l => l.id != filtered[i].id);
+                for(let j=0; j < filtered[i].listing.stays.length; j++){
+
+                    if(dayjs(checkin).isBetween(dayjs(filtered[i].listing.stays[j].startDate), dayjs(filtered[i].listing.stays[j].endDate), 'day', '[]')){
+
+                        filtered[i].display = false;
                     }
-                    else if(dayjs(checkout).isBetween(dayjs(filtered[i].stays[j].startDate), dayjs(filtered[i].stays[j].endDate), 'day', '[]')){
+                    else if(dayjs(checkout).isBetween(dayjs(filtered[i].listing.stays[j].startDate), dayjs(filtered[i].listing.stays[j].endDate), 'day', '[]')){
                         
-                        filtered = filtered.filter(l => l.id != filtered[i].id);
+                        filtered[i].display = false;
                     }
-                    else if(dayjs(filtered[i].stays[j].startDate).isBetween(dayjs(checkin), dayjs(checkout), 'day', '[]')){
+                    else if(dayjs(filtered[i].listing.stays[j].startDate).isBetween(dayjs(checkin), dayjs(checkout), 'day', '[]')){
                         
-                        filtered = filtered.filter(l => l.id != filtered[i].id);
+                        filtered[i].display = false;
                     }
-                    else if(dayjs(filtered[i].stays[j].endDate).isBetween(dayjs(checkin), dayjs(checkout), 'day', '[]')){
+                    else if(dayjs(filtered[i].listing.stays[j].endDate).isBetween(dayjs(checkin), dayjs(checkout), 'day', '[]')){
                         
-                        filtered = filtered.filter(l => l.id != filtered[i].id);
+                        filtered[i].display = false;
                     }
                 }             
             }    
         }
-        //finally, if none of the fields are empty, it filters for dates. If both fields are empty, it does not.
 
-        //make sure to re-test.
+        filtered = filtered.filter(l => l.display != false);
+
+        filtered = filtered.map(function(val) {
+            return(
+                val.listing
+            )
+        });
+
         setListings(filtered);
     }
 }

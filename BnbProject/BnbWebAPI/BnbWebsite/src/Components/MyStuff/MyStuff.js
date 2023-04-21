@@ -46,7 +46,6 @@ const navigate = useNavigate();
 const reRoute = () => {
     let now = String(dayjs());
     document.cookie = `id=;expires=${now}UTC;path=/`;
-    //this should overwrite any cookie so that it expires.
     navigate("/user/login");
 }
 const getListings = () => {
@@ -121,7 +120,6 @@ const showReview = (stay) => {
         </div>
     )
 }
-
 const handleChangeReviewText = (e) => {
     setReviewText(e.target.value);
 }
@@ -205,7 +203,7 @@ const cancelReview = () => {
                     <Divider sx={{backgroundColor:'peachpuff'}}/>
 
                     <Typography variant="h5" sx={{ml:3, mt:2}}>Past Stays</Typography>
-                    <Grid container>
+                    <Grid container sx={{mb:2}}>
                         <PastStays
                         stays={user.stays}
                         listings={listings}
@@ -221,6 +219,9 @@ const cancelReview = () => {
                         cancelReview={cancelReview}
                         />
                     </Grid>
+
+                    <Divider sx={{backgroundColor:'peachpuff'}}/>
+
                     <Modal
                       open={modalOpen}
                       onClose={() => setModalOpen(false)}

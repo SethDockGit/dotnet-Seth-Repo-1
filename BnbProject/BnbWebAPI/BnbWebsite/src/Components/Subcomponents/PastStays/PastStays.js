@@ -1,22 +1,22 @@
 import dayjs from "dayjs";
 import { Typography } from "@mui/material";
-import ListingsCard from "../../ListingsCard/ListingsCard";
+import ListingsCard from "../ListingsCard/ListingsCard";
 import { Drawer } from "@mui/material";
 import ReviewDrawer from "../../ReviewDrawer/ReviewDrawer";
 
 export default function PastStays({
-stays,
-listings,
-showReview,
-drawerOpen,
-setDrawerOpen,
-rating,
-setRating,
-handleChangeReviewText,
-failReviewMessage,
-failReview,
-submitReview,
-cancelReview
+    stays,
+    listings,
+    showReview,
+    drawerOpen,
+    setDrawerOpen,
+    rating,
+    setRating,
+    handleChangeReviewText,
+    failReviewMessage,
+    failReview,
+    submitReview,
+    cancelReview
 }){
     
     var past = stays.filter(s => dayjs(s.endDate).isBefore(dayjs()));

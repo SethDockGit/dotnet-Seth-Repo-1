@@ -2,8 +2,9 @@ import { Typography } from "@mui/material";
 
 
 export default function Error({
-message, 
-bool}){
+    message, 
+    bool
+}){
 
 
     return (

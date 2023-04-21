@@ -30,17 +30,10 @@ const handleClose = () => {
   setAnchorEl();
 };
 
-const reRoute = () => {
-  let now = String(dayjs());
-  document.cookie = `id=;expires=${now}UTC;path=/`;
-  //this should overwrite any cookie so that it expires.
-  navigate("/user/login");
-}
-
 const verifyLogin = () => {
 
   if(!user){
-      //if user is null, parse the cookie. If there's no cookie, id will be NaN. So, either get user by Id if Id has value, or reroute to login.
+
       var elements = document.cookie.split('=');
       var id = Number(elements[1]);
 
@@ -78,7 +71,6 @@ const displayButton = () => {
 
   return(
 
-    //first, only renders if isLoggedIn has value (default is null), then renders conditionally dependent on value of isLoggedIn
     <div>
       {isLoggedIn ?
       <div>

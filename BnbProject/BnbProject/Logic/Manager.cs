@@ -280,7 +280,6 @@ namespace BnbProject.Logic
                 }
                 else
                 {
-
                     bool verifyPass = BC.Verify(request.Password, user.Password);
 
                     if (verifyPass)
@@ -298,7 +297,6 @@ namespace BnbProject.Logic
             }
             catch (Exception e)
             {
-
                 response.Success = false;
                 response.Message = e.Message;
             }

@@ -74,7 +74,6 @@ namespace BnbProject.Data
                 GuestId = 1,
                 HostId = 2,
                 ListingId = 2,
-                //Review = new Review(),
                 StartDate = new DateTime(2023, 3, 10),
                 EndDate = new DateTime(2023, 3, 12)
             },
@@ -84,7 +83,6 @@ namespace BnbProject.Data
                 GuestId = 2,
                 HostId = 1,
                 ListingId = 1,
-                //Review = new Review(),
                 StartDate = new DateTime(2023, 3, 25),
                 EndDate = new DateTime(2023, 3, 30)
             }
@@ -116,7 +114,7 @@ namespace BnbProject.Data
             {
                 l.Amenities = TestAmenities;
             }
-            //Add sequentially!!
+
             //seth owns listing 1, and stayed at listing 2 during stay 1
             TestStays[0].HostId = TestUsers[1].Id;
             TestStays[0].GuestId = TestUsers[0].Id;
@@ -160,20 +158,17 @@ namespace BnbProject.Data
         }
         public Listing GetListingById(int id)
         {
-            return TestListings.SingleOrDefault(l => l.Id == id);
-           
+            return TestListings.SingleOrDefault(l => l.Id == id);           
         }
         public UserAccount GetUserById(int id)
         {
-            return TestUsers.SingleOrDefault(u => u.Id == id);
-            
+            return TestUsers.SingleOrDefault(u => u.Id == id);  
         }
         public void EditListing(Listing listing)
         {
             Listing toUpdate = TestListings.SingleOrDefault(l => l.Id == listing.Id);
 
             toUpdate = listing;
-
         }
         public void DeleteListing(int listingId)
         {
@@ -190,6 +185,12 @@ namespace BnbProject.Data
             foreach(var s in stays)
             {
                 TestStays.Remove(s);
+
+                s.Review = null;
+
+                var review = TestReviews.SingleOrDefault(r => r.StayId == s.Id);
+
+                TestReviews.Remove(review);
             
                 List<UserAccount> users = TestUsers.Where(u => u.Id == s.GuestId).ToList();
             
@@ -198,9 +199,6 @@ namespace BnbProject.Data
                     u.Stays.Remove(s);
                 }
             }
-
-
-            //what about reviews?
         }
         public void AddStay(Stay stay)
         {
@@ -222,7 +220,6 @@ namespace BnbProject.Data
         }
         public void AddReview(Review review)
         {
-
             Stay stay = TestStays.SingleOrDefault(s => s.Id == review.StayId);
 
             stay.Review = review;
@@ -271,14 +268,10 @@ namespace BnbProject.Data
         public void AddFileToListing(byte[] file, int listingId)
         {
             throw new NotImplementedException();
-
-            //it's actually both possible as well as necessary for you to implement these...
         }
         public void DeletePicsById(int[] ids)
         {
             throw new NotImplementedException();
-
-            //it's actually both possible as well as necessary for you to implement these...
         }
     }
 }

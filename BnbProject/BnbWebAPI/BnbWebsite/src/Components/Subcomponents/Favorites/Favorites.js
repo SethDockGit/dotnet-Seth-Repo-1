@@ -1,4 +1,4 @@
-import ListingsCard from "../../ListingsCard/ListingsCard";
+import ListingsCard from "../ListingsCard/ListingsCard";
 
 export default function Favorites({
     favorites,

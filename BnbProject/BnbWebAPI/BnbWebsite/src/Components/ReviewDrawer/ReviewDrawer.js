@@ -1,19 +1,19 @@
 import { Divider, TextField, Typography } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
-import Error from "../Error/Error";
+import Error from "../Subcomponents/Error/Error";
 import Button from "@mui/material/Button";
 import Rating from '@mui/material/Rating';
 
 export default function ReviewDrawer({
-listing,
-stay,
-rating,
-setRating,
-handleChangeReviewText,
-failReviewMessage,
-failReview,
-submitReview,
-cancelReview
+    listing,
+    stay,
+    rating,
+    setRating,
+    handleChangeReviewText,
+    failReviewMessage,
+    failReview,
+    submitReview,
+    cancelReview
 }){
 
 

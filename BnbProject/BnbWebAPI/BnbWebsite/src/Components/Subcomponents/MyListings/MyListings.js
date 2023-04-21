@@ -1,4 +1,4 @@
-import ListingsCard from "../../ListingsCard/ListingsCard";
+import ListingsCard from "../ListingsCard/ListingsCard";
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 

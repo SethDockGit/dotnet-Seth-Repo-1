@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { Typography } from "@mui/material";
-import ListingsCard from "../../ListingsCard/ListingsCard";
+import ListingsCard from "../ListingsCard/ListingsCard";
 
 export default function UpcomingStays({
     stays,
