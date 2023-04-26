@@ -11,7 +11,7 @@ import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
 import { useParams } from "react-router-dom";
-import LinkModal from "../LinkModal/LinkModal";
+import LinkModal from "../Subcomponents/LinkModal/LinkModal";
 import { UserContext } from "../../Contexts/UserContext/UserContext";
 import { useContext } from "react";
 import { useNavigate } from 'react-router-dom';

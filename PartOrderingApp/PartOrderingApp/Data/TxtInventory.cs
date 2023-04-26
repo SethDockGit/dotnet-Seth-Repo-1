@@ -36,7 +36,7 @@ namespace PartOrderingApp.Data
 
                         string[] partProps = parts[i].Split('#');
 
-                        part.Id = int.Parse(partProps[0]); //error handling!
+                        part.Id = int.Parse(partProps[0]); 
 
                         Part revised = SetPartProps(part.Id, part);
 
@@ -100,8 +100,6 @@ namespace PartOrderingApp.Data
                 part.Category = PartCategory.Motherboard;
                 part.Cost = 632.05m;
             }
-
-            //error handling here?
 
             return part;
         }

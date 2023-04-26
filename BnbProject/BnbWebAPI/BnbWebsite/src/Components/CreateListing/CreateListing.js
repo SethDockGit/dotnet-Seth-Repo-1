@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from "react";
 import ImageUpload from "../Subcomponents/ImageUpload/ImageUpload";
 import Error from "../Subcomponents/Error/Error";
-import LinkModal from "../LinkModal/LinkModal";
+import LinkModal from "../Subcomponents/LinkModal/LinkModal";
 
 export default function CreateListing(){
 

@@ -10,7 +10,6 @@ namespace PartOrderingApp.Data
     {
         public List<User> Users { get; set; }
 
-        //for an in-memory data source like this, do I need to update this data source when an order is being created? It doesn't have any affect on functionality...
 
         public TestUserData()
         {
@@ -18,13 +17,13 @@ namespace PartOrderingApp.Data
             {
                 new User()
                 {
-                    Username = "s",
+                    Username = "Seth",
                     Category = UserCategory.Premium,
 
                 },
                 new User()
                 {
-                    Username = "d",
+                    Username = "Dave",
                     Category = UserCategory.Regular
                 }
             };
@@ -41,15 +40,9 @@ namespace PartOrderingApp.Data
                 return null;
             }
         }
-        public void WriteOrderToFile(Order order)
-        {
-            //nothing happens, but that is bad code...
-            //I guess when something happens in the manager it should pass to the data layer
-            //to do whatever is necessary...
-        }
         public void ReWriteFile()
         {
-            //nothing happens
+            //Not Applicable
         }
     }
 }

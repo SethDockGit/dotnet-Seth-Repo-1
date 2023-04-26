@@ -12,6 +12,5 @@ namespace PartOrderingApp.Data
         public List<Part> Parts { get; set; }
 
         public void ReWriteFile();
-    }
-   
+    }  
 }

@@ -21,7 +21,7 @@ namespace PartOrderingApp.UI
         {
             Manager = new Manager(inventory, userData);
         }
-        //I could use the main menu to find a user in program, then pass it in and set the user as a property here.
+
         public void MainMenu()
         {
             while (!ExitMain)
@@ -151,7 +151,7 @@ namespace PartOrderingApp.UI
                         }
                         else
                         {
-                            DisplayInventory(inventory); //this display and show cart logic needs to be more consistent
+                            DisplayInventory(inventory); 
                         }
                         break;
 
@@ -317,13 +317,13 @@ namespace PartOrderingApp.UI
 
             if(order.Parts.Count == 0)
             {
-                Console.WriteLine("Your cart is currently empty"); //will this ever happen?
+                Console.WriteLine("Your cart is currently empty"); 
             }
 
             foreach(Part part in order.Parts)
             {
 
-                Console.WriteLine($"{part.SerialNumber}. {part.Name} -- Cost: {part.Cost}"); //how do I shave number to hundredths place?
+                Console.WriteLine($"{part.SerialNumber}. {part.Name} -- Cost: {part.Cost}"); 
             }
         }
         private void ViewPendingOrdersWorkFlow(User user)

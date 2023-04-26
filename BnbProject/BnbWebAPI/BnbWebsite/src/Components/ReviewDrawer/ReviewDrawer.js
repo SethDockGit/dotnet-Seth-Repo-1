@@ -16,9 +16,6 @@ export default function ReviewDrawer({
     cancelReview
 }){
 
-
-
-
     return(
 
         <Grid container sx={{justifyContent: 'center', display: 'flex', width:400}}>

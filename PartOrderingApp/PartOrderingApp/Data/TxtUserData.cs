@@ -65,9 +65,9 @@ namespace PartOrderingApp.Data
 
                         order.Parts = new List<Part>();
 
-                        string[] orderProps = orders[i].Split('&'); //should "line" be "order[i]"?
+                        string[] orderProps = orders[i].Split('&'); 
 
-                        order.OrderID = int.Parse(orderProps[0]);  //can address error handling later
+                        order.OrderID = int.Parse(orderProps[0]);  
 
                         order.DateTime = DateTime.Parse(orderProps[1]);
 
@@ -75,7 +75,7 @@ namespace PartOrderingApp.Data
 
                         order.Total = decimal.Parse(partsAndTotal[0]);
 
-                        for (int j = 1; j < partsAndTotal.Length; j++) //by 1 error?
+                        for (int j = 1; j < partsAndTotal.Length; j++) 
                         {
                             Part part = new Part();
 
@@ -97,10 +97,9 @@ namespace PartOrderingApp.Data
                 }
             }
         }
-        private Part SetPartProps(int id, Part part) //is this bad to have at the data layer?=
+        private Part SetPartProps(int id, Part part) 
         {
-            //I know this is bad in general...but ima still do it.
-
+         
             if(id == 1)
             {
                 part.Name = "GTX 5020";
@@ -193,8 +192,6 @@ namespace PartOrderingApp.Data
                 User.Category = UserCategory.Regular;
                 SaveFile = "C:\\Data\\PartOrderingApp\\" + User.Username + "\\Regular.txt";
             }
-
-            //what if the file is misnamed? handle that or no?
         }
     }
 

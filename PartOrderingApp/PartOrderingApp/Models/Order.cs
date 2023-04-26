@@ -10,10 +10,13 @@ namespace PartOrderingApp.Models
         public DateTime DateTime { get; set; } 
         public List<Part> Parts { get; set; } 
         public decimal Total { get; set; }  
-        public bool PendingStatus { get; set; } = true; //can you just set props to a default?
+        public bool PendingStatus { get; set; } 
         public int OrderID { get; set; }
-        public bool ObsoleteID { get; set; }
-    }
+        public bool IsObsolete { get; set; }
 
-    
+        public Order()
+        {
+            PendingStatus = true;
+        }
+    } 
 }

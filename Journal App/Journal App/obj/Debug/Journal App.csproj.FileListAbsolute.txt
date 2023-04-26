@@ -6,3 +6,11 @@ C:\repos\Journal App\Journal App\bin\Debug\Journal App.exe
 C:\repos\Journal App\Journal App\bin\Debug\Journal App.pdb
 C:\repos\Journal App\Journal App\obj\Debug\Journal App.exe
 C:\repos\Journal App\Journal App\obj\Debug\Journal App.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Journal App\Journal App\bin\Debug\Journal App.exe.config
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Journal App\Journal App\bin\Debug\Journal App.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Journal App\Journal App\bin\Debug\Journal App.pdb
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Journal App\Journal App\obj\Debug\Journal App.csproj.AssemblyReference.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Journal App\Journal App\obj\Debug\Journal App.csproj.SuggestedBindingRedirects.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Journal App\Journal App\obj\Debug\Journal App.csproj.CoreCompileInputs.cache
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Journal App\Journal App\obj\Debug\Journal App.exe
+C:\repos\Seth repo share\dotnet-Seth-Repo-1\Journal App\Journal App\obj\Debug\Journal App.pdb

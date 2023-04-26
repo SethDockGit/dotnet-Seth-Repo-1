@@ -11,8 +11,7 @@ namespace PartOrderingApp.Logic
     public class Manager
     {
         public IInventory Inventory;
-        public IUserData IUserData; //does this belong here? Address once userdata live is configured.
-        //I could use the main menu to find a user in program, then pass it in and set the user as a property here.
+        public IUserData IUserData; 
 
         public Manager(IInventory inventory, IUserData userData)
         {
@@ -116,20 +115,11 @@ namespace PartOrderingApp.Logic
         }
         public void CancelOrder(User user, Order order)
         {
-
-            //if(order.OrderID == 0) //checks for if this is a new or pending order and acts accordingly.
-            //{
-                //order.Parts.Clear(); //this doesn't do anything I don't think, because an order is never added to the user 
-                                     //and a new order is generated if they want to try again anyway
-
-            //}
-
             foreach (Order o in user.Orders)
             {
-                o.ObsoleteID = false; //if they were working on a pending order, this resets
+                o.IsObsolete = false; //if they were working on a pending order, this resets
                                       //the status of the original
             }
-
         }
         public WorkflowResponse GetOrderTotal(User user, Order order)
         {
@@ -156,10 +146,7 @@ namespace PartOrderingApp.Logic
 
             WorkflowResponse response = new WorkflowResponse();
 
-            bool success = CheckInventory(order, response); //there's a small bug here, where this method is checking
-                                                            //inv before the old order is deleted and new one is made.      
-                                                            //so there's a possibility that a part is declared out of
-                                                            //stock when it actually could be available...
+            bool success = CheckInventory(order, response); 
 
             if (success)
             {
@@ -168,7 +155,7 @@ namespace PartOrderingApp.Logic
 
                 foreach (Part part in order.Parts)
                 {
-                    Inventory.InvDictionary[part.Id]--; //should I do this here or in data layer?
+                    Inventory.InvDictionary[part.Id]--; 
                 }
 
                 if (user.Orders.Count == 0)
@@ -201,9 +188,9 @@ namespace PartOrderingApp.Logic
         }
         private void DeleteObsoleteOrder(User user)
         {
-            if(user.Orders.Any(o => o.ObsoleteID == true))
+            if(user.Orders.Any(o => o.IsObsolete == true))
             {
-                Order toDelete = user.Orders.Single(o => o.ObsoleteID == true);
+                Order toDelete = user.Orders.Single(o => o.IsObsolete == true);
 
                 foreach (Part part in toDelete.Parts)
                 {
@@ -292,23 +279,20 @@ namespace PartOrderingApp.Logic
 
             IUserData.ReWriteFile();
 
-            //data should be adjusted at the data level not the manager!!! But a method is not required and the data source is a property...
-
             foreach (Part part in order.Parts)
             {
                 Inventory.InvDictionary[part.Id]++;
             }
 
-            Inventory.ReWriteFile();
-            
+            Inventory.ReWriteFile();     
         }
         public Order DuplicateOrderForEditing(Order order) 
         {
             Order newOrder = new Order();
 
-            order.ObsoleteID = true;
+            order.IsObsolete = true;
             newOrder.Parts = order.Parts;
-            newOrder.OrderID = order.OrderID; //this may need to change. Risky having duplicate orders with same ID
+            newOrder.OrderID = order.OrderID; 
 
             return newOrder;
         }

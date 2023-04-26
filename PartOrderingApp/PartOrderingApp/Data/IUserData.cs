@@ -10,5 +10,4 @@ namespace PartOrderingApp.Data
         public User GetUser(string username);
         public void ReWriteFile();
     }
-
 }

@@ -14,6 +14,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from "../../Contexts/UserContext/UserContext";
 import dayjs from "dayjs";
+import Error from "../Subcomponents/Error/Error";
 
 export default function Login(){
 
@@ -22,6 +23,7 @@ const api = `https://localhost:44305`;
 const {user, setUser, isLoggedIn, setIsLoggedIn} = useContext(UserContext);
 const [username, setUsername] = useState('');
 const [password, setPassword] = useState('');
+const [failLogin, setFailLogin] = useState(false);
 const [errorMessage, setErrorMessage] = useState('');
 const [showPassword, setShowPassword] = useState(false);
 const navigate = useNavigate();
@@ -70,6 +72,7 @@ const attemptLogin = () => {
             console.log(data);
 
             if(!data.success){
+                setFailLogin(true);
                 setErrorMessage(data.message);
             }
             else{
@@ -125,7 +128,7 @@ const attemptLogin = () => {
                         />
                     </FormControl>
 
-                    {displayErrorMessage()}
+                    <Error message={errorMessage} bool={failLogin}/>
                     <br/>
                     <Button variant="contained" sx={{":hover": {
                     bgcolor: "peachpuff"}, justifyContent:'right', backgroundColor:"lightsalmon"}}

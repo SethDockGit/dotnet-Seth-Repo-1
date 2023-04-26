@@ -158,7 +158,7 @@ namespace Tests
         public void Manager_CancelOrder_CanResetObsoleteStatus()
         {
             Order order = new Order();
-            order.ObsoleteID = true;
+            order.IsObsolete = true;
 
             User user = new User();
 
@@ -168,7 +168,7 @@ namespace Tests
 
             Manager.CancelOrder(user, order);
 
-            Assert.False(user.Orders.First().ObsoleteID);
+            Assert.False(user.Orders.First().IsObsolete);
         }
         [Fact]
         public void Manager_GetOrderTotal_GetsCorrectTotal()
@@ -215,7 +215,7 @@ namespace Tests
         {
             Order order = new Order();
             order.Parts = new List<Part>();
-            order.ObsoleteID = true;
+            order.IsObsolete = true;
 
             TestUsers[0].Orders.Add(order);
 
@@ -284,7 +284,7 @@ namespace Tests
             order.Parts = new List<Part>();
             order.Parts.Add(TestParts[1]);
             order.OrderID = 1;
-            order.ObsoleteID = true;
+            order.IsObsolete = true;
             TestUsers[0].Orders.Add(order);
 
             Order orderTwo = new Order();
@@ -293,7 +293,7 @@ namespace Tests
 
             WorkflowResponse response = Manager.ExecuteOrder(TestUsers[0], orderTwo);
 
-            Assert.DoesNotContain(TestUsers[0].Orders, o => o.ObsoleteID == true);
+            Assert.DoesNotContain(TestUsers[0].Orders, o => o.IsObsolete == true);
         }
         [Theory]
         [InlineData("0")]
@@ -384,12 +384,12 @@ namespace Tests
             order.Parts = new List<Part>();
             order.Parts.Add(TestParts[0]);
             order.OrderID = 1;
-            order.ObsoleteID = false;
+            order.IsObsolete = false;
 
             Order newOrder = Manager.DuplicateOrderForEditing(order);
 
             Assert.True(newOrder.OrderID == 1);
-            Assert.False(newOrder.ObsoleteID);
+            Assert.False(newOrder.IsObsolete);
             Assert.True(newOrder.Parts[0].Id == 1); //the same ID as the original part
         }
     }

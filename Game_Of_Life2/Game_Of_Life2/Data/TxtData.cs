@@ -70,5 +70,10 @@ namespace Game_Of_Life2.Data
         {
             throw new NotImplementedException();
         }
+
+        List<Map> IData.ReadMaps()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

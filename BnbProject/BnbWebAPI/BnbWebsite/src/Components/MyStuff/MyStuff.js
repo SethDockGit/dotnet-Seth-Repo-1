@@ -1,4 +1,4 @@
-import { Divider, TextField, Typography } from "@mui/material";
+import { Divider, Typography } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
@@ -14,6 +14,8 @@ import MyListings from "../Subcomponents/MyListings/MyListings";
 import UpcomingStays from "../Subcomponents/UpcomingStays/UpcomingStays";
 import PastStays from "../Subcomponents/PastStays/PastStays";
 import Favorites from "../Subcomponents/Favorites/Favorites";
+import { Drawer } from "@mui/material";
+import ReviewDrawer from "../ReviewDrawer/ReviewDrawer";
 
 
 export default function MyStuff(){
@@ -41,6 +43,8 @@ const [reviewText, setReviewText] = useState('');
 const [failReviewMessage, setFailReviewMessage] = useState('');
 const [failReview, setFailReview] = useState(false);
 const [modalOpen, setModalOpen] = useState(false);
+const [stayToReview, setStayToReview] = useState();
+const [listingToReview, setListingToReview] = useState();
 const navigate = useNavigate();
 
 const reRoute = () => {
@@ -94,7 +98,13 @@ useEffect(() => {
     getListings();
 }, [])
 
-const showReview = (stay) => {
+
+const openReviewDrawer = (stay, listing) => {
+    setStayToReview(stay);
+    setListingToReview(listing);
+    setDrawerOpen(true);
+}
+const showReview = (stay, listing) => {
 
     var reviewExists = false;
 
@@ -107,7 +117,7 @@ const showReview = (stay) => {
             {!reviewExists    
             ?   <Button variant="contained" sx={{":hover": {
                 bgcolor: "peachpuff"}, justifyContent:'right', backgroundColor:"lightsalmon", ml:3}}
-                onClick={() => setDrawerOpen(true)}>Leave a Review!</Button>   
+                onClick={() => openReviewDrawer(stay, listing)}>Leave a Review!</Button>   
             : <Typography variant="subtitle1" sx={{ml:3}}>
                 Your review:       
                     <Rating
@@ -143,7 +153,7 @@ const submitReview = (stay) => {
             Text: reviewText,
             Username: user.username,
         }
-
+        debugger;
         fetch(`${api}/bnb/review`, {
             method: 'POST',
             body: JSON.stringify(APIRequest),
@@ -219,6 +229,20 @@ const cancelReview = () => {
                         cancelReview={cancelReview}
                         />
                     </Grid>
+
+                    <Drawer open={drawerOpen} anchor={"left"} onClose={() => setDrawerOpen(false)}>
+                        <ReviewDrawer 
+                        listing={listingToReview}
+                        stay={stayToReview}
+                        rating={rating}
+                        setRating={setRating}
+                        handleChangeReviewText={handleChangeReviewText}
+                        failReviewMessage={failReviewMessage}
+                        failReview={failReview}
+                        submitReview={submitReview}
+                        cancelReview={cancelReview}
+                        />
+                    </Drawer>
 
                     <Divider sx={{backgroundColor:'peachpuff'}}/>
 

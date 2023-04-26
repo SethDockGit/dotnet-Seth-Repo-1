@@ -73,9 +73,9 @@ namespace PartOrderingApp.Data
                 },
             };
 
-            InvDictionary = new Dictionary<int, int>() //define the inventory stock by the product id and the stock of that product
+            InvDictionary = new Dictionary<int, int>() 
             {
-                {1, 52 }, //Product with id 1 has 52 items in stock
+                {1, 52 }, 
                 {2, 26 },
                 {3, 0 },
                 {4, 12 },
@@ -88,7 +88,7 @@ namespace PartOrderingApp.Data
 
         public void ReWriteFile()
         {
-            //nothing happens
+            //Not Applicable
         }
     }
 }
