@@ -1,8 +1,0 @@
-C:\repos\To do list\To do list\bin\Debug\To do list.exe.config
-C:\repos\To do list\To do list\bin\Debug\To do list.exe
-C:\repos\To do list\To do list\bin\Debug\To do list.pdb
-C:\repos\To do list\To do list\obj\Debug\To do list.csproj.AssemblyReference.cache
-C:\repos\To do list\To do list\obj\Debug\To do list.csproj.SuggestedBindingRedirects.cache
-C:\repos\To do list\To do list\obj\Debug\To do list.csproj.CoreCompileInputs.cache
-C:\repos\To do list\To do list\obj\Debug\To do list.exe
-C:\repos\To do list\To do list\obj\Debug\To do list.pdb
